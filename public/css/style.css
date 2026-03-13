@@ -1,0 +1,79 @@
+body{
+    background:#F8FAFC;
+    font-family: 'Segoe UI', sans-serif;
+    color:#334155;
+}
+
+
+/* SIDEBAR */
+#sidebar-wrapper{
+    width:260px;
+    background:#1E293B;
+    min-height:100vh;
+    color:white;
+    display:flex;
+    flex-direction:column;
+}
+
+.sidebar-heading{
+    font-size:22px;
+    font-weight:600;
+    padding:20px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.list-group-item{
+    background:transparent;
+    border:none;
+    color:#CBD5F5;
+    padding:14px 20px;
+}
+
+.list-group-item:hover{
+    background:#334155;
+    color:white;
+}
+
+
+/* SIDEBAR FOOTER */
+.sidebar-footer{
+    margin-top:auto;
+    padding:20px;
+}
+
+
+/* NAVBAR */
+.navbar-custom{
+    background:#4F46E5;
+}
+
+
+/* PAGE */
+#page-content-wrapper{
+    flex:1;
+}
+
+
+/* CARD */
+.card{
+    border:none;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+
+/* BUTTON */
+.btn-primary{
+    background:#4F46E5;
+    border:none;
+}
+
+.btn-primary:hover{
+    background:#6366F1;
+}
+
+/* FOOTER */
+.footer{
+    background:white;
+    border-top:1px solid #e2e8f0;
+}

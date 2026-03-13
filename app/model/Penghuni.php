@@ -1,14 +1,9 @@
 <?php
-
-class Penghuni{
-    // Deklarasi, contoh:
-    //private string $nama;
-    //private int $telepon;
-
-    //Getter
-    // Isi dengan Getter
-    //Setter
-    // Isi dengan Setter
+class Penghuni {
+    public $id_pengguna;
+    public $nama_lengkap;
+    public $email;
+    public $nomor_telepon;
+    public $nama_peran;
 }
-
 ?>
