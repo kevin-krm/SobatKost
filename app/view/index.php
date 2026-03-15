@@ -7,7 +7,7 @@ if (isset($contentView) && file_exists($contentView)) {
 } else {
     // Tampilan default
     echo '<div class="mt-4">
-            <h2>Selamat Datang di Dasbor SobatKost</h2>
+            <h2>Selamat Datang di SobatKost Admin</h2>
             <p class="text-muted">Pilih menu di samping untuk mulai mengelola.</p>
           </div>';
 }

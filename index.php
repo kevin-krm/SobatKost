@@ -26,7 +26,8 @@ if (file_exists($controllerFile)) {
 
         if (method_exists($controller, $methodName)) {
             // Jalankan method yang diminta
-            $controller->{$methodName}();
+            $params = array_slice($urlParts, 2);
+            call_user_func_array([$controller, $methodName], $params);
         } else {
             echo "Aksi <b>$methodName</b> tidak ditemukan.";
         }

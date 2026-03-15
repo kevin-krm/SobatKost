@@ -1,20 +1,70 @@
 body{
     background:#F8FAFC;
-    font-family: 'Segoe UI', sans-serif;
+    font-family:'Segoe UI',sans-serif;
     color:#334155;
+    overflow:hidden;
 }
 
+/* WRAPPER */
+#wrapper{
+    display:flex;
+    height:100vh;
+}
 
 /* SIDEBAR */
 #sidebar-wrapper{
+    position:fixed;
+    left:0;
+    top:0;
     width:260px;
+    height:100vh;
     background:#1E293B;
-    min-height:100vh;
     color:white;
+    display:flex;
+    flex-direction:column;
+    transition:transform .3s ease;
+    z-index:1000;
+}
+
+/* SIDEBAR HIDE */
+#wrapper.toggled #sidebar-wrapper{
+    transform:translateX(-260px);
+}
+
+/* PAGE */
+#page-content-wrapper{
+    margin-left:260px;
+    width:100%;
+    height:100vh;
     display:flex;
     flex-direction:column;
 }
 
+/* PAGE FULL */
+#wrapper.toggled #page-content-wrapper{
+    margin-left:0;
+}
+
+/* NAVBAR */
+.navbar-custom{
+    background:#4F46E5;
+    flex-shrink:0;
+}
+
+/* CONTENT AREA */
+#page-content-wrapper > .container-fluid{
+    flex:1;
+    overflow-y:auto;
+}
+
+/* FOOTER */
+.footer{
+    flex-shrink:0;
+    background:white;
+    border-top:1px solid #e2e8f0;
+}
+
+/* SIDEBAR MENU */
 .sidebar-heading{
     font-size:22px;
     font-weight:600;
@@ -34,46 +84,33 @@ body{
     color:white;
 }
 
-
-/* SIDEBAR FOOTER */
 .sidebar-footer{
     margin-top:auto;
     padding:20px;
 }
 
-
-/* NAVBAR */
-.navbar-custom{
-    background:#4F46E5;
+/* TABLE */
+.table-responsive{
+    overflow-x:auto;
 }
 
-
-/* PAGE */
-#page-content-wrapper{
-    flex:1;
+table{
+    min-width:0;
 }
 
+/* MOBILE */
+@media (max-width:768px){
 
-/* CARD */
-.card{
-    border:none;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.05);
-}
+    #sidebar-wrapper{
+        transform:translateX(-260px);
+    }
 
+    #wrapper.toggled #sidebar-wrapper{
+        transform:translateX(0);
+    }
 
-/* BUTTON */
-.btn-primary{
-    background:#4F46E5;
-    border:none;
-}
+    #page-content-wrapper{
+        margin-left:0;
+    }
 
-.btn-primary:hover{
-    background:#6366F1;
-}
-
-/* FOOTER */
-.footer{
-    background:white;
-    border-top:1px solid #e2e8f0;
 }

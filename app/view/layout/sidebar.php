@@ -15,9 +15,9 @@
             Manajemen Kamar
         </a>
 
-        <a href="/SobatKost/penghuni" class="list-group-item list-group-item-action">
+        <a href="/SobatKost/pengguna" class="list-group-item list-group-item-action">
             <i class="bi bi-people me-2"></i>
-            Data Penghuni
+            Data Pengguna
         </a>
 
         <a href="/SobatKost/tagihan" class="list-group-item list-group-item-action">
@@ -47,17 +47,17 @@
 <div id="page-content-wrapper">
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm">
         <div class="container-fluid">
-            <button class="btn btn-default me-3" id="menu-toggle">
+            <button class="btn btn-light me-3" id="menu-toggle">
                 <i class="bi bi-list"></i>
             </button>
 
             <h5 class="text-white mb-0">
-                Dashboard Admin
+                SobatKost Admin
             </h5>
             <div class="ms-auto d-flex align-items-center text-white">
-<span class="me-3 d-none d-md-inline">
-Halo, Owner SobatKost
-</span>
+            <span class="me-3 d-none d-md-inline">
+            Halo, Owner SobatKost
+            </span>
                 <i class="bi bi-person-circle fs-4"></i>
             </div>
         </div>
