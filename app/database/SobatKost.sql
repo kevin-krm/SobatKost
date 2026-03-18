@@ -291,6 +291,27 @@ BEGIN
     COMMIT;
 END //
 
+-- SP untuk Komplain
+CREATE PROCEDURE sp_insert_komplain(IN p_user VARCHAR(15), IN p_judul VARCHAR(100), IN p_desk TEXT)
+BEGIN
+    DECLARE v_prefix VARCHAR(15);
+    DECLARE v_new_id VARCHAR(15);
+
+    START TRANSACTION;
+    -- Format: KPL-YYMMDD00
+    SET v_prefix = CONCAT('KPL-', DATE_FORMAT(NOW(), '%y%m%d'));
+
+    SELECT CONCAT(v_prefix, LPAD(COALESCE(MAX(SUBSTRING(id_komplain, 11)), 0) + 1, 2, '0'))
+    INTO v_new_id
+    FROM komplain
+    WHERE id_komplain LIKE CONCAT(v_prefix, '%')
+    FOR UPDATE;
+
+    INSERT INTO komplain (id_komplain, id_pengguna, judul_masalah, deskripsi)
+    VALUES (v_new_id, p_user, p_judul, p_desk);
+    COMMIT;
+END //
+
 DELIMITER ;
 
 -- ----------------------------------------------------------
