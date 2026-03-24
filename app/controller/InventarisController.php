@@ -14,6 +14,5 @@ class InventarisController {
     public function index() {
         $id_kamar = $_GET['id_kamar'] ?? 'K-101'; // Default kamar contoh
         $dataInventaris = $this->inventarisDao->showInventarisByKamar($id_kamar);
-        // Nanti dikirim ke View [cite: 68]
     }
 }

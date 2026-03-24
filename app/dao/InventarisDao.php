@@ -18,7 +18,6 @@ class InventarisDao {
 
     public function addInventaris(Inventaris $inventaris) {
         $link = \PDOUtil::createMySQLConnection();
-        // Menggunakan SP wajib sesuai aturan tugas [cite: 34]
         $query = "CALL sp_insert_inventaris(?, ?, ?)";
         $stmt = $link->prepare($query);
         $stmt->bindValue(1, $inventaris->getIdKamar());
