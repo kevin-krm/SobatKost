@@ -140,22 +140,49 @@ BEGIN
 END //
 
 -- SP untuk Pengguna
-CREATE PROCEDURE sp_insert_pengguna(IN p_role INT, IN p_nama VARCHAR(100), IN p_email VARCHAR(100), IN p_pass VARCHAR(255))
+CREATE PROCEDURE sp_insert_pengguna(
+    IN p_role INT,
+    IN p_nama VARCHAR(100),
+    IN p_telp VARCHAR(20),
+    IN p_email VARCHAR(100),
+    IN p_pass VARCHAR(255),
+    IN p_foto TEXT
+)
 BEGIN
-    DECLARE v_prefix VARCHAR(15);
+    DECLARE v_prefix VARCHAR(10);
     DECLARE v_new_id VARCHAR(15);
-    
+    DECLARE v_last INT;
+
     START TRANSACTION;
+
     SET v_prefix = CONCAT('U-', DATE_FORMAT(NOW(), '%y%m'));
-    
-    SELECT CONCAT(v_prefix, LPAD(COALESCE(MAX(SUBSTRING(id_pengguna, 7)), 0) + 1, 3, '0')) 
-    INTO v_new_id 
-    FROM pengguna 
+
+    SELECT COALESCE(MAX(CAST(RIGHT(id_pengguna,3) AS UNSIGNED)), 0)
+    INTO v_last
+    FROM pengguna
     WHERE id_pengguna LIKE CONCAT(v_prefix, '%')
     FOR UPDATE;
-    
-    INSERT INTO pengguna (id_pengguna, id_peran, nama_lengkap, email, kata_sandi) 
-    VALUES (v_new_id, p_role, p_nama, p_email, p_pass);
+
+    SET v_new_id = CONCAT(v_prefix, LPAD(v_last + 1, 3, '0'));
+
+    INSERT INTO pengguna (
+        id_pengguna,
+        id_peran,
+        nama_lengkap,
+        nomor_telepon,
+        email,
+        kata_sandi,
+        foto_ktp
+    ) VALUES (
+        v_new_id,
+        p_role,
+        p_nama,
+        p_telp,
+        p_email,
+        p_pass,
+        p_foto
+    );
+
     COMMIT;
 END //
 
@@ -353,8 +380,8 @@ LEFT JOIN pengguna p ON ks.id_pengguna = p.id_pengguna;
 INSERT INTO peran (nama_peran) VALUES ('Owner'), ('Penjaga'), ('Penyewa');
 
 -- Pemanggilan Data via SP (Parameter kembali menggunakan format String aslinya)
-CALL sp_insert_pengguna(1, 'Richard Vincentius', 'richard@sobatkost.com', '123');
-CALL sp_insert_pengguna(3, 'Budi Santoso', 'budi@mail.com', '123');
+CALL sp_insert_pengguna(1, 'Richard Vincentius','123456789','richard@sobatkost.com', '123','test.jpg');
+CALL sp_insert_pengguna(3, 'Budi Santoso','123456789','budi@mail.com', '123','test.jpg');
 
 CALL sp_insert_kamar('101', 'VIP', 2000000);
 CALL sp_insert_kamar('102', 'Standard', 1500000);

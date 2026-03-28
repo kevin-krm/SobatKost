@@ -15,18 +15,23 @@ class PenggunaDao {
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Pengguna');
     }
 
-    public function insertPengguna($peran, $nama, $email, $password) {
+    public function insertPengguna($peran, $nama, $telp, $email, $password, $foto) {
         $link = PDOUtil::createConnection();
         try {
-            $query = "CALL sp_insert_pengguna(:role, :nama, :email, :pass)";
+            $query = "CALL sp_insert_pengguna(:role, :nama, :telp, :email, :pass, :foto)";
             $stmt = $link->prepare($query);
+
             $stmt->bindParam(':role', $peran, PDO::PARAM_INT);
             $stmt->bindParam(':nama', $nama, PDO::PARAM_STR);
+            $stmt->bindParam(':telp', $telp, PDO::PARAM_STR);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':pass', $password, PDO::PARAM_STR);
+            $stmt->bindParam(':foto', $foto, PDO::PARAM_STR);
+
             $stmt->execute();
             PDOUtil::closeConnection();
             return true;
+
         } catch (PDOException $e) {
             PDOUtil::closeConnection();
             die("Gagal menambah pengguna: " . $e->getMessage());
@@ -43,25 +48,36 @@ class PenggunaDao {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function updatePengguna($id, $peran, $nama, $email, $password)
+    public function updatePengguna($id, $peran, $nama, $telp, $email, $password)
     {
         $link = PDOUtil::createConnection();
+
         if (!empty($password)) {
             $query = "UPDATE pengguna 
-                  SET id_peran=:peran, nama_lengkap=:nama, email=:email, kata_sandi=:pass
+                  SET id_peran=:peran, 
+                      nama_lengkap=:nama, 
+                      nomor_telepon=:telp,
+                      email=:email, 
+                      kata_sandi=:pass
                   WHERE id_pengguna=:id";
             $stmt = $link->prepare($query);
             $stmt->bindParam(':pass', $password);
         } else {
             $query = "UPDATE pengguna 
-                  SET id_peran=:peran, nama_lengkap=:nama, email=:email
+                  SET id_peran=:peran, 
+                      nama_lengkap=:nama, 
+                      nomor_telepon=:telp,
+                      email=:email
                   WHERE id_pengguna=:id";
             $stmt = $link->prepare($query);
         }
+
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':peran', $peran);
         $stmt->bindParam(':nama', $nama);
+        $stmt->bindParam(':telp', $telp);
         $stmt->bindParam(':email', $email);
+
         $stmt->execute();
     }
 

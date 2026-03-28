@@ -66,11 +66,14 @@ class PenggunaController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nama = $_POST['nama_lengkap'];
+            $telp = $_POST['nomor_telepon'];
             $email = $_POST['email'];
             $peran = $_POST['id_peran'];
             $password = $_POST['kata_sandi'] ?? null;
+
             $dao = new PenggunaDao();
-            $dao->updatePengguna($id, $peran, $nama, $email, $password);
+            $dao->updatePengguna($id, $peran, $nama, $telp, $email, $password);
+
             header("Location: /SobatKost/pengguna");
             exit();
         }
