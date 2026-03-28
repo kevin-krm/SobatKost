@@ -11,6 +11,20 @@ body{
     height:100vh;
 }
 
+.navbar-custom{
+    background:#4F46E5;
+    height:60px;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+}
+
+.content-area {
+    margin-top: 60px; /* tinggi navbar */
+}
+
 /* SIDEBAR */
 #sidebar-wrapper{
     position:fixed;

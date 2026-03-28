@@ -9,4 +9,4 @@
     <link rel="stylesheet" href="/SobatKost/public/css/style.css">
 </head>
 <body>
-<div class="d-flex" id="wrapper">
+<div id="wrapper">
