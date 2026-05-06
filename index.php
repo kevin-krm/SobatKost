@@ -1,39 +1,116 @@
 <?php
-// Mendefinisikan path absolut ke folder app agar pemanggilan file konsisten
 define('APP_PATH', __DIR__ . '/app');
 
-// 1. Ambil URL dan bersihkan
-$url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'home';
-$url = filter_var($url, FILTER_SANITIZE_URL);
+$url = isset($_GET['url']) ? $_GET['url'] : '';
+$id  = isset($_GET['id']) ? $_GET['id'] : null;
 
-// 2. Pecah URL menjadi bagian-bagian
-$urlParts = explode('/', $url);
+switch ($url) {
 
-// 3. Tentukan Controller
-$controllerName = isset($urlParts[0]) && $urlParts[0] !== '' ? ucfirst($urlParts[0]) . 'Controller' : 'HomeController';
+    // HOME
+    case '':
+    case 'home':
+        require_once APP_PATH . '/controller/HomeController.php';
+        $controller = new HomeController();
+        $controller->index();
+        break;
 
-// 4. Tentukan Method
-$methodName = isset($urlParts[1]) ? $urlParts[1] : 'index';
+    // LOGIN
+    case 'login':
+        require_once APP_PATH . '/controller/AuthController.php';
+        $controller = new AuthController();
+        $controller->login();
+        break;
 
-// 5. Lokasi file controller berdasarkan struktur folder app/controller/
-$controllerFile = APP_PATH . '/controller/' . $controllerName . '.php';
+    case 'login/process':
+        require_once APP_PATH . '/controller/AuthController.php';
+        $controller = new AuthController();
+        $controller->loginProcess();
+        break;
 
-if (file_exists($controllerFile)) {
-    require_once $controllerFile;
+    case 'logout':
+        require_once APP_PATH . '/controller/AuthController.php';
+        $controller = new AuthController();
+        $controller->logout();
+        break;
 
-    if (class_exists($controllerName)) {
-        $controller = new $controllerName();
+    // PENGGUNA
+    case 'pengguna':
+    case 'pengguna/index':
+        require_once APP_PATH . '/controller/PenggunaController.php';
+        $controller = new PenggunaController();
+        $controller->index();
+        break;
 
-        if (method_exists($controller, $methodName)) {
-            // Jalankan method yang diminta
-            $params = array_slice($urlParts, 2);
-            call_user_func_array([$controller, $methodName], $params);
-        } else {
-            echo "Aksi <b>$methodName</b> tidak ditemukan.";
-        }
-    } else {
-        echo "Kelas <b>$controllerName</b> tidak ditemukan.";
-    }
-} else {
-    echo "Halaman tidak ditemukan.";
+    case 'pengguna/create':
+        require_once APP_PATH . '/controller/PenggunaController.php';
+        $controller = new PenggunaController();
+        $controller->create();
+        break;
+
+    case 'pengguna/store':
+        require_once APP_PATH . '/controller/PenggunaController.php';
+        $controller = new PenggunaController();
+        $controller->store();
+        break;
+
+    case 'pengguna/edit':
+        require_once APP_PATH . '/controller/PenggunaController.php';
+        $controller = new PenggunaController();
+        $controller->edit($id);
+        break;
+
+    case 'pengguna/update':
+        require_once APP_PATH . '/controller/PenggunaController.php';
+        $controller = new PenggunaController();
+        $controller->update($id);
+        break;
+
+    case 'pengguna/delete':
+        require_once APP_PATH . '/controller/PenggunaController.php';
+        $controller = new PenggunaController();
+        $controller->delete($id);
+        break;
+
+    // KAMAR
+    case 'kamar':
+    case 'kamar/index':
+        require_once APP_PATH . '/controller/KamarController.php';
+        $controller = new KamarController();
+        $controller->index();
+        break;
+
+    case 'kamar/create':
+        require_once APP_PATH . '/controller/KamarController.php';
+        $controller = new KamarController();
+        $controller->create();
+        break;
+
+    case 'kamar/store':
+        require_once APP_PATH . '/controller/KamarController.php';
+        $controller = new KamarController();
+        $controller->store();
+        break;
+
+    case 'kamar/edit':
+        require_once APP_PATH . '/controller/KamarController.php';
+        $controller = new KamarController();
+        $controller->edit($id);
+        break;
+
+    case 'kamar/update':
+        require_once APP_PATH . '/controller/KamarController.php';
+        $controller = new KamarController();
+        $controller->update($id);
+        break;
+
+    case 'kamar/delete':
+        require_once APP_PATH . '/controller/KamarController.php';
+        $controller = new KamarController();
+        $controller->delete($id);
+        break;
+
+    // DEFAULT
+    default:
+        echo '404 - Halaman tidak ditemukan';
+        break;
 }

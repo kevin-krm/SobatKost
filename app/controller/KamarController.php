@@ -1,12 +1,13 @@
 <?php
 require_once APP_PATH . '/dao/KamarDao.php';
 
-class KamarController {
-
-    public function index() {
+class KamarController
+{
+    public function index()
+    {
         $dao = new KamarDao();
 
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
@@ -18,12 +19,14 @@ class KamarController {
         require_once APP_PATH . '/view/index.php';
     }
 
-    public function create() {
+    public function create()
+    {
         $contentView = APP_PATH . '/view/kamar/create.php';
         require_once APP_PATH . '/view/index.php';
     }
 
-    public function store() {
+    public function store()
+    {
         $nomor = $_POST['nomor_kamar'];
         $tipe = $_POST['tipe_kamar'];
         $harga = $_POST['harga_dasar'];
@@ -32,9 +35,11 @@ class KamarController {
         $dao->insertKamar($nomor, $tipe, $harga);
 
         header("Location: /SobatKost/kamar");
+        exit;
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $dao = new KamarDao();
         $kamar = $dao->getKamarById($id);
 
@@ -47,22 +52,22 @@ class KamarController {
         require_once APP_PATH . '/view/index.php';
     }
 
-    public function update($id) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nomor = $_POST['nomor_kamar'];
-            $tipe = $_POST['tipe_kamar'];
-            $status = $_POST['status_kamar'];
-            $harga = $_POST['harga_dasar'];
+    public function update($id)
+    {
+        $nomor = $_POST['nomor_kamar'];
+        $tipe = $_POST['tipe_kamar'];
+        $status = $_POST['status_kamar'];
+        $harga = $_POST['harga_dasar'];
 
-            $dao = new KamarDao();
-            $dao->updateKamar($id, $nomor, $tipe, $status, $harga);
+        $dao = new KamarDao();
+        $dao->updateKamar($id, $nomor, $tipe, $status, $harga);
 
-            header("Location: /SobatKost/kamar");
-            exit();
-        }
+        header("Location: /SobatKost/kamar");
+        exit;
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $dao = new KamarDao();
         $kamar = $dao->getKamarById($id);
 
@@ -72,6 +77,8 @@ class KamarController {
         }
 
         $dao->deleteKamar($id);
+
         header("Location: /SobatKost/kamar");
+        exit;
     }
 }
