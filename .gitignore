@@ -8,3 +8,4 @@
 # Upload
 public/img/data_img/*
 !public/img/data_img/.gitkeep
+/public/img/ktp
