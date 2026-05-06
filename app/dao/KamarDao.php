@@ -9,24 +9,20 @@ class KamarDao {
         $query = "SELECT * FROM kamar ORDER BY id_kamar DESC";
         $stmt = $link->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_CLASS, 'Kamar');
-    }
 
-    public function insertKamar($nomor, $tipe, $harga) {
-        $link = PDOUtil::createConnection();
-        try {
-            $query = "CALL sp_insert_kamar(:no, :tipe, :harga)";
-            $stmt = $link->prepare($query);
-            $stmt->bindParam(':no', $nomor);
-            $stmt->bindParam(':tipe', $tipe);
-            $stmt->bindParam(':harga', $harga);
-            $stmt->execute();
-            PDOUtil::closeConnection();
-            return true;
-        } catch (PDOException $e) {
-            PDOUtil::closeConnection();
-            die("Gagal menambah kamar: " . $e->getMessage());
+        $result = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new Kamar(
+                $row['id_kamar'],
+                $row['nomor_kamar'],
+                $row['tipe_kamar'],
+                $row['status_kamar'],
+                $row['harga_dasar']
+            );
         }
+
+        return $result;
     }
 
     public function getKamarById($id) {
@@ -35,20 +31,48 @@ class KamarDao {
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) return null;
+
+        return new Kamar(
+            $row['id_kamar'],
+            $row['nomor_kamar'],
+            $row['tipe_kamar'],
+            $row['status_kamar'],
+            $row['harga_dasar']
+        );
     }
 
-    public function updateKamar($id, $nomor, $tipe, $status, $harga) {
+    public function insertKamar(Kamar $kamar) {
         $link = PDOUtil::createConnection();
+
+        $query = "CALL sp_insert_kamar(:no, :tipe, :harga)";
+        $stmt = $link->prepare($query);
+
+        $stmt->bindValue(':no', $kamar->getNomorKamar());
+        $stmt->bindValue(':tipe', $kamar->getTipeKamar());
+        $stmt->bindValue(':harga', $kamar->getHargaDasar());
+
+        $stmt->execute();
+    }
+
+    public function updateKamar(Kamar $kamar) {
+        $link = PDOUtil::createConnection();
+
         $query = "UPDATE kamar 
                   SET nomor_kamar=:no, tipe_kamar=:tipe, status_kamar=:status, harga_dasar=:harga
                   WHERE id_kamar=:id";
+
         $stmt = $link->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':no', $nomor);
-        $stmt->bindParam(':tipe', $tipe);
-        $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':harga', $harga);
+
+        $stmt->bindValue(':id', $kamar->getId());
+        $stmt->bindValue(':no', $kamar->getNomorKamar());
+        $stmt->bindValue(':tipe', $kamar->getTipeKamar());
+        $stmt->bindValue(':status', $kamar->getStatusKamar());
+        $stmt->bindValue(':harga', $kamar->getHargaDasar());
+
         $stmt->execute();
     }
 
@@ -62,21 +86,33 @@ class KamarDao {
 
     public function getKamarPage($limit, $offset) {
         $link = PDOUtil::createConnection();
+
         $query = "SELECT * FROM kamar
                   ORDER BY created_at DESC
                   LIMIT :limit OFFSET :offset";
+
         $stmt = $link->prepare($query);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_CLASS, 'Kamar');
+
+        $result = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new Kamar(
+                $row['id_kamar'],
+                $row['nomor_kamar'],
+                $row['tipe_kamar'],
+                $row['status_kamar'],
+                $row['harga_dasar']
+            );
+        }
+
+        return $result;
     }
 
     public function countKamar() {
         $link = PDOUtil::createConnection();
-        $query = "SELECT COUNT(*) FROM kamar";
-        $stmt = $link->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchColumn();
+        return $link->query("SELECT COUNT(*) FROM kamar")->fetchColumn();
     }
 }

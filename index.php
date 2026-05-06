@@ -1,116 +1,115 @@
 <?php
 define('APP_PATH', __DIR__ . '/app');
 
-$url = isset($_GET['url']) ? $_GET['url'] : '';
-$id  = isset($_GET['id']) ? $_GET['id'] : null;
+$url = $_GET['url'] ?? '';
+$id  = $_GET['id'] ?? null;
+
+// Helper load controller
+function controller($name)
+{
+    $file = APP_PATH . "/controller/{$name}.php";
+
+    if (!file_exists($file)) {
+        http_response_code(404);
+        die("Controller {$name} tidak ditemukan");
+    }
+    require_once $file;
+    return new $name();
+}
 
 switch ($url) {
-
     // HOME
     case '':
     case 'home':
-        require_once APP_PATH . '/controller/HomeController.php';
-        $controller = new HomeController();
-        $controller->index();
+        controller('HomeController')->index();
         break;
 
-    // LOGIN
+    // AUTH
     case 'login':
-        require_once APP_PATH . '/controller/AuthController.php';
-        $controller = new AuthController();
-        $controller->login();
+        controller('AuthController')->login();
         break;
 
     case 'login/process':
-        require_once APP_PATH . '/controller/AuthController.php';
-        $controller = new AuthController();
-        $controller->loginProcess();
+        controller('AuthController')->loginProcess();
         break;
 
     case 'logout':
-        require_once APP_PATH . '/controller/AuthController.php';
-        $controller = new AuthController();
-        $controller->logout();
+        controller('AuthController')->logout();
         break;
 
     // PENGGUNA
     case 'pengguna':
     case 'pengguna/index':
-        require_once APP_PATH . '/controller/PenggunaController.php';
-        $controller = new PenggunaController();
-        $controller->index();
+        controller('PenggunaController')->index();
         break;
 
     case 'pengguna/create':
-        require_once APP_PATH . '/controller/PenggunaController.php';
-        $controller = new PenggunaController();
-        $controller->create();
+        controller('PenggunaController')->create();
         break;
 
     case 'pengguna/store':
-        require_once APP_PATH . '/controller/PenggunaController.php';
-        $controller = new PenggunaController();
-        $controller->store();
+        controller('PenggunaController')->store();
         break;
 
     case 'pengguna/edit':
-        require_once APP_PATH . '/controller/PenggunaController.php';
-        $controller = new PenggunaController();
-        $controller->edit($id);
+        if (!$id) {
+            die("ID pengguna wajib diisi");
+        }
+        controller('PenggunaController')->edit($id);
         break;
 
     case 'pengguna/update':
-        require_once APP_PATH . '/controller/PenggunaController.php';
-        $controller = new PenggunaController();
-        $controller->update($id);
+        if (!$id) {
+            die("ID pengguna wajib diisi");
+        }
+        controller('PenggunaController')->update($id);
         break;
 
     case 'pengguna/delete':
-        require_once APP_PATH . '/controller/PenggunaController.php';
-        $controller = new PenggunaController();
-        $controller->delete($id);
+        if (!$id) {
+            die("ID pengguna wajib diisi");
+        }
+        controller('PenggunaController')->delete($id);
         break;
 
     // KAMAR
     case 'kamar':
     case 'kamar/index':
-        require_once APP_PATH . '/controller/KamarController.php';
-        $controller = new KamarController();
-        $controller->index();
+        controller('KamarController')->index();
         break;
 
     case 'kamar/create':
-        require_once APP_PATH . '/controller/KamarController.php';
-        $controller = new KamarController();
-        $controller->create();
+        controller('KamarController')->create();
         break;
 
     case 'kamar/store':
-        require_once APP_PATH . '/controller/KamarController.php';
-        $controller = new KamarController();
-        $controller->store();
+        controller('KamarController')->store();
         break;
 
     case 'kamar/edit':
-        require_once APP_PATH . '/controller/KamarController.php';
-        $controller = new KamarController();
-        $controller->edit($id);
+        if (!$id) {
+            die("ID kamar wajib diisi");
+        }
+        controller('KamarController')->edit($id);
         break;
 
     case 'kamar/update':
-        require_once APP_PATH . '/controller/KamarController.php';
-        $controller = new KamarController();
-        $controller->update($id);
+        if (!$id) {
+            die("ID kamar wajib diisi");
+        }
+        controller('KamarController')->update($id);
         break;
 
     case 'kamar/delete':
-        require_once APP_PATH . '/controller/KamarController.php';
-        $controller = new KamarController();
-        $controller->delete($id);
+        if (!$id) {
+            die("ID kamar wajib diisi");
+        }
+        controller('KamarController')->delete($id);
         break;
 
-    // DEFAULT
+    // DEFAULT (404)
     default:
-        echo '404 - Halaman tidak ditemukan';
+        http_response_code(404);
+        echo "<h3>404 - Halaman tidak ditemukan</h3>";
         break;
 }

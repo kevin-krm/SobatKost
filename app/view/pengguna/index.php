@@ -57,38 +57,40 @@
                         <?php
                         $badgeColor = "bg-secondary";
 
-                        if ($p->nama_peran === "Admin") {
+                        if ($p->getNamaPeran() === "Owner") {
                             $badgeColor = "bg-danger";
-                        } elseif ($p->nama_peran === "Pengguna") {
+                        } elseif ($p->getNamaPeran() === "Penjaga") {
                             $badgeColor = "bg-primary";
+                        } elseif ($p->getNamaPeran() === "Penyewa") {
+                            $badgeColor = "bg-success";
                         }
 
-                        $editUrl = "/SobatKost/index.php?url=pengguna/edit&id=" . $p->id_pengguna;
-                        $deleteUrl = "/SobatKost/index.php?url=pengguna/delete&id=" . $p->id_pengguna;
-                        $modalId = "ktpModal" . $p->id_pengguna;
+                        $editUrl = "/SobatKost/index.php?url=pengguna/edit&id=" . $p->getId();
+                        $deleteUrl = "/SobatKost/index.php?url=pengguna/delete&id=" . $p->getId();
+                        $modalId = "ktpModal" . $p->getId();
                         ?>
 
                         <tr>
                             <td>
-                                <?= htmlspecialchars($p->id_pengguna) ?>
+                                <?= htmlspecialchars($p->getId()) ?>
                             </td>
 
                             <td>
                                 <div>
-                                    <?= htmlspecialchars($p->nama_lengkap) ?>
+                                    <?= htmlspecialchars($p->getNamaLengkap()) ?>
                                 </div>
                                 <small class="text-muted">
-                                    <?= htmlspecialchars($p->nomor_telepon ?? '-') ?>
+                                    <?= htmlspecialchars($p->getNomorTelepon() ?? '-') ?>
                                 </small>
                             </td>
 
                             <td>
-                                <?= date('d M Y', strtotime($p->created_at)) ?>
+                                <?= date('d M Y', strtotime($p->getCreatedAt())) ?>
                             </td>
 
                             <td>
                                 <div>
-                                    <?= htmlspecialchars($p->email) ?>
+                                    <?= htmlspecialchars($p->getEmail()) ?>
                                 </div>
                                 <small class="text-muted">
                                     ••••••••
@@ -97,7 +99,7 @@
 
                             <td class="text-center">
                                 <span class="badge <?= $badgeColor ?>">
-                                    <?= htmlspecialchars($p->nama_peran) ?>
+                                    <?= htmlspecialchars($p->getNamaPeran()) ?>
                                 </span>
                             </td>
 
@@ -145,11 +147,12 @@
                                         ></button>
                                     </div>
                                     <div class="modal-body text-center">
-                                        <img src="/SobatKost/<?= $p->foto_ktp ?>"class="img-fluid rounded">
+                                        <img src="/SobatKost/<?= $p->getFotoKtp() ?>" class="img-fluid rounded">
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     <?php endforeach; ?>
                 <?php endif; ?>
                 </tbody>
@@ -167,6 +170,7 @@
                     <?php endfor; ?>
                 </ul>
             </nav>
+
         </div>
     </div>
 </div>

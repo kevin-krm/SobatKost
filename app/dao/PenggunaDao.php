@@ -15,68 +15,79 @@ class PenggunaDao {
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Pengguna');
     }
 
-    public function insertPengguna($peran, $nama, $telp, $email, $password, $foto) {
+    public function insertPengguna(Pengguna $p)
+    {
         $link = PDOUtil::createConnection();
-        try {
-            $query = "CALL sp_insert_pengguna(:role, :nama, :telp, :email, :pass, :foto)";
-            $stmt = $link->prepare($query);
 
-            $stmt->bindParam(':role', $peran, PDO::PARAM_INT);
-            $stmt->bindParam(':nama', $nama, PDO::PARAM_STR);
-            $stmt->bindParam(':telp', $telp, PDO::PARAM_STR);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-            $stmt->bindParam(':pass', $password, PDO::PARAM_STR);
-            $stmt->bindParam(':foto', $foto, PDO::PARAM_STR);
+        $query = "CALL sp_insert_pengguna(:role, :nama, :telp, :email, :pass, :foto)";
+        $stmt = $link->prepare($query);
 
-            $stmt->execute();
-            PDOUtil::closeConnection();
-            return true;
+        $stmt->bindValue(':role', $p->getIdPeran());
+        $stmt->bindValue(':nama', $p->getNamaLengkap());
+        $stmt->bindValue(':telp', $p->getNomorTelepon());
+        $stmt->bindValue(':email', $p->getEmail());
+        $stmt->bindValue(':pass', $p->getPassword());
+        $stmt->bindValue(':foto', $p->getFotoKtp());
 
-        } catch (PDOException $e) {
-            PDOUtil::closeConnection();
-            die("Gagal menambah pengguna: " . $e->getMessage());
-        }
+        $stmt->execute();
     }
 
     public function getPenggunaById($id)
     {
         $link = PDOUtil::createConnection();
+
         $query = "SELECT * FROM pengguna WHERE id_pengguna = :id";
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) return null;
+
+        return new Pengguna(
+            $row['id_pengguna'],
+            $row['id_peran'],
+            $row['nama_lengkap'],
+            $row['nomor_telepon'],
+            $row['email'],
+            $row['kata_sandi'],
+            $row['created_at'],
+            $row['foto_ktp']
+        );
     }
 
-    public function updatePengguna($id, $peran, $nama, $telp, $email, $password)
+    public function updatePengguna(Pengguna $p)
     {
         $link = PDOUtil::createConnection();
 
-        if (!empty($password)) {
-            $query = "UPDATE pengguna 
-                  SET id_peran=:peran, 
-                      nama_lengkap=:nama, 
-                      nomor_telepon=:telp,
-                      email=:email, 
-                      kata_sandi=:pass
-                  WHERE id_pengguna=:id";
-            $stmt = $link->prepare($query);
-            $stmt->bindParam(':pass', $password);
+        if ($p->getPassword()) {
+            $query = "UPDATE pengguna SET
+            id_peran=:peran,
+            nama_lengkap=:nama,
+            nomor_telepon=:telp,
+            email=:email,
+            kata_sandi=:pass
+            WHERE id_pengguna=:id";
         } else {
-            $query = "UPDATE pengguna 
-                  SET id_peran=:peran, 
-                      nama_lengkap=:nama, 
-                      nomor_telepon=:telp,
-                      email=:email
-                  WHERE id_pengguna=:id";
-            $stmt = $link->prepare($query);
+            $query = "UPDATE pengguna SET
+            id_peran=:peran,
+            nama_lengkap=:nama,
+            nomor_telepon=:telp,
+            email=:email
+            WHERE id_pengguna=:id";
         }
 
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':peran', $peran);
-        $stmt->bindParam(':nama', $nama);
-        $stmt->bindParam(':telp', $telp);
-        $stmt->bindParam(':email', $email);
+        $stmt = $link->prepare($query);
+
+        $stmt->bindValue(':id', $p->getId());
+        $stmt->bindValue(':peran', $p->getIdPeran());
+        $stmt->bindValue(':nama', $p->getNamaLengkap());
+        $stmt->bindValue(':telp', $p->getNomorTelepon());
+        $stmt->bindValue(':email', $p->getEmail());
+
+        if ($p->getPassword()) {
+            $stmt->bindValue(':pass', $p->getPassword());
+        }
 
         $stmt->execute();
     }
@@ -93,9 +104,11 @@ class PenggunaDao {
     public function getPenggunaPage($limit,$offset)
     {
         $link = PDOUtil::createConnection();
+
         $query = "
     SELECT 
         p.id_pengguna,
+        p.id_peran,
         p.nama_lengkap,
         p.nomor_telepon,
         p.email,
@@ -108,11 +121,28 @@ class PenggunaDao {
     ORDER BY p.created_at DESC
     LIMIT :limit OFFSET :offset
     ";
+
         $stmt = $link->prepare($query);
         $stmt->bindValue(':limit',$limit,PDO::PARAM_INT);
         $stmt->bindValue(':offset',$offset,PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_CLASS,'Pengguna');
+
+        $result = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new Pengguna(
+                $row['id_pengguna'],
+                $row['id_peran'],
+                $row['nama_lengkap'],
+                $row['nomor_telepon'],
+                $row['email'],
+                $row['kata_sandi'],
+                $row['created_at'],
+                $row['foto_ktp'],
+                $row['nama_peran']
+            );
+        }
+        return $result;
     }
 
     public function countPengguna()

@@ -31,8 +31,16 @@ class KamarController
         $tipe = $_POST['tipe_kamar'];
         $harga = $_POST['harga_dasar'];
 
+        $kamar = new Kamar(
+            null,
+            $nomor,
+            $tipe,
+            "Tersedia",        // default
+            $harga
+        );
+
         $dao = new KamarDao();
-        $dao->insertKamar($nomor, $tipe, $harga);
+        $dao->insertKamar($kamar);
 
         header("Location: /SobatKost/kamar");
         exit;
@@ -54,13 +62,16 @@ class KamarController
 
     public function update($id)
     {
-        $nomor = $_POST['nomor_kamar'];
-        $tipe = $_POST['tipe_kamar'];
-        $status = $_POST['status_kamar'];
-        $harga = $_POST['harga_dasar'];
+        $kamar = new Kamar(
+            $id,
+            $_POST['nomor_kamar'],
+            $_POST['tipe_kamar'],
+            $_POST['status_kamar'],
+            $_POST['harga_dasar']
+        );
 
         $dao = new KamarDao();
-        $dao->updateKamar($id, $nomor, $tipe, $status, $harga);
+        $dao->updateKamar($kamar);
 
         header("Location: /SobatKost/kamar");
         exit;

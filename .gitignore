@@ -1,3 +1,10 @@
+# IDE
 /.idea/
 *.iml
+
+# OS
 .DS_Store
+
+# Upload
+public/img/data_img/*
+!public/img/data_img/.gitkeep

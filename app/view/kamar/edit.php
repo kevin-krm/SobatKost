@@ -23,7 +23,7 @@
 
                     <form
                             method="POST"
-                            action="/SobatKost/index.php?url=kamar/update&id=<?= $kamar['id_kamar']; ?>"
+                            action="/SobatKost/index.php?url=kamar/update&id=<?= $kamar->getId(); ?>"
                     >
 
                         <div class="mb-3">
@@ -31,7 +31,7 @@
                             <input
                                     type="text"
                                     class="form-control"
-                                    value="<?= htmlspecialchars($kamar['id_kamar']); ?>"
+                                    value="<?= htmlspecialchars($kamar->getId()); ?>"
                                     readonly
                             >
                         </div>
@@ -42,7 +42,7 @@
                                     type="text"
                                     name="nomor_kamar"
                                     class="form-control"
-                                    value="<?= htmlspecialchars($kamar['nomor_kamar']); ?>"
+                                    value="<?= htmlspecialchars($kamar->getNomorKamar()); ?>"
                                     required
                             >
                         </div>
@@ -54,16 +54,14 @@
                                     class="form-select"
                                     required
                             >
-                                <option
-                                        value="AC"
-                                        <?= ($kamar['tipe_kamar'] == 'AC') ? 'selected' : ''; ?>
-                                >
+                                <option value="AC"
+                                        <?= ($kamar->getTipeKamar() == 'AC') ? 'selected' : ''; ?>>
                                     AC
                                 </option>
 
                                 <option
                                         value="Standard"
-                                        <?= ($kamar['tipe_kamar'] == 'Standard') ? 'selected' : ''; ?>
+                                        <?= ($kamar->getTipeKamar() == 'Standard') ? 'selected' : ''; ?>
                                 >
                                     Standard
                                 </option>
@@ -79,21 +77,21 @@
                             >
                                 <option
                                         value="Tersedia"
-                                        <?= ($kamar['status_kamar'] == 'Tersedia') ? 'selected' : ''; ?>
+                                        <?= ($kamar->getStatusKamar() == 'Tersedia') ? 'selected' : ''; ?>
                                 >
                                     Tersedia
                                 </option>
 
                                 <option
                                         value="Terisi"
-                                        <?= ($kamar['status_kamar'] == 'Terisi') ? 'selected' : ''; ?>
+                                        <?= ($kamar->getStatusKamar() == 'Terisi') ? 'selected' : ''; ?>
                                 >
                                     Terisi
                                 </option>
 
                                 <option
                                         value="Perbaikan"
-                                        <?= ($kamar['status_kamar'] == 'Perbaikan') ? 'selected' : ''; ?>
+                                        <?= ($kamar->getStatusKamar() == 'Perbaikan') ? 'selected' : ''; ?>
                                 >
                                     Perbaikan
                                 </option>
@@ -106,7 +104,7 @@
                                     type="number"
                                     name="harga_dasar"
                                     class="form-control"
-                                    value="<?= htmlspecialchars($kamar['harga_dasar']); ?>"
+                                    value="<?= htmlspecialchars($kamar->getHargaDasar()); ?>"
                                     required
                             >
                         </div>

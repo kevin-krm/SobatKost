@@ -35,10 +35,23 @@ class PenggunaController
 
         $fotoPath = null;
 
+
+
         if (!empty($_FILES['foto_ktp']['name'])) {
-            $targetDir = "public/img/ktp/";
+            $targetDir = "public/img/data_img/ktp/";
+
+            if (!is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+
             $extension = pathinfo($_FILES['foto_ktp']['name'], PATHINFO_EXTENSION);
             $fileName = uniqid("ktp_") . "." . $extension;
+
+            $allowed = ['jpg', 'jpeg', 'png'];
+
+            if (!in_array(strtolower($extension), $allowed)) {
+                die("Format file tidak valid");
+            }
 
             move_uploaded_file(
                 $_FILES['foto_ktp']['tmp_name'],
@@ -48,15 +61,19 @@ class PenggunaController
             $fotoPath = $targetDir . $fileName;
         }
 
-        $dao = new PenggunaDao();
-        $dao->insertPengguna(
+        $pengguna = new Pengguna(
+            null,
             $role,
             $nama,
             $telp,
             $email,
             $password,
+            null,
             $fotoPath
         );
+
+        $dao = new PenggunaDao();
+        $dao->insertPengguna($pengguna);
 
         header("Location: /SobatKost/pengguna");
         exit;
@@ -78,21 +95,21 @@ class PenggunaController
 
     public function update($id)
     {
-        $nama = $_POST['nama_lengkap'];
-        $telp = $_POST['nomor_telepon'];
-        $email = $_POST['email'];
-        $peran = $_POST['id_peran'];
-        $password = $_POST['kata_sandi'] ?? null;
+        $password = !empty($_POST['kata_sandi']) ? $_POST['kata_sandi'] : null;
+
+        $pengguna = new Pengguna(
+            $id,
+            $_POST['id_peran'],
+            $_POST['nama_lengkap'],
+            $_POST['nomor_telepon'],
+            $_POST['email'],
+            $password,
+            null,
+            null
+        );
 
         $dao = new PenggunaDao();
-        $dao->updatePengguna(
-            $id,
-            $peran,
-            $nama,
-            $telp,
-            $email,
-            $password
-        );
+        $dao->updatePengguna($pengguna);
 
         header("Location: /SobatKost/pengguna");
         exit;

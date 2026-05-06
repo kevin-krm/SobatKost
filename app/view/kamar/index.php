@@ -56,41 +56,36 @@
                     <?php foreach ($kamarList as $k) : ?>
 
                         <?php
+                        $status = $k->getStatusKamar();
                         $badge = "bg-secondary";
 
-                        if ($k->status_kamar === "Tersedia") {
+                        if ($status === "Tersedia") {
                             $badge = "bg-success";
-                        } elseif ($k->status_kamar === "Terisi") {
+                        } elseif ($status === "Terisi") {
                             $badge = "bg-danger";
-                        } elseif ($k->status_kamar === "Perbaikan") {
+                        } elseif ($status === "Perbaikan") {
                             $badge = "bg-warning";
                         }
 
-                        $editUrl = "/SobatKost/index.php?url=kamar/edit&id=" . $k->id_kamar;
-                        $deleteUrl = "/SobatKost/index.php?url=kamar/delete&id=" . $k->id_kamar;
+                        $editUrl = "/SobatKost/index.php?url=kamar/edit&id=" . $k->getId();
+                        $deleteUrl = "/SobatKost/index.php?url=kamar/delete&id=" . $k->getId();
                         ?>
 
                         <tr>
-                            <td>
-                                <?= htmlspecialchars($k->id_kamar) ?>
-                            </td>
+                            <td><?= htmlspecialchars($k->getId()) ?></td>
 
-                            <td>
-                                <?= htmlspecialchars($k->nomor_kamar) ?>
-                            </td>
+                            <td><?= htmlspecialchars($k->getNomorKamar()) ?></td>
 
-                            <td>
-                                <?= htmlspecialchars($k->tipe_kamar ?? '-') ?>
-                            </td>
+                            <td><?= htmlspecialchars($k->getTipeKamar() ?? '-') ?></td>
 
                             <td class="text-center">
                                 <span class="badge <?= $badge ?>">
-                                    <?= htmlspecialchars($k->status_kamar) ?>
+                                    <?= htmlspecialchars($status) ?>
                                 </span>
                             </td>
 
                             <td>
-                                Rp <?= number_format($k->harga_dasar, 0, ',', '.') ?>
+                                Rp <?= number_format($k->getHargaDasar(), 0, ',', '.') ?>
                             </td>
 
                             <td class="text-center">
