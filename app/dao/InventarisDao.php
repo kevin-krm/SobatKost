@@ -25,7 +25,7 @@ class InventarisDao {
 
     public function getInventarisById($id) {
         $link = PDOUtil::createConnection();
-        $query = "SELECT * FROM inventaris WHERE id_inventaris = :id";
+        $query = "SELECT * FROM inventaris_kamar WHERE id_inventaris = :id";
         $stmt = $link->prepare($query);
         $stmt->bindValue(':id', $id);
         $stmt->execute();
@@ -38,18 +38,31 @@ class InventarisDao {
             $row['id_inventaris'],
             $row['id_kamar'],
             $row['nama_barang'],
-            $row['kondisi_barang'],
+            $row['kondisi_barang']
         );
     }
 
     public function insertInventaris(Inventaris $inventaris) {
         $link = PDOUtil::createConnection();
-        // Menggunakan Stored Procedure sesuai kodemu sebelumnya
         $query = "CALL sp_insert_inventaris(:id_kamar, :nama, :kondisi)";
         $stmt = $link->prepare($query);
         $stmt->bindValue(':id_kamar', $inventaris->getIdKamar());
         $stmt->bindValue(':nama', $inventaris->getNamaBarang());
         $stmt->bindValue(':kondisi', $inventaris->getKondisiBarang());
+        $stmt->execute();
+    }
+
+    // FUNGSI UPDATE UNTUK FORM EDIT
+    public function updateInventaris(Inventaris $inventaris) {
+        $link = PDOUtil::createConnection();
+        $query = "UPDATE inventaris_kamar SET id_kamar = :id_kamar, nama_barang = :nama, kondisi_barang = :kondisi WHERE id_inventaris = :id";
+        $stmt = $link->prepare($query);
+
+        $stmt->bindValue(':id', $inventaris->getIdInventaris());
+        $stmt->bindValue(':id_kamar', $inventaris->getIdKamar());
+        $stmt->bindValue(':nama', $inventaris->getNamaBarang());
+        $stmt->bindValue(':kondisi', $inventaris->getKondisiBarang());
+
         $stmt->execute();
     }
 

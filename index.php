@@ -133,7 +133,17 @@ switch ($url) {
         controller('KomplainController')->edit($id);
         break;
 
+    case 'komplain/update':
+        if (!$id) {
+            die("ID komplain wajib diisi");
+        }
+        controller('KomplainController')->update($id);
+        break;
+
     case 'komplain/updateStatus':
+        if (!$id) {
+            die("ID komplain wajib diisi");
+        }
         controller('KomplainController')->updateStatus($id);
         break;
 
