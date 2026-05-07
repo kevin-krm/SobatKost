@@ -139,6 +139,13 @@ switch ($url) {
         controller('KomplainController')->delete($id);
         break;
 
+    // USER VIEW
+    case 'user':
+    case 'user/index':
+
+        require_once APP_PATH . '/view/user/index.php';
+        break;
+
     // DEFAULT (404)
     default:
         http_response_code(404);
