@@ -33,19 +33,6 @@ class PenggunaController
         $password = $_POST['kata_sandi'];
         $role = $_POST['id_peran'];
 
-        $pengguna = new Pengguna(
-            null,
-            $role,
-            $nama,
-            $telp,
-            $email,
-            $password,
-            null,
-            null
-        );
-
-        $dao = new PenggunaDao();
-        $idPengguna = $dao->insertPengguna($pengguna);
         $fotoPath = null;
 
         if (!empty($_FILES['foto_ktp']['name']))
@@ -66,7 +53,7 @@ class PenggunaController
                 die("Format file tidak valid");
             }
 
-            $fileName = "ktp_" . $idPengguna . "." . $extension;
+            $fileName = uniqid("ktp_") . "." . $extension;
 
             move_uploaded_file(
                 $_FILES['foto_ktp']['tmp_name'],
@@ -74,12 +61,21 @@ class PenggunaController
             );
 
             $fotoPath = $targetDir . $fileName;
-
-            $pengguna->setId($idPengguna);
-            $pengguna->setFotoKtp($fotoPath);
-
-            $dao->updatePengguna($pengguna);
         }
+
+        $pengguna = new Pengguna(
+            null,
+            $role,
+            $nama,
+            $telp,
+            $email,
+            $password,
+            null,
+            $fotoPath
+        );
+
+        $dao = new PenggunaDao();
+        $dao->insertPengguna($pengguna);
 
         header("Location: /SobatKost/pengguna");
         exit;
