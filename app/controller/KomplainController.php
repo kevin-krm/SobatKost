@@ -1,35 +1,51 @@
 <?php
-namespace App\Controller;
+require_once APP_PATH . '/dao/KomplainDao.php';
+require_once APP_PATH . '/model/Komplain.php';
+require_once APP_PATH . '/model/DashboardNotifier.php'; // Untuk Observer Pattern
 
-use App\Model\Komplain;
-use App\Model\DashboardNotifier;
-use App\Dao\KomplainDao;
+class KomplainController
+{
+    // 1. Menampilkan daftar komplain
+    public function index()
+    {
+        $dao = new KomplainDao();
 
-class KomplainController {
-    public function updateStatus() {
-        // 1. Ambil input (misal dari form POST)
-        $id_komplain_input = $_POST['id_komplain'] ?? null;
-        $status_baru = $_POST['status_komplain'] ?? null;
+        $komplainList = $dao->getAllKomplain();
 
-        if ($id_komplain_input && $status_baru) {
-            // 2. Idealnya DAO menarik data komplain lama, tapi untuk contoh kita inisialisasi model
-            $komplain = new Komplain();
-            $komplain->setIdKomplain($id_komplain_input);
-            $komplain->setIdPengguna("U-2403001"); // Simulasi ID Penyewa
+        // Alur Program Baru: Memanggil View menggunakan Master Layout
+        $contentView = APP_PATH . '/view/komplain/index.php';
+        require_once APP_PATH . '/view/index.php';
+    }
 
-            // 3. Daftarkan Observer
-            $notifier = new DashboardNotifier();
-            $komplain->attach($notifier);
+    // 2. Menampilkan form tambah komplain
+    public function create()
+    {
+        $contentView = APP_PATH . '/view/komplain/create.php';
+        require_once APP_PATH . '/view/index.php';
+    }
 
-            // 4. Ubah status (Ini memicu $notifier->update() secara otomatis)
-            $komplain->setStatusKomplain($status_baru);
+    // 3. Proses Observer Pattern saat update status
+    public function updateStatus($id)
+    {
+        $status_baru = $_POST['status_komplain'];
 
-            // 5. Simpan ke database menggunakan DAO (kamu perlu melengkapi isi KomplainDao.php)
-            // $komplainDao = new KomplainDao();
-            // $komplainDao->updateStatus($komplain);
+        $komplain = new Komplain();
+        $komplain->setIdKomplain($id);
 
-            // 6. Redirect ke halaman view
-            // header("Location: index.php?page=komplain");
-        }
+        // Daftarkan Observer
+        $notifier = new DashboardNotifier();
+        $komplain->attach($notifier);
+
+        // Ubah status (Otomatis memicu notifikasi Observer)
+        $komplain->setStatusKomplain($status_baru);
+
+        // Simpan ke database
+        $dao = new KomplainDao();
+        $dao->updateStatusKomplain($komplain);
+
+        // Redirect kembali ke halaman daftar komplain
+        header("Location: /SobatKost/komplain");
+        exit;
     }
 }
+?>
