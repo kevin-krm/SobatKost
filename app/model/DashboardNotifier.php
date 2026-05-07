@@ -1,5 +1,4 @@
 <?php
-namespace App\Model;
 
 class DashboardNotifier implements Observer {
     public function update(Subject $subject) {

@@ -107,6 +107,38 @@ switch ($url) {
         controller('KamarController')->delete($id);
         break;
 
+    // KOMPLAIN
+    case 'komplain':
+    case 'komplain/index':
+        controller('KomplainController')->index();
+        break;
+
+    case 'komplain/create':
+        controller('KomplainController')->create();
+        break;
+
+    case 'komplain/store':
+        controller('KomplainController')->store();
+        break;
+
+    case 'komplain/edit':
+        if (!$id) {
+            die("ID komplain wajib diisi");
+        }
+        controller('KomplainController')->edit($id);
+        break;
+
+    case 'komplain/updateStatus':
+        controller('KomplainController')->updateStatus($id); // Pastikan $id diteruskan ke Controller
+        break;
+
+    case 'komplain/delete':
+        if (!$id) {
+            die("ID komplain wajib diisi");
+        }
+        controller('KomplainController')->delete($id);
+        break;
+
     // DEFAULT (404)
     default:
         http_response_code(404);

@@ -10,9 +10,17 @@ class KomplainController
     {
         $dao = new KomplainDao();
 
-        $komplainList = $dao->getAllKomplain();
+        // Logika pagination
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
 
-        // Alur Program Baru: Memanggil View menggunakan Master Layout
+        $komplainList = $dao->getKomplainPage($limit, $offset);
+
+        $totalData = $dao->countKomplain();
+        $totalPage = ceil($totalData / $limit);
+
+        // Memanggil View dengan Master Layout
         $contentView = APP_PATH . '/view/komplain/index.php';
         require_once APP_PATH . '/view/index.php';
     }
@@ -24,28 +32,86 @@ class KomplainController
         require_once APP_PATH . '/view/index.php';
     }
 
-    // 3. Proses Observer Pattern saat update status
+    // 3. Memproses penyimpanan data komplain baru ke Database
+    public function store()
+    {
+        // Gunakan ID Dummy penyewa (Budi Santoso) untuk simulasi saat ini
+        $id_pengguna = 'U-2605002';
+
+        $judul = $_POST['judul_masalah'];
+        $deskripsi = $_POST['deskripsi'];
+
+        // Membuat objek model Komplain sesuai Constructor di model/Komplain.php
+        $komplain = new Komplain(
+            null,
+            $id_pengguna,
+            $judul,
+            $deskripsi,
+            'Menunggu',     // status_komplain default
+            null            // tanggal_lapor (otomatis dari DB)
+        );
+
+        $dao = new KomplainDao();
+        $dao->insertKomplain($komplain);
+
+        // Alur redirect sesuai standar Kevin
+        header("Location: /SobatKost/komplain");
+        exit;
+    }
+
+    // 4. Memproses Update Status sekaligus memicu Observer Pattern
     public function updateStatus($id)
     {
         $status_baru = $_POST['status_komplain'];
 
-        $komplain = new Komplain();
-        $komplain->setIdKomplain($id);
-
-        // Daftarkan Observer
-        $notifier = new DashboardNotifier();
-        $komplain->attach($notifier);
-
-        // Ubah status (Otomatis memicu notifikasi Observer)
-        $komplain->setStatusKomplain($status_baru);
-
-        // Simpan ke database
         $dao = new KomplainDao();
-        $dao->updateStatusKomplain($komplain);
+        $komplain = $dao->getKomplainById($id);
 
-        // Redirect kembali ke halaman daftar komplain
+        if ($komplain) {
+            // Implementasi Observer Pattern sesuai tanggung jawab teknismu
+            $notifier = new DashboardNotifier();
+            $komplain->attach($notifier);
+
+            // Perubahan status memicu notify() otomatis
+            $komplain->setStatusKomplain($status_baru);
+
+            // Simpan perubahan status ke database melalui DAO
+            $dao->updateStatus($komplain);
+        }
+
         header("Location: /SobatKost/komplain");
         exit;
+    }
+
+    // 5. Menghapus data Tiket Komplain
+    public function delete($id)
+    {
+        $dao = new KomplainDao();
+        $dao->deleteKomplain($id);
+
+        header("Location: /SobatKost/komplain");
+        exit;
+    }
+
+    /**
+     * Menampilkan form edit berdasarkan ID komplain
+     */
+    public function edit($id)
+    {
+        $dao = new KomplainDao();
+
+        // Mencari data komplain spesifik ke database melalui DAO
+        $komplain = $dao->getKomplainById($id);
+
+        // Validasi jika data tidak ditemukan
+        if (!$komplain) {
+            echo "<h3>Data tiket komplain tidak ditemukan</h3>";
+            exit;
+        }
+
+        // Mengirim data $komplain ke view edit.php
+        $contentView = APP_PATH . '/view/komplain/edit.php';
+        require_once APP_PATH . '/view/index.php';
     }
 }
 ?>

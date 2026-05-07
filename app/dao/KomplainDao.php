@@ -1,73 +1,105 @@
 <?php
-namespace App\Dao;
-
-use App\Model\Komplain;
-use PDO;
-use Exception;
-
-include_once 'PDOUtil.php';
+require_once __DIR__ . '/PDOUtil.php';
+require_once __DIR__ . '/../model/Komplain.php';
 
 class KomplainDao {
 
     /**
-     * Mengambil semua data komplain dari database
+     * Mengambil data komplain dengan pagination (Standar Kevin)
      */
-    public static function showAllKomplain() {
-        $link = \PDOUtil::createMySQLConnection();
-        // Mengambil data dan diurutkan dari yang terbaru
-        $query = "SELECT * FROM komplain ORDER BY tanggal_lapor DESC";
+    public function getKomplainPage($limit, $offset) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT * FROM komplain ORDER BY tanggal_lapor DESC LIMIT :limit OFFSET :offset";
         $stmt = $link->prepare($query);
-        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, Komplain::class);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        $link = null;
-        return $stmt->fetchAll();
-    }
 
-    /**
-     * Menambahkan komplain baru (Wajib pakai Stored Procedure sesuai aturan kelompok)
-     */
-    public function addKomplain(Komplain $komplain) {
-        $link = \PDOUtil::createMySQLConnection();
-        // Memanggil Stored Procedure sp_insert_komplain
-        $query = "CALL sp_insert_komplain(?, ?, ?)";
-        $stmt = $link->prepare($query);
-        $stmt->bindValue(1, $komplain->getIdPengguna());
-        $stmt->bindValue(2, $komplain->getJudulMasalah());
-        $stmt->bindValue(3, $komplain->getDeskripsi());
-
-        $result = $stmt->execute();
-        $link = null;
+        $result = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new Komplain(
+                $row['id_komplain'],
+                $row['id_pengguna'],
+                $row['judul_masalah'],
+                $row['deskripsi'],
+                $row['status_komplain'],
+                $row['tanggal_lapor']
+            );
+        }
         return $result;
     }
 
     /**
-     * Memperbarui komplain (Khususnya status untuk memicu Observer Pattern)
+     * Menghitung total data komplain untuk pagination
      */
-    public function updateKomplain(Komplain $komplain) {
-        $link = \PDOUtil::createMySQLConnection();
-        // Kita fokus mengupdate status_komplain berdasarkan ID
-        $query = "UPDATE komplain SET status_komplain = ? WHERE id_komplain = ?";
-        $stmt = $link->prepare($query);
-        $stmt->bindValue(1, $komplain->getStatusKomplain());
-        $stmt->bindValue(2, $komplain->getIdKomplain());
-
-        $result = $stmt->execute();
-        $link = null;
-        return $result;
+    public function countKomplain() {
+        $link = PDOUtil::createConnection();
+        return $link->query("SELECT COUNT(*) FROM komplain")->fetchColumn();
     }
 
     /**
-     * Menghapus data komplain berdasarkan ID
+     * Mengambil 1 data komplain berdasarkan ID
      */
-    public function deleteKomplain($noKomplain) {
-        $link = \PDOUtil::createMySQLConnection();
-        $query = "DELETE FROM komplain WHERE id_komplain = ?";
+    public function getKomplainById($id) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT * FROM komplain WHERE id_komplain = :id";
         $stmt = $link->prepare($query);
-        $stmt->bindValue(1, $noKomplain);
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
 
-        $result = $stmt->execute();
-        $link = null;
-        return $result;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) return null;
+
+        return new Komplain(
+            $row['id_komplain'],
+            $row['id_pengguna'],
+            $row['judul_masalah'],
+            $row['deskripsi'],
+            $row['status_komplain'],
+            $row['tanggal_lapor']
+        );
+    }
+
+    /**
+     * Menambahkan komplain baru memanggil Stored Procedure
+     */
+    public function insertKomplain(Komplain $komplain) {
+        $link = PDOUtil::createConnection();
+        $query = "CALL sp_insert_komplain(:user, :judul, :desk)";
+        $stmt = $link->prepare($query);
+
+        $stmt->bindValue(':user', $komplain->getIdPengguna());
+        $stmt->bindValue(':judul', $komplain->getJudulMasalah());
+        $stmt->bindValue(':desk', $komplain->getDeskripsi());
+
+        $stmt->execute();
+    }
+
+    /**
+     * Memperbarui status komplain (Terkait Observer Pattern)
+     */
+    public function updateStatus(Komplain $komplain) {
+        $link = PDOUtil::createConnection();
+        $query = "UPDATE komplain SET status_komplain = :status WHERE id_komplain = :id";
+        $stmt = $link->prepare($query);
+
+        $stmt->bindValue(':status', $komplain->getStatusKomplain());
+        $stmt->bindValue(':id', $komplain->getIdKomplain());
+
+        $stmt->execute();
+    }
+
+    /**
+     * Menghapus data komplain
+     */
+    public function deleteKomplain($id) {
+        $link = PDOUtil::createConnection();
+        $query = "DELETE FROM komplain WHERE id_komplain = :id";
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':id', $id);
+
+        $stmt->execute();
     }
 }
 ?>
