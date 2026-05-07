@@ -76,6 +76,17 @@ class KamarDao {
         $stmt->execute();
     }
 
+    public function updateStatusKamar($id, $status) {
+        $link = PDOUtil::createConnection();
+        $query = "UPDATE kamar SET status_kamar = :status WHERE id_kamar = :id";
+
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':status', $status);
+        $stmt->bindValue(':id', $id);
+
+        $stmt->execute();
+    }
+
     public function deleteKamar($id) {
         $link = PDOUtil::createConnection();
         $query = "DELETE FROM kamar WHERE id_kamar=:id";

@@ -100,6 +100,11 @@ switch ($url) {
         controller('KamarController')->update($id);
         break;
 
+    case 'kamar/updateStatus':
+        if (!$id) die("ID kamar wajib diisi");
+        controller('KamarController')->updateStatus($id);
+        break;
+
     case 'kamar/delete':
         if (!$id) {
             die("ID kamar wajib diisi");

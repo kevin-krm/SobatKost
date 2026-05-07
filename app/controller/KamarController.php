@@ -77,6 +77,19 @@ class KamarController
         exit;
     }
 
+    public function updateStatus($id)
+    {
+        if (isset($_POST['status_kamar'])) {
+            $status = $_POST['status_kamar'];
+
+            $dao = new KamarDao();
+            $dao->updateStatusKamar($id, $status);
+        }
+
+        header("Location: /SobatKost/index.php?url=kamar");
+        exit;
+    }
+
     public function delete($id)
     {
         $dao = new KamarDao();
