@@ -27,7 +27,7 @@
                     <th>JUDUL MASALAH</th>
                     <th class="text-center">DESKRIPSI</th>
                     <th>TANGGAL LAPOR</th>
-                    <th class="text-center">AKSI (UBAH STATUS)</th>
+                    <th class="text-center">STATUS</th>
                     <th class="text-center">AKSI LAINNYA</th>
                 </tr>
                 </thead>

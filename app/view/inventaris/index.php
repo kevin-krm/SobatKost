@@ -20,7 +20,7 @@
                     <th>ID KAMAR</th>
                     <th>NAMA BARANG</th>
                     <th class="text-center">KONDISI SAAT INI</th>
-                    <th class="text-center">AKSI (UBAH KONDISI)</th>
+                    <th class="text-center">STATUS</th>
                     <th class="text-center">AKSI LAINNYA</th>
                 </tr>
                 </thead>
