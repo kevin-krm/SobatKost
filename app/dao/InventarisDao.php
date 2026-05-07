@@ -23,6 +23,25 @@ class InventarisDao {
         return $link->query("SELECT COUNT(*) FROM inventaris_kamar")->fetchColumn();
     }
 
+    public function getInventarisById($id) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT * FROM inventaris WHERE id_inventaris = :id";
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) return null;
+
+        return new Inventaris(
+            $row['id_inventaris'],
+            $row['id_kamar'],
+            $row['nama_barang'],
+            $row['kondisi_barang'],
+        );
+    }
+
     public function insertInventaris(Inventaris $inventaris) {
         $link = PDOUtil::createConnection();
         // Menggunakan Stored Procedure sesuai kodemu sebelumnya

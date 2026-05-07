@@ -36,8 +36,8 @@
                     <th>ID KAMAR</th>
                     <th>NOMOR</th>
                     <th>TIPE</th>
-                    <th class="text-center">STATUS</th> <th>HARGA</th>
-                    <th class="text-center">AKSI (UBAH STATUS)</th>
+                    <th>HARGA</th>
+                    <th class="text-center">STATUS</th>
                     <th class="text-center">AKSI LAINNYA</th>
                 </tr>
                 </thead>
@@ -46,7 +46,7 @@
                 <?php if (empty($kamarList)) : ?>
 
                     <tr>
-                        <td colspan="7" class="text-center p-4 text-muted">
+                        <td colspan="6" class="text-center p-4 text-muted">
                             Belum ada data kamar
                         </td>
                     </tr>
@@ -57,14 +57,15 @@
 
                         <?php
                         $status = $k->getStatusKamar();
-                        $badge = "bg-secondary";
 
                         if ($status === "Tersedia") {
-                            $badge = "bg-success";
+                            $badge = "bg-success text-white";
                         } elseif ($status === "Terisi") {
-                            $badge = "bg-danger";
+                            $badge = "bg-danger text-white";
                         } elseif ($status === "Perbaikan") {
                             $badge = "bg-warning text-dark";
+                        } else {
+                            $badge = "bg-secondary text-white";
                         }
 
                         $editUrl = "/SobatKost/index.php?url=kamar/edit&id=" . $k->getId();
@@ -78,24 +79,37 @@
 
                             <td><?= htmlspecialchars($k->getTipeKamar() ?? '-') ?></td>
 
-                            <td class="text-center">
-                                <span class="badge <?= $badge ?>">
-                                    <?= htmlspecialchars($status) ?>
-                                </span>
-                            </td>
-
                             <td>
                                 Rp <?= number_format($k->getHargaDasar(), 0, ',', '.') ?>
                             </td>
 
                             <td class="text-center">
                                 <form action="/SobatKost/index.php?url=kamar/updateStatus&id=<?= $k->getId() ?>" method="POST" class="d-flex justify-content-center align-items-center gap-2 m-0">
-                                    <select name="status_kamar" class="form-select form-select-sm" style="width: 110px;">
-                                        <option value="Tersedia" <?= $status == 'Tersedia' ? 'selected' : '' ?>>Tersedia</option>
-                                        <option value="Terisi" <?= $status == 'Terisi' ? 'selected' : '' ?>>Terisi</option>
-                                        <option value="Perbaikan" <?= $status == 'Perbaikan' ? 'selected' : '' ?>>Perbaikan</option>
+
+                                    <select
+                                            name="status_kamar"
+                                            class="form-select form-select-sm <?= $badge ?>"
+                                            style="width: 130px; font-weight: 500;"
+                                            onchange="this.className='form-select form-select-sm ' +
+                                            (this.value == 'Tersedia' ? 'bg-success text-white' :
+                                            (this.value == 'Terisi' ? 'bg-danger text-white' :
+                                            (this.value == 'Perbaikan' ? 'bg-warning text-dark' :
+                                            'bg-secondary text-white')))"
+                                    >
+                                        <option value="Tersedia" <?= $status == 'Tersedia' ? 'selected' : '' ?>>
+                                            Tersedia
+                                        </option>
+                                        <option value="Terisi" <?= $status == 'Terisi' ? 'selected' : '' ?>>
+                                            Terisi
+                                        </option>
+                                        <option value="Perbaikan" <?= $status == 'Perbaikan' ? 'selected' : '' ?>>
+                                            Perbaikan
+                                        </option>
                                     </select>
-                                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
+
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        Update
+                                    </button>
                                 </form>
                             </td>
 
