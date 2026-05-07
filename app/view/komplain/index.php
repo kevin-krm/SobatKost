@@ -1,3 +1,5 @@
+<script src="/SobatKost/public/js/admin.js"></script>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold mb-0">Tiket Komplain</h2>
@@ -10,6 +12,16 @@
         <i class="bi bi-tools me-2"></i>
         Tambah Komplain
     </a>
+</div>
+
+<div class="mb-3">
+    <input
+            type="text"
+            id="searchKomplain"
+            class="form-control"
+            placeholder="Cari Komplain..."
+            onkeyup="searchKomplain()"
+    >
 </div>
 
 <p class="text-muted small">Total tiket: <?= $totalData ?></p>

@@ -25,6 +25,20 @@ function searchKamar() {
     }
 }
 
+function searchKomplain() {
+    let input = document.getElementById("searchKomplain");
+    if (!input) return;
+
+    let filter = input.value.toLowerCase();
+    let table = document.querySelector("table");
+    let tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        let text = tr[i].innerText.toLowerCase();
+        tr[i].style.display = text.includes(filter) ? "" : "none";
+    }
+}
+
 // PREVIEW FOTO KTP
 function previewKTP(event) {
     const preview = document.getElementById("ktpPreview");
