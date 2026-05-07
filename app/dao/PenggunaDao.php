@@ -30,6 +30,8 @@ class PenggunaDao {
         $stmt->bindValue(':foto', $p->getFotoKtp());
 
         $stmt->execute();
+
+        return $link->lastInsertId();
     }
 
     public function getPenggunaById($id)
@@ -66,14 +68,17 @@ class PenggunaDao {
             nama_lengkap=:nama,
             nomor_telepon=:telp,
             email=:email,
-            kata_sandi=:pass
+            kata_sandi=:pass,
+            foto_ktp=:foto
             WHERE id_pengguna=:id";
+
         } else {
             $query = "UPDATE pengguna SET
             id_peran=:peran,
             nama_lengkap=:nama,
             nomor_telepon=:telp,
-            email=:email
+            email=:email,
+            foto_ktp=:foto
             WHERE id_pengguna=:id";
         }
 
@@ -84,6 +89,7 @@ class PenggunaDao {
         $stmt->bindValue(':nama', $p->getNamaLengkap());
         $stmt->bindValue(':telp', $p->getNomorTelepon());
         $stmt->bindValue(':email', $p->getEmail());
+        $stmt->bindValue(':foto', $p->getFotoKtp());
 
         if ($p->getPassword()) {
             $stmt->bindValue(':pass', $p->getPassword());

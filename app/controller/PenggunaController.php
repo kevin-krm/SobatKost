@@ -33,34 +33,6 @@ class PenggunaController
         $password = $_POST['kata_sandi'];
         $role = $_POST['id_peran'];
 
-        $fotoPath = null;
-
-
-
-        if (!empty($_FILES['foto_ktp']['name'])) {
-            $targetDir = "public/img/data_img/ktp/";
-
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0777, true);
-            }
-
-            $extension = pathinfo($_FILES['foto_ktp']['name'], PATHINFO_EXTENSION);
-            $fileName = uniqid("ktp_") . "." . $extension;
-
-            $allowed = ['jpg', 'jpeg', 'png'];
-
-            if (!in_array(strtolower($extension), $allowed)) {
-                die("Format file tidak valid");
-            }
-
-            move_uploaded_file(
-                $_FILES['foto_ktp']['tmp_name'],
-                $targetDir . $fileName
-            );
-
-            $fotoPath = $targetDir . $fileName;
-        }
-
         $pengguna = new Pengguna(
             null,
             $role,
@@ -69,11 +41,45 @@ class PenggunaController
             $email,
             $password,
             null,
-            $fotoPath
+            null
         );
 
         $dao = new PenggunaDao();
-        $dao->insertPengguna($pengguna);
+        $idPengguna = $dao->insertPengguna($pengguna);
+        $fotoPath = null;
+
+        if (!empty($_FILES['foto_ktp']['name']))
+        {
+            $targetDir = "public/img/data_img/ktp/";
+
+            if (!is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+
+            $extension = strtolower(
+                pathinfo($_FILES['foto_ktp']['name'], PATHINFO_EXTENSION)
+            );
+
+            $allowed = ['jpg', 'jpeg', 'png'];
+
+            if (!in_array($extension, $allowed)) {
+                die("Format file tidak valid");
+            }
+
+            $fileName = "ktp_" . $idPengguna . "." . $extension;
+
+            move_uploaded_file(
+                $_FILES['foto_ktp']['tmp_name'],
+                $targetDir . $fileName
+            );
+
+            $fotoPath = $targetDir . $fileName;
+
+            $pengguna->setId($idPengguna);
+            $pengguna->setFotoKtp($fotoPath);
+
+            $dao->updatePengguna($pengguna);
+        }
 
         header("Location: /SobatKost/pengguna");
         exit;
@@ -95,7 +101,46 @@ class PenggunaController
 
     public function update($id)
     {
-        $password = !empty($_POST['kata_sandi']) ? $_POST['kata_sandi'] : null;
+        $dao = new PenggunaDao();
+        $penggunaLama = $dao->getPenggunaById($id);
+
+        $password = !empty($_POST['kata_sandi'])
+            ? $_POST['kata_sandi']
+            : $penggunaLama->getPassword();
+
+        $fotoPath = $penggunaLama->getFotoKtp();
+
+        if (!empty($_FILES['foto_ktp']['name']))
+        {
+            $targetDir = "public/img/data_img/ktp/";
+
+            if (!is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+
+            if (!empty($fotoPath) && file_exists($fotoPath)) {
+                unlink($fotoPath);
+            }
+
+            $extension = strtolower(
+                pathinfo($_FILES['foto_ktp']['name'], PATHINFO_EXTENSION)
+            );
+
+            $allowed = ['jpg', 'jpeg', 'png'];
+
+            if (!in_array($extension, $allowed)) {
+                die("Format file tidak valid");
+            }
+
+            $fileName = "ktp_" . $id . "." . $extension;
+
+            move_uploaded_file(
+                $_FILES['foto_ktp']['tmp_name'],
+                $targetDir . $fileName
+            );
+
+            $fotoPath = $targetDir . $fileName;
+        }
 
         $pengguna = new Pengguna(
             $id,
@@ -105,10 +150,9 @@ class PenggunaController
             $_POST['email'],
             $password,
             null,
-            null
+            $fotoPath
         );
 
-        $dao = new PenggunaDao();
         $dao->updatePengguna($pengguna);
 
         header("Location: /SobatKost/pengguna");

@@ -51,6 +51,10 @@
                                     class="form-control"
                                     accept="image/png, image/jpeg"
                                     onchange="previewKTP(event)">
+
+                            <small class="text-muted">
+                                Format: JPG, JPEG, PNG
+                            </small>
                         </div>
                         <div class="mb-3 text-center">
                             <img

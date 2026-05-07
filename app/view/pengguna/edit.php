@@ -16,12 +16,7 @@
                     <strong>Form Edit Pengguna</strong>
                 </div>
                 <div class="card-body">
-
-                    <form
-                            method="POST"
-                            action="/SobatKost/index.php?url=pengguna/update&id=<?= $pengguna->getId(); ?>"
-                    >
-
+                    <form method="POST" action="/SobatKost/index.php?url=pengguna/update&id=<?= $pengguna->getId(); ?>" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label class="form-label">ID Pengguna</label>
                             <input
@@ -89,6 +84,49 @@
                                 <option value="2" <?= ($pengguna->getIdPeran() == 2) ? 'selected' : '' ?>>Penjaga</option>
                                 <option value="3" <?= ($pengguna->getIdPeran() == 3) ? 'selected' : '' ?>>Penyewa</option>
                             </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Foto KTP Saat Ini</label>
+                            <br>
+
+                            <?php if (!empty($pengguna->getFotoKtp())) : ?>
+
+                                <img
+                                <img src="/SobatKost/<?= $pengguna->getFotoKtp() ?>"
+                                        id="ktpPreview"
+                                        class="img-fluid rounded shadow-sm mb-2"
+                                        style="max-height:200px;"
+                                >
+
+                            <?php else : ?>
+
+                                <p class="text-muted">Belum ada foto KTP</p>
+
+                                <img
+                                        id="ktpPreview"
+                                        src=""
+                                        class="img-fluid rounded shadow-sm"
+                                        style="max-height:200px; display:none;"
+                                >
+
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ganti Foto KTP</label>
+
+                            <input
+                                    type="file"
+                                    name="foto_ktp"
+                                    class="form-control"
+                                    accept="image/png, image/jpeg"
+                                    onchange="previewKTP(event)"
+                            >
+
+                            <small class="text-muted">
+                                Kosongkan jika tidak ingin mengganti foto (Format: JPG, JPEG, PNG)
+                            </small>
                         </div>
 
                         <button class="btn btn-primary">Update</button>
