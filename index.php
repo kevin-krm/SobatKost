@@ -134,7 +134,7 @@ switch ($url) {
         break;
 
     case 'komplain/updateStatus':
-        controller('KomplainController')->updateStatus($id); // Pastikan $id diteruskan ke Controller
+        controller('KomplainController')->updateStatus($id);
         break;
 
     case 'komplain/delete':
@@ -144,10 +144,47 @@ switch ($url) {
         controller('KomplainController')->delete($id);
         break;
 
+    // INVENTARIS
+    case 'inventaris':
+    case 'inventaris/index':
+        controller('InventarisController')->index();
+        break;
+
+    case 'inventaris/create':
+        controller('InventarisController')->create();
+        break;
+
+    case 'inventaris/store':
+        controller('InventarisController')->store();
+        break;
+
+    case 'inventaris/updateStatus':
+        if (!$id) {
+            die("ID inventaris wajib diisi");
+        }
+        controller('InventarisController')->updateStatus($id);
+        break;
+
+    case 'inventaris/edit':
+        if (!$id) die("ID inventaris wajib diisi");
+        controller('InventarisController')->edit($id);
+        break;
+
+    case 'inventaris/update':
+        if (!$id) die("ID inventaris wajib diisi");
+        controller('InventarisController')->update($id);
+        break;
+
+    case 'inventaris/delete':
+        if (!$id) {
+            die("ID inventaris wajib diisi");
+        }
+        controller('InventarisController')->delete($id);
+        break;
+
     // USER VIEW
     case 'user':
     case 'user/index':
-
         require_once APP_PATH . '/view/user/index.php';
         break;
 

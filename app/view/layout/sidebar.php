@@ -1,4 +1,3 @@
-<!-- SIDEBAR -->
 <div id="sidebar-wrapper">
     <div class="sidebar-heading">
         <i class="bi bi-house-heart-fill"></i>
@@ -12,6 +11,10 @@
 
         <a href="/SobatKost/kamar" class="list-group-item list-group-item-action">
             <i class="bi bi-door-open me-2"></i> Manajemen Kamar
+        </a>
+
+        <a href="/SobatKost/inventaris" class="list-group-item list-group-item-action">
+            <i class="bi bi-box-seam me-2"></i> Inventaris Kamar
         </a>
 
         <a href="/SobatKost/pengguna" class="list-group-item list-group-item-action">
@@ -38,10 +41,8 @@
     </div>
 </div>
 
-<!-- CONTENT AREA -->
 <div id="page-content-wrapper">
 
-    <!-- HEADER FIXED -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top shadow-sm">
         <div class="container-fluid">
             <button class="btn btn-light me-3" id="menu-toggle">
@@ -59,5 +60,4 @@
         </div>
     </nav>
 
-    <!-- CONTENT -->
     <div class="container-fluid p-4 content-area ">
