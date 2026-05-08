@@ -4,7 +4,7 @@ session_start();
 define('APP_PATH', __DIR__ . '/app');
 
 require_once APP_PATH . '/middleware/Auth.php';
-require_once APP_PATH . '/routes/route.php';
+require_once __DIR__ . '/routes/web.php';
 
 $url = $_GET['url'] ?? '';
 $id  = $_GET['id'] ?? null;
