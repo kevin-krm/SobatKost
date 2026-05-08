@@ -1,8 +1,14 @@
 <?php
 require_once APP_PATH . '/dao/PenggunaDao.php';
+require_once APP_PATH . '/middleware/AuthMiddleware.php';
 
 class PenggunaController
 {
+    public function __construct()
+    {
+        $this->penggunaDao = new PenggunaDao();
+    }
+
     public function index()
     {
         $dao = new PenggunaDao();

@@ -3,6 +3,25 @@ require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/Pengguna.php';
 
 class PenggunaDao {
+    public function login($email)
+    {
+        $link = PDOUtil::createConnection();
+
+        $query = "SELECT
+                p.*,
+                pr.nama_peran
+              FROM pengguna p
+              JOIN peran pr ON p.id_peran = pr.id_peran
+              WHERE p.email = :email
+              LIMIT 1";
+
+        $stmt = $link->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getAllPengguna() {
         $link = PDOUtil::createConnection();
         $query = "SELECT p.id_pengguna,p.nama_lengkap,p.nomor_telepon,p.email,p.kata_sandi,p.created_at,p.foto_ktp,pr.nama_peran

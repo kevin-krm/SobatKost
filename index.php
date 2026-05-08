@@ -1,10 +1,15 @@
 <?php
+session_start();
+
 define('APP_PATH', __DIR__ . '/app');
+
+require_once APP_PATH . '/middleware/Auth.php';
+require_once APP_PATH . '/routes/route.php';
 
 $url = $_GET['url'] ?? '';
 $id  = $_GET['id'] ?? null;
 
-// Helper load controller
+//LOAD CONTROLLER
 function controller($name)
 {
     $file = APP_PATH . "/controller/{$name}.php";
@@ -17,12 +22,14 @@ function controller($name)
     return new $name();
 }
 
+Route::handle($url);
+
 switch ($url) {
-    // HOME
+
+    //DEFAULT
     case '':
-    case 'home':
-        controller('HomeController')->index();
-        break;
+        header('Location: index.php?url=login');
+        exit;
 
     // AUTH
     case 'login':
@@ -37,34 +44,34 @@ switch ($url) {
         controller('AuthController')->logout();
         break;
 
-    // PENGGUNA
+    //HOME
+    case 'home':
+        controller('HomeController')->index();
+        break;
+
+    // ADMIN MENU
     case 'pengguna':
     case 'pengguna/index':
         controller('PenggunaController')->index();
         break;
-
     case 'pengguna/create':
         controller('PenggunaController')->create();
         break;
-
     case 'pengguna/store':
         controller('PenggunaController')->store();
         break;
-
     case 'pengguna/edit':
         if (!$id) {
             die("ID pengguna wajib diisi");
         }
         controller('PenggunaController')->edit($id);
         break;
-
     case 'pengguna/update':
         if (!$id) {
             die("ID pengguna wajib diisi");
         }
         controller('PenggunaController')->update($id);
         break;
-
     case 'pengguna/delete':
         if (!$id) {
             die("ID pengguna wajib diisi");
@@ -72,39 +79,34 @@ switch ($url) {
         controller('PenggunaController')->delete($id);
         break;
 
-    // KAMAR
     case 'kamar':
     case 'kamar/index':
         controller('KamarController')->index();
         break;
-
     case 'kamar/create':
         controller('KamarController')->create();
         break;
-
     case 'kamar/store':
         controller('KamarController')->store();
         break;
-
     case 'kamar/edit':
         if (!$id) {
             die("ID kamar wajib diisi");
         }
         controller('KamarController')->edit($id);
         break;
-
     case 'kamar/update':
         if (!$id) {
             die("ID kamar wajib diisi");
         }
         controller('KamarController')->update($id);
         break;
-
     case 'kamar/updateStatus':
-        if (!$id) die("ID kamar wajib diisi");
+        if (!$id) {
+            die("ID kamar wajib diisi");
+        }
         controller('KamarController')->updateStatus($id);
         break;
-
     case 'kamar/delete':
         if (!$id) {
             die("ID kamar wajib diisi");
@@ -112,41 +114,34 @@ switch ($url) {
         controller('KamarController')->delete($id);
         break;
 
-    // KOMPLAIN
     case 'komplain':
     case 'komplain/index':
         controller('KomplainController')->index();
         break;
-
     case 'komplain/create':
         controller('KomplainController')->create();
         break;
-
     case 'komplain/store':
         controller('KomplainController')->store();
         break;
-
     case 'komplain/edit':
         if (!$id) {
             die("ID komplain wajib diisi");
         }
         controller('KomplainController')->edit($id);
         break;
-
     case 'komplain/update':
         if (!$id) {
             die("ID komplain wajib diisi");
         }
         controller('KomplainController')->update($id);
         break;
-
     case 'komplain/updateStatus':
         if (!$id) {
             die("ID komplain wajib diisi");
         }
         controller('KomplainController')->updateStatus($id);
         break;
-
     case 'komplain/delete':
         if (!$id) {
             die("ID komplain wajib diisi");
@@ -154,51 +149,49 @@ switch ($url) {
         controller('KomplainController')->delete($id);
         break;
 
-    // INVENTARIS
     case 'inventaris':
     case 'inventaris/index':
         controller('InventarisController')->index();
         break;
-
     case 'inventaris/create':
         controller('InventarisController')->create();
         break;
-
     case 'inventaris/store':
         controller('InventarisController')->store();
         break;
-
     case 'inventaris/updateStatus':
         if (!$id) {
             die("ID inventaris wajib diisi");
         }
         controller('InventarisController')->updateStatus($id);
         break;
-
     case 'inventaris/edit':
-        if (!$id) die("ID inventaris wajib diisi");
+        if (!$id) {
+            die("ID inventaris wajib diisi");
+        }
         controller('InventarisController')->edit($id);
         break;
-
     case 'inventaris/update':
-        if (!$id) die("ID inventaris wajib diisi");
+        if (!$id) {
+            die("ID inventaris wajib diisi");
+        }
+
         controller('InventarisController')->update($id);
         break;
-
     case 'inventaris/delete':
         if (!$id) {
             die("ID inventaris wajib diisi");
         }
+
         controller('InventarisController')->delete($id);
         break;
 
-    // USER VIEW
+    // PENYEWA (USER)
     case 'user':
     case 'user/index':
         require_once APP_PATH . '/view/user/index.php';
         break;
 
-    // DEFAULT (404)
     default:
         http_response_code(404);
         echo "<h3>404 - Halaman tidak ditemukan</h3>";

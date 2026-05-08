@@ -75,11 +75,12 @@
                     </ul>
                 </div>
 
-                <!-- USER -->
+                <div class="ms-auto d-flex align-items-center text-white">
                 <span class="me-3 d-none d-md-inline">
-                    Halo, User
+                    Hello, <?= $_SESSION['user']['nama'] ?? 'Pengguna'; ?>
                 </span>
-                <i class="bi bi-person-circle fs-4"></i>
+                    <i class="bi bi-person-circle fs-4"></i>
+                </div>
             </div>
         </div>
     </nav>

@@ -35,7 +35,7 @@
     </div>
 
     <div class="sidebar-footer">
-        <a href="/SobatKost/logout" class="btn btn-danger w-100">
+        <a href="index.php?url=logout" class="btn btn-danger w-100">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
     </div>
@@ -53,7 +53,7 @@
 
             <div class="ms-auto d-flex align-items-center text-white">
                 <span class="me-3 d-none d-md-inline">
-                    Halo, Owner SobatKost
+                    Hello, <?= $_SESSION['user']['nama'] ?? 'Pengguna'; ?>
                 </span>
                 <i class="bi bi-person-circle fs-4"></i>
             </div>
