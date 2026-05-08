@@ -26,7 +26,9 @@ class KomplainController
 
     public function store()
     {
-        $id_pengguna = 'U-2605002';
+        session_status() === PHP_SESSION_ACTIVE ?: session_start();
+        $id_pengguna = $_SESSION['user']['id'] ?? 'U-2605001';
+
         $judul = $_POST['judul_masalah'];
         $deskripsi = $_POST['deskripsi'];
 
@@ -106,3 +108,4 @@ class KomplainController
         require_once APP_PATH . '/view/index.php';
     }
 }
+?>
