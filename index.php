@@ -215,6 +215,29 @@ switch ($url) {
         controller('KeuanganController')->delete($id);
         break;
 
+    case 'pengumuman':
+    case 'pengumuman/index':
+        controller('PengumumanController')->index();
+        break;
+    case 'pengumuman/create':
+        controller('PengumumanController')->create();
+        break;
+    case 'pengumuman/store':
+        controller('PengumumanController')->store();
+        break;
+    case 'pengumuman/edit':
+        if (!$id) die("ID wajib diisi");
+        controller('PengumumanController')->edit($id);
+        break;
+    case 'pengumuman/update':
+        if (!$id) die("ID wajib diisi");
+        controller('PengumumanController')->update($id);
+        break;
+    case 'pengumuman/delete':
+        if (!$id) die("ID wajib diisi");
+        controller('PengumumanController')->delete($id);
+        break;
+
     // PENYEWA (USER)
     case 'user':
     case 'user/index':
@@ -223,6 +246,10 @@ switch ($url) {
 
     case 'user/komplain':
         controller('KomplainController')->userIndex();
+        break;
+
+    case 'user/pengumuman':
+        controller('PengumumanController')->userIndex();
         break;
 
     default:

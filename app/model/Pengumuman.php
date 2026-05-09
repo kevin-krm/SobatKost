@@ -1,5 +1,4 @@
 <?php
-namespace App\Model;
 
 class Pengumuman {
     private $id_pengumuman;

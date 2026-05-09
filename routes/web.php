@@ -66,10 +66,11 @@ class Route
             'keuangan/edit' => [1, 2],
             'keuangan/update' => [1, 2],
             'keuangan/delete' => [1, 2],
-            
+
             'user' => [1,3],
             'user/index' => [1,3],
             'user/komplain' => [1, 3],
+            'user/pengumuman' => [1, 3],
         ];
 
         //ROLE CHECK
