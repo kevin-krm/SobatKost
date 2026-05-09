@@ -21,6 +21,10 @@
         <a href="/SobatKost/user/pengumuman" class="list-group-item list-group-item-action">
             <i class="bi bi-megaphone me-2"></i> Pengumuman
         </a>
+
+        <a href="/SobatKost/user/aturan" class="list-group-item list-group-item-action">
+            <i class="bi bi-journal-text me-2"></i> Aturan Kost
+        </a>
     </div>
 
     <div class="sidebar-footer">

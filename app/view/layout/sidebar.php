@@ -33,6 +33,10 @@
             <i class="bi bi-megaphone me-2"></i> Pengumuman
         </a>
 
+        <a href="/SobatKost/aturan" class="list-group-item list-group-item-action">
+            <i class="bi bi-journal-text me-2"></i> E-Rules / Aturan Kost
+        </a>
+
         <a href="/SobatKost/keuangan" class="list-group-item list-group-item-action">
             <i class="bi bi-cash-coin me-2"></i> Laporan Keuangan
         </a>

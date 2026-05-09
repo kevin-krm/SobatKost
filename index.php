@@ -238,6 +238,29 @@ switch ($url) {
         controller('PengumumanController')->delete($id);
         break;
 
+    case 'aturan':
+    case 'aturan/index':
+        controller('AturanKostController')->index();
+        break;
+    case 'aturan/create':
+        controller('AturanKostController')->create();
+        break;
+    case 'aturan/store':
+        controller('AturanKostController')->store();
+        break;
+    case 'aturan/edit':
+        if (!$id) die("ID wajib diisi");
+        controller('AturanKostController')->edit($id);
+        break;
+    case 'aturan/update':
+        if (!$id) die("ID wajib diisi");
+        controller('AturanKostController')->update($id);
+        break;
+    case 'aturan/delete':
+        if (!$id) die("ID wajib diisi");
+        controller('AturanKostController')->delete($id);
+        break;
+
     // PENYEWA (USER)
     case 'user':
     case 'user/index':
@@ -250,6 +273,10 @@ switch ($url) {
 
     case 'user/pengumuman':
         controller('PengumumanController')->userIndex();
+        break;
+
+    case 'user/aturan':
+        controller('AturanKostController')->userIndex();
         break;
 
     default:
