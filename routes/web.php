@@ -59,6 +59,14 @@ class Route
             'inventaris/updateStatus' => [1, 2],
             'inventaris/delete' => [1, 2],
 
+            'keuangan' => [1, 2],
+            'keuangan/index' => [1, 2],
+            'keuangan/create' => [1, 2],
+            'keuangan/store' => [1, 2],
+            'keuangan/edit' => [1, 2],
+            'keuangan/update' => [1, 2],
+            'keuangan/delete' => [1, 2],
+
             'user' => [1,3],
             'user/index' => [1,3],
         ];

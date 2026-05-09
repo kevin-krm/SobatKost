@@ -32,6 +32,10 @@
         <a href="/SobatKost/pengumuman" class="list-group-item list-group-item-action">
             <i class="bi bi-megaphone me-2"></i> Pengumuman
         </a>
+
+        <a href="/SobatKost/keuangan" class="list-group-item list-group-item-action">
+            <i class="bi bi-cash-coin me-2"></i> Laporan Keuangan
+        </a>
     </div>
 
     <div class="sidebar-footer">

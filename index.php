@@ -186,6 +186,35 @@ switch ($url) {
         controller('InventarisController')->delete($id);
         break;
 
+    case 'keuangan':
+    case 'keuangan/index':
+        controller('KeuanganController')->index();
+        break;
+    case 'keuangan/create':
+        controller('KeuanganController')->create();
+        break;
+    case 'keuangan/store':
+        controller('KeuanganController')->store();
+        break;
+    case 'keuangan/edit':
+        if (!$id) {
+            die("ID biaya wajib diisi");
+        }
+        controller('KeuanganController')->edit($id);
+        break;
+    case 'keuangan/update':
+        if (!$id) {
+            die("ID biaya wajib diisi");
+        }
+        controller('KeuanganController')->update($id);
+        break;
+    case 'keuangan/delete':
+        if (!$id) {
+            die("ID biaya wajib diisi");
+        }
+        controller('KeuanganController')->delete($id);
+        break;
+
     // PENYEWA (USER)
     case 'user':
     case 'user/index':
