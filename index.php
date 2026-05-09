@@ -221,6 +221,10 @@ switch ($url) {
         require_once APP_PATH . '/view/user/index.php';
         break;
 
+    case 'user/komplain':
+        controller('KomplainController')->userIndex();
+        break;
+
     default:
         http_response_code(404);
         echo "<h3>404 - Halaman tidak ditemukan</h3>";

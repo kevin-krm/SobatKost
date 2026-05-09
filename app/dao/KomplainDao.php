@@ -42,6 +42,34 @@ class KomplainDao {
         );
     }
 
+    public function getKomplainByUserIdPage($id_pengguna, $limit, $offset) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT * FROM komplain WHERE id_pengguna = :id_pengguna ORDER BY tanggal_lapor DESC LIMIT :limit OFFSET :offset";
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':id_pengguna', $id_pengguna);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = new Komplain(
+                $row['id_komplain'], $row['id_pengguna'], $row['judul_masalah'],
+                $row['deskripsi'], $row['status_komplain'], $row['tanggal_lapor']
+            );
+        }
+        return $result;
+    }
+
+    public function countKomplainByUserId($id_pengguna) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT COUNT(*) FROM komplain WHERE id_pengguna = :id_pengguna";
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':id_pengguna', $id_pengguna);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public function insertKomplain(Komplain $komplain) {
         $link = PDOUtil::createConnection();
         $query = "CALL sp_insert_komplain(:user, :judul, :desk)";

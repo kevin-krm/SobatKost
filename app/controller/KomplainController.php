@@ -18,10 +18,35 @@ class KomplainController
         require_once APP_PATH . '/view/index.php';
     }
 
+    public function userIndex()
+    {
+        session_status() === PHP_SESSION_ACTIVE ?: session_start();
+        $id_pengguna = $_SESSION['user']['id'] ?? 'U-2605002';
+
+        $dao = new KomplainDao();
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        $komplainList = $dao->getKomplainByUserIdPage($id_pengguna, $limit, $offset);
+        $totalData = $dao->countKomplainByUserId($id_pengguna);
+        $totalPage = ceil($totalData / $limit);
+
+        $contentView = APP_PATH . '/view/user/komplain/index.php';
+        require_once APP_PATH . '/view/user/index.php';
+    }
+
     public function create()
     {
         $contentView = APP_PATH . '/view/komplain/create.php';
-        require_once APP_PATH . '/view/index.php';
+
+        // Pengecekan cerdas untuk meload master layout yang berbeda
+        session_status() === PHP_SESSION_ACTIVE ?: session_start();
+        if (isset($_SESSION['user']['id_peran']) && $_SESSION['user']['id_peran'] == 3) {
+            require_once APP_PATH . '/view/user/index.php'; // Sidebar Penyewa
+        } else {
+            require_once APP_PATH . '/view/index.php'; // Sidebar Admin
+        }
     }
 
     public function store()
@@ -36,7 +61,12 @@ class KomplainController
         $dao = new KomplainDao();
         $dao->insertKomplain($komplain);
 
-        header("Location: /SobatKost/index.php?url=komplain");
+        // Jika penyewa (peran 3), kembalikan ke dashboard user. Jika admin, ke dashboard admin.
+        if (isset($_SESSION['user']['id_peran']) && $_SESSION['user']['id_peran'] == 3) {
+            header("Location: /SobatKost/index.php?url=user/komplain");
+        } else {
+            header("Location: /SobatKost/index.php?url=komplain");
+        }
         exit;
     }
 

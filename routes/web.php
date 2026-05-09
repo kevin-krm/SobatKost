@@ -43,8 +43,8 @@ class Route
 
             'komplain' => [1, 2],
             'komplain/index' => [1, 2],
-            'komplain/create' => [1, 2],
-            'komplain/store' => [1, 2],
+            'komplain/create' => [1, 2, 3],
+            'komplain/store' => [1, 2, 3],
             'komplain/edit' => [1, 2],
             'komplain/update' => [1, 2],
             'komplain/updateStatus' => [1, 2],
@@ -66,9 +66,10 @@ class Route
             'keuangan/edit' => [1, 2],
             'keuangan/update' => [1, 2],
             'keuangan/delete' => [1, 2],
-
+            
             'user' => [1,3],
             'user/index' => [1,3],
+            'user/komplain' => [1, 3],
         ];
 
         //ROLE CHECK
