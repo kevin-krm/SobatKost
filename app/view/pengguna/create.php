@@ -33,7 +33,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input type="text" name="kata_sandi" class="form-control">
+                            <input type="password" name="kata_sandi" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Role</label>

@@ -43,7 +43,7 @@ class AuthController
             exit;
         }
 
-        if ($password !== $user['kata_sandi']) {
+        if (!password_verify($password, $user['kata_sandi'])) {
             $_SESSION['error'] = 'Password salah';
             header('Location: index.php?url=login');
             exit;

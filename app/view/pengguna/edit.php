@@ -58,22 +58,13 @@
                             >
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Password Lama</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    value="<?= htmlspecialchars($pengguna->getPassword()); ?>"
-                                    readonly
-                            >
-                        </div>
-
                         <div class="mb-4">
                             <label class="form-label">Password Baru</label>
                             <input
                                     type="password"
                                     class="form-control"
                                     name="kata_sandi"
+                                    placeholder="Kosongkan jika tidak ingin mengganti password"
                             >
                         </div>
 

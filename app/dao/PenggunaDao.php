@@ -24,11 +24,18 @@ class PenggunaDao {
 
     public function getAllPengguna() {
         $link = PDOUtil::createConnection();
-        $query = "SELECT p.id_pengguna,p.nama_lengkap,p.nomor_telepon,p.email,p.kata_sandi,p.created_at,p.foto_ktp,pr.nama_peran
-    FROM pengguna p 
-    JOIN peran pr ON p.id_peran = pr.id_peran
-    ORDER BY p.id_pengguna DESC
-    ";
+        $query = "SELECT 
+                p.id_pengguna,
+                p.nama_lengkap,
+                p.nomor_telepon,
+                p.email,
+                p.kata_sandi,
+                p.created_at,
+                p.foto_ktp,
+                pr.nama_peran
+              FROM pengguna p
+              JOIN peran pr ON p.id_peran = pr.id_peran
+              ORDER BY p.id_pengguna DESC";
         $stmt = $link->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Pengguna');
@@ -37,19 +44,15 @@ class PenggunaDao {
     public function insertPengguna(Pengguna $p)
     {
         $link = PDOUtil::createConnection();
-
         $query = "CALL sp_insert_pengguna(:role, :nama, :telp, :email, :pass, :foto)";
         $stmt = $link->prepare($query);
-
         $stmt->bindValue(':role', $p->getIdPeran());
         $stmt->bindValue(':nama', $p->getNamaLengkap());
         $stmt->bindValue(':telp', $p->getNomorTelepon());
         $stmt->bindValue(':email', $p->getEmail());
         $stmt->bindValue(':pass', $p->getPassword());
         $stmt->bindValue(':foto', $p->getFotoKtp());
-
         $stmt->execute();
-
         return $link->lastInsertId();
     }
 
@@ -58,12 +61,16 @@ class PenggunaDao {
         $link = PDOUtil::createConnection();
 
         $query = "SELECT * FROM pengguna WHERE id_pengguna = :id";
+
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$row) return null;
+
+        if (!$row) {
+            return null;
+        }
 
         return new Pengguna(
             $row['id_pengguna'],
@@ -90,7 +97,6 @@ class PenggunaDao {
             kata_sandi=:pass,
             foto_ktp=:foto
             WHERE id_pengguna=:id";
-
         } else {
             $query = "UPDATE pengguna SET
             id_peran=:peran,
@@ -120,18 +126,20 @@ class PenggunaDao {
     public function deletePengguna($id)
     {
         $link = PDOUtil::createConnection();
-        $query = "DELETE FROM pengguna WHERE id_pengguna=:id";
+
+        $query = "DELETE FROM pengguna
+                  WHERE id_pengguna = :id";
+
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
 
-    public function getPenggunaPage($limit,$offset)
+    public function getPenggunaPage($limit, $offset)
     {
         $link = PDOUtil::createConnection();
 
-        $query = "
-    SELECT 
+        $query = "SELECT
         p.id_pengguna,
         p.id_peran,
         p.nama_lengkap,
@@ -144,8 +152,7 @@ class PenggunaDao {
     FROM pengguna p
     JOIN peran pr ON p.id_peran = pr.id_peran
     ORDER BY p.created_at DESC
-    LIMIT :limit OFFSET :offset
-    ";
+    LIMIT :limit OFFSET :offset";
 
         $stmt = $link->prepare($query);
         $stmt->bindValue(':limit',$limit,PDO::PARAM_INT);
@@ -179,4 +186,3 @@ class PenggunaDao {
         return $stmt->fetchColumn();
     }
 }
-?>
