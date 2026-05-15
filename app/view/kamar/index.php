@@ -44,17 +44,13 @@
 
                 <tbody>
                 <?php if (empty($kamarList)) : ?>
-
                     <tr>
                         <td colspan="6" class="text-center p-4 text-muted">
                             Belum ada data kamar
                         </td>
                     </tr>
-
                 <?php else : ?>
-
                     <?php foreach ($kamarList as $k) : ?>
-
                         <?php
                         $status = $k->getStatusKamar();
 
@@ -74,14 +70,9 @@
 
                         <tr>
                             <td><?= htmlspecialchars($k->getId()) ?></td>
-
                             <td><?= htmlspecialchars($k->getNomorKamar()) ?></td>
-
                             <td><?= htmlspecialchars($k->getTipeKamar() ?? '-') ?></td>
-
-                            <td>
-                                Rp <?= number_format($k->getHargaDasar(), 0, ',', '.') ?>
-                            </td>
+                            <td>Rp <?= number_format($k->getHargaDasar(), 0, ',', '.') ?></td>
 
                             <td class="text-center">
                                 <form action="/SobatKost/index.php?url=kamar/updateStatus&id=<?= $k->getId() ?>" method="POST" class="d-flex justify-content-center align-items-center gap-2 m-0">
@@ -93,48 +84,38 @@
                                             onchange="this.className='form-select form-select-sm ' +
                                             (this.value == 'Tersedia' ? 'bg-success text-white' :
                                             (this.value == 'Terisi' ? 'bg-danger text-white' :
-                                            (this.value == 'Perbaikan' ? 'bg-warning text-dark' :
-                                            'bg-secondary text-white')))"
+                                            (this.value == 'Perbaikan' ? 'bg-warning text-dark' : 'bg-secondary text-white')))"
+
+                                    <?= ($status === 'Terisi') ? 'disabled' : '' ?>
                                     >
+                                    <?php if ($status === 'Terisi') : ?>
+                                        <option value="Terisi" selected>Terisi</option>
+                                    <?php else : ?>
                                         <option value="Tersedia" <?= $status == 'Tersedia' ? 'selected' : '' ?>>
                                             Tersedia
-                                        </option>
-                                        <option value="Terisi" <?= $status == 'Terisi' ? 'selected' : '' ?>>
-                                            Terisi
                                         </option>
                                         <option value="Perbaikan" <?= $status == 'Perbaikan' ? 'selected' : '' ?>>
                                             Perbaikan
                                         </option>
+                                    <?php endif; ?>
                                     </select>
 
-                                    <button type="submit" class="btn btn-sm btn-primary">
+                                    <button type="submit" class="btn btn-sm btn-primary" <?= ($status === 'Terisi') ? 'disabled' : '' ?>>
                                         Update
                                     </button>
                                 </form>
                             </td>
 
                             <td class="text-center">
-                                <a
-                                        href="<?= $editUrl ?>"
-                                        class="btn btn-sm btn-outline-primary me-1"
-                                        title="Edit kamar"
-                                >
+                                <a href="<?= $editUrl ?>" class="btn btn-sm btn-outline-primary me-1" title="Edit kamar">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-
-                                <a
-                                        href="<?= $deleteUrl ?>"
-                                        class="btn btn-sm btn-outline-danger"
-                                        title="Hapus kamar"
-                                        onclick="return confirm('Yakin hapus kamar ini?');"
-                                >
+                                <a href="<?= $deleteUrl ?>" class="btn btn-sm btn-outline-danger" title="Hapus kamar" onclick="return confirm('Yakin hapus kamar ini?');">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>
                         </tr>
-
                     <?php endforeach; ?>
-
                 <?php endif; ?>
                 </tbody>
             </table>

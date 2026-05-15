@@ -215,6 +215,35 @@ switch ($url) {
         controller('KeuanganController')->delete($id);
         break;
 
+    case 'kontrak':
+    case 'kontrak/index':
+        controller('KontrakController')->index();
+        break;
+    case 'kontrak/create':
+        controller('KontrakController')->create();
+        break;
+    case 'kontrak/store':
+        controller('KontrakController')->store();
+        break;
+    case 'kontrak/edit':
+        if (!$id) {
+            die("ID kontrak wajib diisi");
+        }
+        controller('KontrakController')->edit($id);
+        break;
+    case 'kontrak/update':
+        if (!$id) {
+            die("ID kontrak wajib diisi");
+        }
+        controller('KontrakController')->update($id);
+        break;
+    case 'kontrak/delete':
+        if (!$id) {
+            die("ID kontrak wajib diisi");
+        }
+        controller('KontrakController')->delete($id);
+        break;
+
     // PENYEWA (USER)
     case 'user':
     case 'user/index':
