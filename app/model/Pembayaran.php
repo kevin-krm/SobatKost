@@ -9,6 +9,8 @@ class Pembayaran
     private $status_verifikasi;
     private $created_at;
     private $updated_at;
+    private $nama_lengkap;
+    private $nomor_kamar;
 
     public function __construct(
         $id_pembayaran = null,
@@ -18,7 +20,9 @@ class Pembayaran
         $tanggal_bayar = null,
         $status_verifikasi = 'Proses',
         $created_at = null,
-        $updated_at = null
+        $updated_at = null,
+        $nama_lengkap = null,
+        $nomor_kamar = null
     ) {
         $this->id_pembayaran = $id_pembayaran;
         $this->id_tagihan = $id_tagihan;
@@ -28,6 +32,8 @@ class Pembayaran
         $this->status_verifikasi = $status_verifikasi;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
+        $this->nama_lengkap = $nama_lengkap;
+        $this->nomor_kamar = $nomor_kamar;
     }
 
     // Getter
@@ -39,6 +45,9 @@ class Pembayaran
     public function getStatusVerifikasi() { return $this->status_verifikasi; }
     public function getCreatedAt() { return $this->created_at; }
     public function getUpdatedAt() { return $this->updated_at; }
+    public function getNamaLengkap(){return $this->nama_lengkap;}
+
+    public function getNomorKamar(){return $this->nomor_kamar;}
 
     // Setter
     public function setIdPembayaran($id) { $this->id_pembayaran = $id; }

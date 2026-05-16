@@ -1,8 +1,9 @@
 <?php
 require_once APP_PATH . '/dao/TagihanDao.php';
-require_once APP_PATH . '/dao/KontraKDao.php';
+require_once APP_PATH . '/dao/KontrakDao.php';
 require_once APP_PATH . '/dao/KamarDao.php';
 require_once APP_PATH . '/model/TagihanFactory.php';
+require_once APP_PATH . '/dao/PembayaranDao.php';
 
 class TagihanController
 {
@@ -37,8 +38,8 @@ class TagihanController
      */
     public function create()
     {
-        $kontraKDao = new KontraKDao();
-        $kontrakList = $kontraKDao->getKontrakAktif();
+        $kontrakDao = new KontrakDao();
+        $kontrakList = $kontrakDao->getKontrakAktif();
 
         $contentView = APP_PATH . '/view/tagihan/create.php';
         require_once APP_PATH . '/view/index.php';
@@ -64,8 +65,8 @@ class TagihanController
         }
 
         // Ambil data kontrak
-        $kontraKDao = new \KontraKDao();
-        $kontrak = $kontraKDao->getKontrakById($id_kontrak);
+        $kontrakDao = new KontrakDao();
+        $kontrak = $kontrakDao->getKontrakById($id_kontrak);
 
         if (!$kontrak) {
             $_SESSION['error'] = 'Kontrak tidak ditemukan';

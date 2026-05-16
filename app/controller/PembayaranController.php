@@ -257,7 +257,13 @@ class PembayaranController
         }
 
         // Validasi tipe file
-        $allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+        $allowedTypes = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'application/pdf'
+        ];
+
         if (!in_array($file['type'], $allowedTypes)) {
             return null;
         }
@@ -267,18 +273,18 @@ class PembayaranController
             return null;
         }
 
+        $uploadDir = PUBLIC_PATH . '/img/data_img/bukti_pembayaran';
         // Buat folder jika belum ada
-        $uploadDir = PUBLIC_PATH . '/bukti_pembayaran';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
 
-        // Generate nama file
-        $fileName = 'bukti_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $fileName = 'bukti_' . date('YmdHis') . '_' . bin2hex(random_bytes(4)) . '.' . $extension;
         $uploadPath = $uploadDir . '/' . $fileName;
 
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-            return '/SobatKost/public/bukti_pembayaran/' . $fileName;
+            return '/SobatKost/public/img/data_img/bukti_pembayaran/' . $fileName;
         }
 
         return null;

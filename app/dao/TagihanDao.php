@@ -228,7 +228,7 @@ class TagihanDao
      */
     private function mapRowToTagihan($row)
     {
-        $tagihan = new Tagihan(
+        return new Tagihan(
             $row['id_tagihan'],
             $row['id_kontrak'],
             $row['total_biaya_sewa'],
@@ -237,10 +237,10 @@ class TagihanDao
             $row['status_tagihan'],
             $row['tipe_sewa'] ?? null,
             $row['created_at'],
-            $row['updated_at']
+            $row['updated_at'],
+            $row['nama_lengkap'] ?? null,
+            $row['nomor_kamar'] ?? null
         );
-
-        return $tagihan;
     }
 
     /**

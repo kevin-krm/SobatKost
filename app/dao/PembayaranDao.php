@@ -265,7 +265,9 @@ class PembayaranDao
             $row['tanggal_bayar'],
             $row['status_verifikasi'],
             $row['created_at'],
-            $row['updated_at']
+            $row['updated_at'],
+                $row['nama_lengkap'] ?? null,
+    $row['nomor_kamar'] ?? null
         );
 
         return $pembayaran;

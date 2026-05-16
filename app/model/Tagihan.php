@@ -10,6 +10,8 @@ class Tagihan
     private $tipe_sewa; // Harian, Bulanan, Tahunan
     private $created_at;
     private $updated_at;
+    private $nama_lengkap;
+    private $nomor_kamar;
 
     public function __construct(
         $id_tagihan = null,
@@ -20,7 +22,9 @@ class Tagihan
         $status_tagihan = 'Belum Lunas',
         $tipe_sewa = null,
         $created_at = null,
-        $updated_at = null
+        $updated_at = null,
+        $nama_lengkap = null,
+        $nomor_kamar = null
     ) {
         $this->id_tagihan = $id_tagihan;
         $this->id_kontrak = $id_kontrak;
@@ -31,6 +35,8 @@ class Tagihan
         $this->tipe_sewa = $tipe_sewa;
         $this->created_at = $created_at;
         $this->updated_at = $updated_at;
+        $this->nama_lengkap = $nama_lengkap;
+        $this->nomor_kamar = $nomor_kamar;
     }
 
     // Getter
@@ -43,6 +49,8 @@ class Tagihan
     public function getTipeSewa() { return $this->tipe_sewa; }
     public function getCreatedAt() { return $this->created_at; }
     public function getUpdatedAt() { return $this->updated_at; }
+    public function getNamaLengkap(){return $this->nama_lengkap; }
+    public function getNomorKamar(){return $this->nomor_kamar; }
 
     // Setter
     public function setIdTagihan($id) { $this->id_tagihan = $id; }

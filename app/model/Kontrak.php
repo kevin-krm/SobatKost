@@ -14,6 +14,8 @@ class Kontrak
     private $tipe_sewa;
     private $status_aktif;
     private $nama_lengkap;
+    private $nomor_kamar;
+    private $harga_dasar;
 
     public function __construct(
         $id_kontrak,
@@ -23,7 +25,9 @@ class Kontrak
         $tanggal_selesai,
         $tipe_sewa,
         $status_aktif,
-        $nama_lengkap = null
+        $nama_lengkap = null,
+        $nomor_kamar = null,
+        $harga_dasar = null
     )
     {
         $this->id_kontrak = $id_kontrak;
@@ -34,6 +38,8 @@ class Kontrak
         $this->tipe_sewa = $tipe_sewa;
         $this->status_aktif = $status_aktif;
         $this->nama_lengkap = $nama_lengkap;
+        $this->nomor_kamar = $nomor_kamar;
+        $this->harga_dasar = $harga_dasar;
     }
 
     public function getNamaLengkap() {
@@ -73,6 +79,16 @@ class Kontrak
     public function getStatusAktif()
     {
         return $this->status_aktif;
+    }
+
+    public function getNomorKamar()
+    {
+        return $this->nomor_kamar;
+    }
+
+    public function getHargaDasar()
+    {
+        return $this->harga_dasar;
     }
 
     public function getStatusLabel() {

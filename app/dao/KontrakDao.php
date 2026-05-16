@@ -53,6 +53,7 @@ class KontrakDao
 
     public function getKontrakAktif()
     {
+        $this->syncKontrakStatus();
         $link = PDOUtil::createConnection();
 
         $query = "SELECT ks.*, 
@@ -263,11 +264,9 @@ class KontrakDao
             $row['tanggal_selesai'],
             $row['tipe_sewa'],
             $row['status_aktif'],
-            $row['created_at'] ?? null,
-            $row['updated_at'] ?? null,
-            $row['nama_lengkap'] ?? null,
-            $row['nomor_kamar'] ?? null,
-            $row['harga_dasar'] ?? null
+            $row['nama_lengkap'],
+            $row['nomor_kamar'],
+            $row['harga_dasar']
         );
     }
 }

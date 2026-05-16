@@ -31,9 +31,9 @@
                                     <option value="<?= $k->getIdKontrak() ?>" 
                                             data-tipe="<?= $k->getTipeSewa() ?>"
                                             data-harga="<?= $k->getHargaDasar() ?>"
-                                            data-penyewa="<?= $k->getNamaPenyewa() ?>"
+                                            data-penyewa="<?= htmlspecialchars($k->getNamaLengkap()) ?>"
                                             data-kamar="<?= $k->getNomorKamar() ?>">
-                                        <?= $k->getIdKontrak() ?> - <?= $k->getNamaPenyewa() ?> (<?= $k->getNomorKamar() ?>)
+                                        <?= $k->getIdKontrak() ?> - <?= $k->getNamaLengkap() ?> (<?= $k->getNomorKamar() ?>)
                                     </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>

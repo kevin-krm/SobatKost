@@ -1,7 +1,7 @@
 <?php
 require_once APP_PATH . '/dao/TagihanDao.php';
 require_once APP_PATH . '/dao/PembayaranDao.php';
-require_once APP_PATH . '/dao/KontraKDao.php';
+require_once APP_PATH . '/dao/KontrakDao.php';
 
 class UserTagihanController
 {
@@ -22,8 +22,8 @@ class UserTagihanController
         $id_pengguna = $_SESSION['user']['id'];
         
         // Get kontrak penyewa
-        $kontraKDao = new KontraKDao();
-        $kontrakList = $kontraKDao->getKontrakByPengguna($id_pengguna);
+        $kontrakDao = new KontrakDao();
+        $kontrakList = $kontrakDao->getKontrakByPengguna($id_pengguna);
         
         // Ambil semua tagihan dari kontrak penyewa ini
         $tagihanList = [];
@@ -63,7 +63,7 @@ class UserTagihanController
         }
 
         // Cek apakah tagihan milik penyewa
-        $contr = new KontraKDao();
+        $contr = new KontrakDao();
         $kontrak = $contr->getKontrakById($tagihan->getIdKontrak());
         
         if ($kontrak->getIdPengguna() !== $_SESSION['user']['id']) {
