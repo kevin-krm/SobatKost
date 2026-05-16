@@ -21,10 +21,6 @@
             <i class="bi bi-people me-2"></i> Data Pengguna
         </a>
 
-        <a href="/SobatKost/tagihan" class="list-group-item list-group-item-action">
-            <i class="bi bi-receipt me-2"></i> Tagihan
-        </a>
-
         <a href="/SobatKost/komplain" class="list-group-item list-group-item-action">
             <i class="bi bi-tools me-2"></i> Tiket Komplain
         </a>
@@ -35,6 +31,14 @@
 
         <a href="/SobatKost/keuangan" class="list-group-item list-group-item-action">
             <i class="bi bi-cash-coin me-2"></i> Laporan Keuangan
+        </a>
+
+        <a href="/SobatKost/tagihan" class="list-group-item list-group-item-action">
+            <i class="bi bi-receipt me-2"></i> Tagihan
+        </a>
+
+        <a href="/SobatKost/pembayaran" class="list-group-item list-group-item-action">
+            <i class="bi bi-credit-card me-2"></i> Pembayaran
         </a>
     </div>
 

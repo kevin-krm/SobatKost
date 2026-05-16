@@ -2,6 +2,7 @@
 session_start();
 
 define('APP_PATH', __DIR__ . '/app');
+define('PUBLIC_PATH', __DIR__ . '/public');
 
 require_once APP_PATH . '/middleware/Auth.php';
 require_once __DIR__ . '/routes/web.php';
@@ -219,6 +220,89 @@ switch ($url) {
     case 'user':
     case 'user/index':
         require_once APP_PATH . '/view/user/index.php';
+        break;
+    
+    case 'user/tagihan':
+        controller('UserTagihanController')->index();
+        break;
+    
+    case 'user/tagihan/detail':
+        if (!$id) {
+            die("ID tagihan wajib diisi");
+        }
+        controller('UserTagihanController')->detail($id);
+        break;
+
+    // TAGIHAN
+    case 'tagihan':
+    case 'tagihan/index':
+        controller('TagihanController')->index();
+        break;
+    case 'tagihan/create':
+        controller('TagihanController')->create();
+        break;
+    case 'tagihan/store':
+        controller('TagihanController')->store();
+        break;
+    case 'tagihan/detail':
+        if (!$id) {
+            die("ID tagihan wajib diisi");
+        }
+        controller('TagihanController')->detail($id);
+        break;
+    case 'tagihan/edit':
+        if (!$id) {
+            die("ID tagihan wajib diisi");
+        }
+        controller('TagihanController')->edit($id);
+        break;
+    case 'tagihan/update':
+        if (!$id) {
+            die("ID tagihan wajib diisi");
+        }
+        controller('TagihanController')->update($id);
+        break;
+    case 'tagihan/delete':
+        if (!$id) {
+            die("ID tagihan wajib diisi");
+        }
+        controller('TagihanController')->delete($id);
+        break;
+    case 'tagihan/dashboard':
+        controller('TagihanController')->dashboard();
+        break;
+
+    // PEMBAYARAN
+    case 'pembayaran':
+    case 'pembayaran/index':
+        controller('PembayaranController')->index();
+        break;
+    case 'pembayaran/upload':
+        if (!$id) {
+            die("ID tagihan wajib diisi");
+        }
+        controller('PembayaranController')->upload($id);
+        break;
+    case 'pembayaran/store':
+        controller('PembayaranController')->store();
+        break;
+    case 'pembayaran/detail':
+        if (!$id) {
+            die("ID pembayaran wajib diisi");
+        }
+        controller('PembayaranController')->detail($id);
+        break;
+    case 'pembayaran/verify':
+        if (!$id) {
+            die("ID pembayaran wajib diisi");
+        }
+        controller('PembayaranController')->verify($id);
+        break;
+    case 'pembayaran/reject':
+        if (!$id) {
+            die("ID pembayaran wajib diisi");
+        }
+        controller('PembayaranController')->reject($id);
         break;
 
     default:
