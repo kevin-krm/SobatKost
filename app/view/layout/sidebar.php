@@ -29,6 +29,10 @@
             <i class="bi bi-megaphone me-2"></i> Pengumuman
         </a>
 
+        <a href="/SobatKost/kontrak" class="list-group-item list-group-item-action">
+            <i class="bi bi-file-earmark-text"></i> Kontrak Sewa
+        </a>
+
         <a href="/SobatKost/keuangan" class="list-group-item list-group-item-action">
             <i class="bi bi-cash-coin me-2"></i> Laporan Keuangan
         </a>
