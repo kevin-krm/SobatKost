@@ -75,6 +75,27 @@ class Route
             'keuangan/update' => [1, 2],
             'keuangan/delete' => [1, 2],
 
+            'tagihan' => [1, 2],
+            'tagihan/index' => [1, 2],
+            'tagihan/create' => [1, 2],
+            'tagihan/store' => [1, 2],
+            'tagihan/detail' => [1, 2, 3],
+            'tagihan/edit' => [1, 2],
+            'tagihan/update' => [1, 2],
+            'tagihan/delete' => [1, 2],
+            'tagihan/dashboard' => [1, 2],
+
+            'pembayaran' => [1, 2],
+            'pembayaran/index' => [1, 2],
+            'pembayaran/upload' => [1, 2, 3],
+            'pembayaran/store' => [1, 2, 3],
+            'pembayaran/detail' => [1, 2, 3],
+            'pembayaran/verify' => [1, 2],
+            'pembayaran/reject' => [1, 2],
+
+            'user/tagihan' => [3],
+            'user/tagihan/detail' => [3],
+
             'user' => [1,3],
             'user/index' => [1,3],
             'user/komplain' => [1, 3],
