@@ -32,6 +32,14 @@ class Route
             'pengguna/update' => [1, 2],
             'pengguna/delete' => [1, 2],
 
+            'kontrak' => [1, 2],
+            'kontrak/index' => [1, 2],
+            'kontrak/create' => [1, 2],
+            'kontrak/store' => [1, 2],
+            'kontrak/edit' => [1, 2],
+            'kontrak/update' => [1, 2],
+            'kontrak/delete' => [1, 2],
+
             'kamar' => [1, 2],
             'kamar/index' => [1, 2],
             'kamar/create' => [1, 2],

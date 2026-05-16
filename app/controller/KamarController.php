@@ -35,7 +35,7 @@ class KamarController
             null,
             $nomor,
             $tipe,
-            "Tersedia",        // default
+            "Tersedia",
             $harga
         );
 
@@ -48,6 +48,7 @@ class KamarController
 
     public function edit($id)
     {
+        require_once APP_PATH . '/dao/KontrakDao.php';
         $dao = new KamarDao();
         $kamar = $dao->getKamarById($id);
 
@@ -92,6 +93,7 @@ class KamarController
 
     public function delete($id)
     {
+        require_once APP_PATH . '/dao/KontrakDao.php';
         $dao = new KamarDao();
         $kamar = $dao->getKamarById($id);
 

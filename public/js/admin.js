@@ -25,6 +25,22 @@ function searchKamar() {
     }
 }
 
+function searchKontrak() {
+    let input = document.getElementById('searchKontrak');
+    let filter = input.value.toLowerCase();
+    let table = document.querySelector('table tbody');
+    let rows = table.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        let text = rows[i].textContent || rows[i].innerText;
+        if (text.toLowerCase().indexOf(filter) > -1) {
+            rows[i].style.display = '';
+        } else {
+            rows[i].style.display = 'none';
+        }
+    }
+}
+
 function searchKomplain() {
     let input = document.getElementById("searchKomplain");
     if (!input) return;
@@ -51,6 +67,35 @@ function searchInventaris() {
         let text = tr[i].innerText.toLowerCase();
         tr[i].style.display = text.includes(filter) ? "" : "none";
     }
+}
+
+// HITUNG TANGGAL SELESAI KONTRAK
+function hitungTanggalSelesai() {
+    let tanggalMulai = document.getElementById('tanggal_mulai').value;
+    let tipeSewa = document.getElementById('tipe_sewa').value;
+    let tanggalSelesai = document.getElementById('tanggal_selesai');
+
+    if (!tanggalMulai || !tipeSewa) {
+        tanggalSelesai.value = '';
+        return;
+    }
+
+    let date = new Date(tanggalMulai);
+
+    if (tipeSewa === 'Harian') {
+        date.setDate(date.getDate() + 1);
+    }
+    else if (tipeSewa === 'Bulanan') {
+        date.setMonth(date.getMonth() + 1);
+    }
+    else if (tipeSewa === 'Tahunan') {
+        date.setFullYear(date.getFullYear() + 1);
+    }
+
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    tanggalSelesai.value = `${year}-${month}-${day}`;
 }
 
 // PREVIEW FOTO KTP

@@ -1,7 +1,9 @@
+<?php
+require_once APP_PATH . '/dao/KontrakDao.php';
+?>
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-md-7 col-lg-6">
-
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="mb-0">
                     <i class="bi bi-pencil-square"></i>
@@ -25,7 +27,6 @@
                             method="POST"
                             action="/SobatKost/index.php?url=kamar/update&id=<?= $kamar->getId(); ?>"
                     >
-
                         <div class="mb-3">
                             <label class="form-label">ID Kamar</label>
                             <input
@@ -64,36 +65,6 @@
                                         <?= ($kamar->getTipeKamar() == 'Standard') ? 'selected' : ''; ?>
                                 >
                                     Standard
-                                </option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select
-                                    name="status_kamar"
-                                    class="form-select"
-                                    required
-                            >
-                                <option
-                                        value="Tersedia"
-                                        <?= ($kamar->getStatusKamar() == 'Tersedia') ? 'selected' : ''; ?>
-                                >
-                                    Tersedia
-                                </option>
-
-                                <option
-                                        value="Terisi"
-                                        <?= ($kamar->getStatusKamar() == 'Terisi') ? 'selected' : ''; ?>
-                                >
-                                    Terisi
-                                </option>
-
-                                <option
-                                        value="Perbaikan"
-                                        <?= ($kamar->getStatusKamar() == 'Perbaikan') ? 'selected' : ''; ?>
-                                >
-                                    Perbaikan
                                 </option>
                             </select>
                         </div>

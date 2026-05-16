@@ -1,12 +1,40 @@
 <?php
+
 require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/Kamar.php';
 
 class KamarDao {
 
     public function getAllKamar() {
+
         $link = PDOUtil::createConnection();
-        $query = "SELECT * FROM kamar ORDER BY id_kamar DESC";
+
+        $query = "
+            SELECT
+                k.id_kamar,
+                k.nomor_kamar,
+                k.tipe_kamar,
+                k.harga_dasar,
+                CASE
+                    WHEN k.status_kamar = 'Perbaikan'
+                    THEN 'Perbaikan'
+
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM kontrak_sewa ks
+                        WHERE ks.id_kamar = k.id_kamar
+                        AND ks.status_aktif = 1
+                        AND CURDATE()
+                            BETWEEN ks.tanggal_mulai
+                            AND ks.tanggal_selesai
+                    )
+                    THEN 'Terisi'
+                    ELSE k.status_kamar
+                END AS status_real
+            FROM kamar k
+            ORDER BY k.id_kamar DESC
+        ";
+
         $stmt = $link->prepare($query);
         $stmt->execute();
 
@@ -17,7 +45,7 @@ class KamarDao {
                 $row['id_kamar'],
                 $row['nomor_kamar'],
                 $row['tipe_kamar'],
-                $row['status_kamar'],
+                $row['status_real'],
                 $row['harga_dasar']
             );
         }
@@ -26,21 +54,59 @@ class KamarDao {
     }
 
     public function getKamarById($id) {
+        $kontrakDao = new KontrakDao();
+        $kontrakDao->syncKontrakStatus();
+
         $link = PDOUtil::createConnection();
-        $query = "SELECT * FROM kamar WHERE id_kamar = :id";
+
+        $query = "
+            SELECT
+                k.id_kamar,
+                k.nomor_kamar,
+                k.tipe_kamar,
+                k.harga_dasar,
+
+                CASE
+
+                    WHEN k.status_kamar = 'Perbaikan'
+                    THEN 'Perbaikan'
+
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM kontrak_sewa ks
+                        WHERE ks.id_kamar = k.id_kamar
+                        AND ks.status_aktif = 1
+                        AND CURDATE()
+                            BETWEEN ks.tanggal_mulai
+                            AND ks.tanggal_selesai
+                    )
+
+                    THEN 'Terisi'
+
+                    ELSE k.status_kamar
+
+                END AS status_real
+
+            FROM kamar k
+
+            WHERE k.id_kamar = :id
+        ";
+
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$row) return null;
+        if (!$row) {
+            return null;
+        }
 
         return new Kamar(
             $row['id_kamar'],
             $row['nomor_kamar'],
             $row['tipe_kamar'],
-            $row['status_kamar'],
+            $row['status_real'],
             $row['harga_dasar']
         );
     }
@@ -48,7 +114,14 @@ class KamarDao {
     public function insertKamar(Kamar $kamar) {
         $link = PDOUtil::createConnection();
 
-        $query = "CALL sp_insert_kamar(:no, :tipe, :harga)";
+        $query = "
+            CALL sp_insert_kamar(
+                :no,
+                :tipe,
+                :harga
+            )
+        ";
+
         $stmt = $link->prepare($query);
 
         $stmt->bindValue(':no', $kamar->getNomorKamar());
@@ -61,9 +134,15 @@ class KamarDao {
     public function updateKamar(Kamar $kamar) {
         $link = PDOUtil::createConnection();
 
-        $query = "UPDATE kamar 
-                  SET nomor_kamar=:no, tipe_kamar=:tipe, status_kamar=:status, harga_dasar=:harga
-                  WHERE id_kamar=:id";
+        $query = "
+            UPDATE kamar
+            SET
+                nomor_kamar = :no,
+                tipe_kamar = :tipe,
+                status_kamar = :status,
+                harga_dasar = :harga
+            WHERE id_kamar = :id
+        ";
 
         $stmt = $link->prepare($query);
 
@@ -78,7 +157,12 @@ class KamarDao {
 
     public function updateStatusKamar($id, $status) {
         $link = PDOUtil::createConnection();
-        $query = "UPDATE kamar SET status_kamar = :status WHERE id_kamar = :id";
+
+        $query = "
+            UPDATE kamar
+            SET status_kamar = :status
+            WHERE id_kamar = :id
+        ";
 
         $stmt = $link->prepare($query);
         $stmt->bindValue(':status', $status);
@@ -89,7 +173,12 @@ class KamarDao {
 
     public function deleteKamar($id) {
         $link = PDOUtil::createConnection();
-        $query = "DELETE FROM kamar WHERE id_kamar=:id";
+
+        $query = "
+            DELETE FROM kamar
+            WHERE id_kamar = :id
+        ";
+
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
@@ -98,9 +187,40 @@ class KamarDao {
     public function getKamarPage($limit, $offset) {
         $link = PDOUtil::createConnection();
 
-        $query = "SELECT * FROM kamar
-                  ORDER BY created_at DESC
-                  LIMIT :limit OFFSET :offset";
+        $query = "
+            SELECT
+                k.id_kamar,
+                k.nomor_kamar,
+                k.tipe_kamar,
+                k.harga_dasar,
+
+                CASE
+
+                    WHEN k.status_kamar = 'Perbaikan'
+                    THEN 'Perbaikan'
+
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM kontrak_sewa ks
+                        WHERE ks.id_kamar = k.id_kamar
+                        AND ks.status_aktif = 1
+                        AND CURDATE()
+                            BETWEEN ks.tanggal_mulai
+                            AND ks.tanggal_selesai
+                    )
+
+                    THEN 'Terisi'
+
+                    ELSE k.status_kamar
+
+                END AS status_real
+
+            FROM kamar k
+
+            ORDER BY k.created_at DESC
+
+            LIMIT :limit OFFSET :offset
+        ";
 
         $stmt = $link->prepare($query);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
@@ -114,7 +234,7 @@ class KamarDao {
                 $row['id_kamar'],
                 $row['nomor_kamar'],
                 $row['tipe_kamar'],
-                $row['status_kamar'],
+                $row['status_real'],
                 $row['harga_dasar']
             );
         }
@@ -124,6 +244,9 @@ class KamarDao {
 
     public function countKamar() {
         $link = PDOUtil::createConnection();
-        return $link->query("SELECT COUNT(*) FROM kamar")->fetchColumn();
+
+        return $link
+            ->query("SELECT COUNT(*) FROM kamar")
+            ->fetchColumn();
     }
 }

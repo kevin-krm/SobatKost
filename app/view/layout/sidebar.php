@@ -21,6 +21,10 @@
             <i class="bi bi-people me-2"></i> Data Pengguna
         </a>
 
+        <a href="/SobatKost/kontrak" class="list-group-item list-group-item-action">
+            <i class="bi bi-file-earmark-text"></i> Kontrak Sewa
+        </a>
+
         <a href="/SobatKost/tagihan" class="list-group-item list-group-item-action">
             <i class="bi bi-receipt me-2"></i> Tagihan
         </a>

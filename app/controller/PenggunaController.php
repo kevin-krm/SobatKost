@@ -36,7 +36,10 @@ class PenggunaController
         $nama = $_POST['nama_lengkap'];
         $telp = $_POST['nomor_telepon'];
         $email = $_POST['email'];
-        $password = $_POST['kata_sandi'];
+        $password = password_hash(
+            $_POST['kata_sandi'],
+            PASSWORD_DEFAULT
+        );
         $role = $_POST['id_peran'];
 
         $fotoPath = null;
@@ -50,7 +53,10 @@ class PenggunaController
             }
 
             $extension = strtolower(
-                pathinfo($_FILES['foto_ktp']['name'], PATHINFO_EXTENSION)
+                pathinfo(
+                    $_FILES['foto_ktp']['name'],
+                    PATHINFO_EXTENSION
+                )
             );
 
             $allowed = ['jpg', 'jpeg', 'png'];
@@ -105,9 +111,11 @@ class PenggunaController
     {
         $dao = new PenggunaDao();
         $penggunaLama = $dao->getPenggunaById($id);
-
         $password = !empty($_POST['kata_sandi'])
-            ? $_POST['kata_sandi']
+            ? password_hash(
+                $_POST['kata_sandi'],
+                PASSWORD_DEFAULT
+            )
             : $penggunaLama->getPassword();
 
         $fotoPath = $penggunaLama->getFotoKtp();
@@ -125,7 +133,10 @@ class PenggunaController
             }
 
             $extension = strtolower(
-                pathinfo($_FILES['foto_ktp']['name'], PATHINFO_EXTENSION)
+                pathinfo(
+                    $_FILES['foto_ktp']['name'],
+                    PATHINFO_EXTENSION
+                )
             );
 
             $allowed = ['jpg', 'jpeg', 'png'];
