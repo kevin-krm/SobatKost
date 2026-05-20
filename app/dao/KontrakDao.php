@@ -217,13 +217,40 @@ class KontrakDao
     public function deleteKontrak($id)
     {
         $link = PDOUtil::createConnection();
+        $link->beginTransaction();
+        try {
+            // 1. Ambil semua id_tagihan yang terkait dengan id_kontrak ini
+            $stmtTagihan = $link->prepare("SELECT id_tagihan FROM tagihan WHERE id_kontrak = :id");
+            $stmtTagihan->execute([':id' => $id]);
+            $tagihanIds = $stmtTagihan->fetchAll(PDO::FETCH_COLUMN);
 
-        $query = "DELETE FROM kontrak_sewa
-                  WHERE id_kontrak = :id";
+            if (!empty($tagihanIds)) {
+                // Buat placeholder untuk tagihan
+                $placeholders = implode(',', array_fill(0, count($tagihanIds), '?'));
 
-        $stmt = $link->prepare($query);
-        $stmt->bindValue(':id', $id);
-        $stmt->execute();
+                // 2. Hapus semua pembayaran yang terkait dengan tagihan-tagihan ini
+                $stmtDelPembayaran = $link->prepare("DELETE FROM pembayaran WHERE id_tagihan IN ($placeholders)");
+                $stmtDelPembayaran->execute($tagihanIds);
+
+                // 3. Hapus semua tagihan yang terkait dengan kontrak ini
+                $stmtDelTagihan = $link->prepare("DELETE FROM tagihan WHERE id_kontrak = :id");
+                $stmtDelTagihan->execute([':id' => $id]);
+            }
+
+            // 4. Hapus kontrak itu sendiri
+            $query = "DELETE FROM kontrak_sewa WHERE id_kontrak = :id";
+            $stmt = $link->prepare($query);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+
+            $link->commit();
+
+            // Sinkronisasi status kamar setelah menghapus kontrak
+            $this->syncKontrakStatus();
+        } catch (Exception $e) {
+            $link->rollBack();
+            throw $e;
+        }
     }
 
     public function syncKontrakStatus()

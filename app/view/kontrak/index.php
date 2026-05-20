@@ -1,5 +1,21 @@
 <script src="/SobatKost/public/js/admin.js"></script>
 
+<?php if (isset($_SESSION['error'])) : ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= $_SESSION['error']; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['success'])) : ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= $_SESSION['success']; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold mb-0">Data Kontrak</h2>
@@ -118,13 +134,31 @@
                             </td>
 
                             <td class="text-center">
-                                <a href="<?= $editUrl ?>" class="btn btn-sm btn-outline-primary me-1" title="Edit kontrak">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="<?= $deleteUrl ?>" class="btn btn-sm btn-outline-danger" title="Hapus kontrak"
-                                   onclick="return confirm('Yakin ingin menghapus kontrak ini?');">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <!-- Logika Tombol Edit -->
+                                <?php if ($statusValue == 0) : ?>
+                                    <button class="btn btn-sm btn-outline-secondary me-1" disabled title="Kontrak selesai tidak dapat diubah">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                <?php else : ?>
+                                    <a href="<?= $editUrl ?>" class="btn btn-sm btn-outline-primary me-1" title="Edit kontrak">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                <?php endif; ?>
+
+                                <!-- Logika Tombol Hapus -->
+                                <?php if ($statusValue == 1) : ?>
+                                    <a href="<?= $deleteUrl ?>" class="btn btn-sm btn-outline-danger" title="Hapus kontrak"
+                                       onclick="return confirm('Yakin ingin menghapus kontrak ini?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                <?php else : ?>
+                                    <?php
+                                    $msgTooltip = ($statusValue == 2) ? 'Kontrak aktif tidak dapat dihapus!' : 'Kontrak selesai tidak dapat dihapus!';
+                                    ?>
+                                    <button class="btn btn-sm btn-outline-secondary" disabled title="<?= $msgTooltip ?>">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
