@@ -30,7 +30,7 @@
         </a>
 
         <a href="/SobatKost/kontrak" class="list-group-item list-group-item-action">
-            <i class="bi bi-file-earmark-text"></i> Kontrak Sewa
+            <i class="bi bi-file-earmark-text me-2"></i> Kontrak Sewa
         </a>
 
         <a href="/SobatKost/keuangan" class="list-group-item list-group-item-action">
