@@ -29,6 +29,10 @@
             <i class="bi bi-megaphone me-2"></i> Pengumuman
         </a>
 
+        <a href="/SobatKost/aturan" class="list-group-item list-group-item-action">
+            <i class="bi bi-journal-text me-2"></i> E-Rules / Aturan Kost
+        </a>
+
         <a href="/SobatKost/kontrak" class="list-group-item list-group-item-action">
             <i class="bi bi-file-earmark-text me-2"></i> Kontrak Sewa
         </a>
