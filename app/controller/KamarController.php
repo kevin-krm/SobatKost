@@ -57,6 +57,12 @@ class KamarController
             exit;
         }
 
+        if ($kamar->getStatusKamar() === 'Terisi') {
+            $_SESSION['error'] = 'Kamar yang sedang terisi tidak dapat diedit.';
+            header('Location: ' . BASE_URL . '/kamar');
+            exit;
+        }
+
         $contentView = APP_PATH . '/view/kamar/edit.php';
         require_once APP_PATH . '/view/index.php';
     }
@@ -102,9 +108,22 @@ class KamarController
             exit;
         }
 
-        $dao->deleteKamar($id);
+        if ($kamar->getStatusKamar() === 'Terisi') {
+            $_SESSION['error'] = 'Kamar yang sedang terisi tidak dapat dihapus.';
+            header('Location: /SobatKost/index.php?url=kamar');
+            exit;
+        }
 
-        header("Location: /SobatKost/kamar");
+        try {
+            $dao->deleteKamar($id);
+
+        } catch (PDOException $e) {
+            $_SESSION['error'] =
+                'Kamar tidak dapat dihapus karena masih digunakan pada data lain.';
+
+        }
+
+        header("Location: /SobatKost/index.php?url=kamar");
         exit;
     }
 }

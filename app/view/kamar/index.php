@@ -1,3 +1,7 @@
+<?php
+require_once APP_PATH . '/dao/KamarDao.php';
+require_once APP_PATH . '/controller/KamarController.php';
+?>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold mb-0">Data Kamar</h2>
@@ -16,6 +20,13 @@
     Total kamar: <?= $totalData ?>
 </p>
 
+<?php if (isset($_SESSION['error'])) : ?>
+    <div class="alert alert-danger">
+        <?= $_SESSION['error']; ?>
+    </div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -33,7 +44,6 @@
             <table class="table table-bordered table-striped align-middle">
                 <thead class="table-light">
                 <tr>
-                    <th>ID KAMAR</th>
                     <th>NOMOR</th>
                     <th>TIPE</th>
                     <th>HARGA</th>
@@ -69,7 +79,6 @@
                         ?>
 
                         <tr>
-                            <td><?= htmlspecialchars($k->getId()) ?></td>
                             <td><?= htmlspecialchars($k->getNomorKamar()) ?></td>
                             <td><?= htmlspecialchars($k->getTipeKamar() ?? '-') ?></td>
                             <td>Rp <?= number_format($k->getHargaDasar(), 0, ',', '.') ?></td>
@@ -85,9 +94,8 @@
                                             (this.value == 'Tersedia' ? 'bg-success text-white' :
                                             (this.value == 'Terisi' ? 'bg-danger text-white' :
                                             (this.value == 'Perbaikan' ? 'bg-warning text-dark' : 'bg-secondary text-white')))"
-
-                                    <?= ($status === 'Terisi') ? 'disabled' : '' ?>
-                                    >
+                                            <?= ($status === 'Terisi') ? 'disabled' : '' ?>
+                                            >
                                     <?php if ($status === 'Terisi') : ?>
                                         <option value="Terisi" selected>Terisi</option>
                                     <?php else : ?>
@@ -107,12 +115,25 @@
                             </td>
 
                             <td class="text-center">
-                                <a href="<?= $editUrl ?>" class="btn btn-sm btn-outline-primary me-1" title="Edit kamar">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a href="<?= $deleteUrl ?>" class="btn btn-sm btn-outline-danger" title="Hapus kamar" onclick="return confirm('Yakin hapus kamar ini?');">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <?php if ($status !== 'Terisi') : ?>
+                                    <a href="<?= $editUrl ?>" class="btn btn-sm btn-outline-primary me-1" title="Edit kamar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="<?= $deleteUrl ?>" class="btn btn-sm btn-outline-danger" title="Hapus kamar" onclick="return confirm('Yakin ingin menghapus kamar ini?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+
+                                <?php else : ?>
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-1" title="Kamar sedang terisi" disabled>
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Kamar sedang terisi" disabled>
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+
+                                <?php endif; ?>
+
                             </td>
                         </tr>
                     <?php endforeach; ?>

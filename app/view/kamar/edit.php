@@ -28,23 +28,13 @@ require_once APP_PATH . '/dao/KontrakDao.php';
                             action="/SobatKost/index.php?url=kamar/update&id=<?= $kamar->getId(); ?>"
                     >
                         <div class="mb-3">
-                            <label class="form-label">ID Kamar</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    value="<?= htmlspecialchars($kamar->getId()); ?>"
-                                    readonly
-                            >
-                        </div>
-
-                        <div class="mb-3">
                             <label class="form-label">Nomor Kamar</label>
                             <input
                                     type="text"
                                     name="nomor_kamar"
                                     class="form-control"
                                     value="<?= htmlspecialchars($kamar->getNomorKamar()); ?>"
-                                    required
+                                    readonly
                             >
                         </div>
 
@@ -77,6 +67,17 @@ require_once APP_PATH . '/dao/KontrakDao.php';
                                     class="form-control"
                                     value="<?= htmlspecialchars($kamar->getHargaDasar()); ?>"
                                     required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Status Kamar</label>
+                            <input
+                                    type="text"
+                                    name="status_kamar"
+                                    class="form-control"
+                                    value="<?= htmlspecialchars($kamar->getStatusKamar()); ?>"
+                                    readonly
                             >
                         </div>
 
