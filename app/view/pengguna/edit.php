@@ -10,8 +10,14 @@
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
             </div>
-            <div class="card shadow-sm border-0">
 
+            <?php if (isset($error)) : ?>
+                <div class="alert alert-danger">
+                    <?= $error ?>
+                </div>
+            <?php endif; ?>
+
+            <div class="card shadow-sm border-0">
                 <div class="card-header bg-white">
                     <strong>Form Edit Pengguna</strong>
                 </div>

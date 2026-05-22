@@ -33,9 +33,18 @@ class PenggunaController
 
     public function store()
     {
+        $email = $_POST['email'];
+        $existingEmail = $this->penggunaDao->findByEmail($email);
+
+        if ($existingEmail) {
+            $error = "Email sudah digunakan.";
+            $contentView = APP_PATH . '/view/pengguna/create.php';
+            require_once APP_PATH . '/view/index.php';
+            return;
+        }
+
         $nama = $_POST['nama_lengkap'];
         $telp = $_POST['nomor_telepon'];
-        $email = $_POST['email'];
         $password = password_hash(
             $_POST['kata_sandi'],
             PASSWORD_DEFAULT
@@ -102,13 +111,24 @@ class PenggunaController
             echo "<h3>Data pengguna tidak ditemukan</h3>";
             exit;
         }
-
         $contentView = APP_PATH . '/view/pengguna/edit.php';
         require_once APP_PATH . '/view/index.php';
     }
 
     public function update($id)
     {
+        $email = $_POST['email'];
+        $existingEmail = $this->penggunaDao->findByEmail($email);
+
+        if ($existingEmail && $existingEmail['id_pengguna'] != $id) {
+            $error = "Email sudah digunakan.";
+            $dao = new PenggunaDao();
+            $pengguna = $dao->getPenggunaById($id);
+            $contentView = APP_PATH . '/view/pengguna/edit.php';
+            require_once APP_PATH . '/view/index.php';
+            return;
+        }
+
         $dao = new PenggunaDao();
         $penggunaLama = $dao->getPenggunaById($id);
         $password = !empty($_POST['kata_sandi'])
@@ -182,8 +202,13 @@ class PenggunaController
             exit;
         }
 
-        $dao->deletePengguna($id);
+        try {
+            $dao->deletePengguna($id);
 
+        } catch (PDOException $e) {
+            $_SESSION['error'] =
+                'Pengguna tidak dapat dihapus karena masih digunakan pada data lain.';
+        }
         header("Location: /SobatKost/pengguna");
         exit;
     }

@@ -14,6 +14,13 @@
 
 <p class="text-muted small">Total pengguna: <?= $totalData ?></p>
 
+<?php if (isset($_SESSION['error'])) : ?>
+    <div class="alert alert-danger">
+        <?= $_SESSION['error']; ?>
+    </div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">

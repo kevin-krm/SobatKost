@@ -185,4 +185,17 @@ class PenggunaDao {
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+
+    public function findByEmail($email)
+    {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT * FROM pengguna
+              WHERE email = :email
+              LIMIT 1";
+
+        $stmt = $link->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
