@@ -6,7 +6,14 @@ class KomplainDao {
 
     public function getKomplainPage($limit, $offset) {
         $link = PDOUtil::createConnection();
-        $query = "SELECT * FROM komplain ORDER BY tanggal_lapor DESC LIMIT :limit OFFSET :offset";
+        
+        $query = "SELECT k.*, p.nama_lengkap, ks.id_kamar 
+                  FROM komplain k 
+                  LEFT JOIN pengguna p ON k.id_pengguna = p.id_pengguna 
+                  LEFT JOIN kontrak_sewa ks ON k.id_pengguna = ks.id_pengguna
+                  ORDER BY k.tanggal_lapor DESC 
+                  LIMIT :limit OFFSET :offset";
+
         $stmt = $link->prepare($query);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -14,10 +21,15 @@ class KomplainDao {
 
         $result = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new Komplain(
+            $komplain = new Komplain(
                 $row['id_komplain'], $row['id_pengguna'], $row['judul_masalah'],
                 $row['deskripsi'], $row['status_komplain'], $row['tanggal_lapor']
             );
+
+            $komplain->setNamaPengguna($row['nama_lengkap']);
+            $komplain->setIdKamar($row['id_kamar']);
+
+            $result[] = $komplain;
         }
         return $result;
     }

@@ -10,6 +10,9 @@ class Komplain implements Subject {
     private $status_komplain;
     private $tanggal_lapor;
 
+    private $nama_pengguna;
+    private $id_kamar;
+
     // Array untuk menampung siapa saja yang butuh notifikasi
     private $observers = [];
 
@@ -80,5 +83,12 @@ class Komplain implements Subject {
 
     public function getTanggalLapor() { return $this->tanggal_lapor; }
     public function setTanggalLapor($tanggal_lapor) { $this->tanggal_lapor = $tanggal_lapor; }
+
+    // Setter Getter untuk relasi data (Nama dan Kamar)
+    public function getNamaPengguna() { return $this->nama_pengguna; }
+    public function setNamaPengguna($nama_pengguna) { $this->nama_pengguna = $nama_pengguna; }
+
+    public function getIdKamar() { return $this->id_kamar; }
+    public function setIdKamar($id_kamar) { $this->id_kamar = $id_kamar; }
 }
 ?>
