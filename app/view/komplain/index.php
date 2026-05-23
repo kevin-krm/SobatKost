@@ -19,7 +19,7 @@
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <div class="mb-3">
+            <div class="mb-3 p-3 pb-0">
                 <input
                         type="text"
                         id="searchKomplain"
@@ -29,11 +29,12 @@
                 >
             </div>
 
-            <table class="table table-bordered table-striped align-middle mb-0">
+            <table class="table table-bordered table-striped align-middle mb-0 mt-3">
                 <thead class="table-light">
                 <tr>
                     <th>ID TIKET</th>
-                    <th>ID PENGGUNA</th>
+                    <th>PENGGUNA</th>
+                    <th>KAMAR</th>
                     <th>JUDUL MASALAH</th>
                     <th class="text-center">DESKRIPSI</th>
                     <th>TANGGAL LAPOR</th>
@@ -63,7 +64,8 @@
 
                         <tr>
                             <td><?= htmlspecialchars($k->getIdKomplain()) ?></td>
-                            <td><?= htmlspecialchars($k->getIdPengguna()) ?></td>
+                            <td><?= htmlspecialchars($k->getNamaPengguna() ?? $k->getIdPengguna()) ?></td>
+                            <td><?= htmlspecialchars($k->getIdKamar() ?? '-') ?></td>
                             <td><?= htmlspecialchars($k->getJudulMasalah()) ?></td>
 
                             <td class="text-center">
@@ -91,6 +93,7 @@
                                             name="status_komplain"
                                             class="form-select form-select-sm <?= $badge ?>"
                                             style="width: 140px; font-weight: 500;"
+                                            <?= $status === 'Selesai' ? 'disabled' : '' ?>
                                             onchange="this.className='form-select form-select-sm ' +
                                             (this.value == 'Menunggu' ? 'bg-warning text-dark' :
                                             (this.value == 'Diproses' ? 'bg-primary text-white' :
@@ -100,39 +103,45 @@
                                         <option value="Menunggu" <?= $status == 'Menunggu' ? 'selected' : '' ?>>
                                             Menunggu
                                         </option>
-
                                         <option value="Diproses" <?= $status == 'Diproses' ? 'selected' : '' ?>>
                                             Diproses
                                         </option>
-
                                         <option value="Selesai" <?= $status == 'Selesai' ? 'selected' : '' ?>>
                                             Selesai
                                         </option>
                                     </select>
 
-                                    <button type="submit" class="btn btn-sm btn-primary">
-                                        Update
-                                    </button>
+                                    <?php if ($status !== 'Selesai'): ?>
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            Update
+                                        </button>
+                                    <?php endif; ?>
                                 </form>
                             </td>
 
                             <td class="text-center">
-                                <a
-                                        href="/SobatKost/index.php?url=komplain/edit&id=<?= $k->getIdKomplain() ?>"
-                                        class="btn btn-sm btn-outline-primary me-1"
-                                        title="Edit komplain"
-                                >
-                                    <i class="bi bi-pencil"></i>
-                                </a>
+                                <?php if ($status === 'Selesai'): ?>
+                                    <button class="btn btn-sm btn-secondary me-1" disabled title="Terkunci (Sudah Selesai)">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </button>
+                                <?php else: ?>
+                                    <a
+                                            href="/SobatKost/index.php?url=komplain/edit&id=<?= $k->getIdKomplain() ?>"
+                                            class="btn btn-sm btn-outline-primary me-1"
+                                            title="Edit komplain"
+                                    >
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
 
-                                <a
-                                        href="/SobatKost/index.php?url=komplain/delete&id=<?= $k->getIdKomplain() ?>"
-                                        class="btn btn-sm btn-outline-danger"
-                                        title="Hapus komplain"
-                                        onclick="return confirm('Yakin ingin menghapus tiket komplain ini?');"
-                                >
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                    <a
+                                            href="/SobatKost/index.php?url=komplain/delete&id=<?= $k->getIdKomplain() ?>"
+                                            class="btn btn-sm btn-outline-danger"
+                                            title="Hapus komplain"
+                                            onclick="return confirm('Yakin ingin menghapus tiket komplain ini?');"
+                                    >
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                <?php endif; ?>
                             </td>
                         </tr>
 
@@ -173,7 +182,7 @@
                 <?php else: ?>
 
                     <tr>
-                        <td colspan="7" class="text-center p-4 text-muted">
+                        <td colspan="8" class="text-center p-4 text-muted">
                             Belum ada data komplain.
                         </td>
                     </tr>

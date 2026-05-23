@@ -14,8 +14,21 @@
 
             <div class="mb-3">
                 <label for="id_kamar" class="form-label fw-bold">ID Kamar (Lokasi)</label>
-                <input type="text" class="form-control" id="id_kamar" name="id_kamar" placeholder="Contoh: K-101" required>
-                <small class="text-muted">*Pastikan ID Kamar sudah terdaftar di data Kamar.</small>
+                <select class="form-select" id="id_kamar" name="id_kamar" required>
+                    <option value="" disabled selected>-- Pilih Kamar --</option>
+                    <?php foreach ($kamarList as $k) : ?>
+                        <?php
+                        if (is_object($k)) {
+                            $idKamar = method_exists($k, 'getIdKamar') ? $k->getIdKamar() : (method_exists($k, 'getId') ? $k->getId() : 'Error ID');
+                        } else {
+                            $idKamar = $k['id_kamar'] ?? 'Error ID';
+                        }
+                        ?>
+                        <option value="<?= htmlspecialchars($idKamar) ?>">
+                            <?= htmlspecialchars($idKamar) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="mb-3">

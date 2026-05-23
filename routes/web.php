@@ -93,13 +93,30 @@ class Route
             'pembayaran/verify' => [1, 2],
             'pembayaran/reject' => [1, 2],
 
+            'pengumuman' => [1, 2],
+            'pengumuman/index' => [1, 2],
+            'pengumuman/create' => [1, 2],
+            'pengumuman/store' => [1, 2],
+            'pengumuman/edit' => [1, 2],
+            'pengumuman/update' => [1, 2],
+            'pengumuman/delete' => [1, 2],
+
+            'aturan' => [1, 2],
+            'aturan/index' => [1, 2],
+            'aturan/create' => [1, 2],
+            'aturan/store' => [1, 2],
+            'aturan/edit' => [1, 2],
+            'aturan/update' => [1, 2],
+            'aturan/delete' => [1, 2],
+
             'user/tagihan' => [3],
             'user/tagihan/detail' => [3],
 
-            'user' => [1,3],
-            'user/index' => [1,3],
+            'user' => [1, 3],
+            'user/index' => [1, 3],
             'user/komplain' => [1, 3],
             'user/pengumuman' => [1, 3],
+            'user/aturan' => [1, 3],
         ];
 
         //ROLE CHECK

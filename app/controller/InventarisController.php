@@ -1,5 +1,6 @@
 <?php
 require_once APP_PATH . '/dao/InventarisDao.php';
+require_once APP_PATH . '/dao/KamarDao.php';
 
 class InventarisController {
     public function index() {
@@ -41,6 +42,9 @@ class InventarisController {
     }
 
     public function create() {
+        $kamarDao = new KamarDao();
+        $kamarList = $kamarDao->getKamarPage(100, 0);
+
         $contentView = APP_PATH . '/view/inventaris/create.php';
         require_once APP_PATH . '/view/index.php';
     }
@@ -53,6 +57,9 @@ class InventarisController {
             echo "<h3>Data inventaris tidak ditemukan</h3>";
             exit;
         }
+
+        $kamarDao = new KamarDao();
+        $kamarList = $kamarDao->getKamarPage(100, 0);
 
         $contentView = APP_PATH . '/view/inventaris/edit.php';
         require_once APP_PATH . '/view/index.php';
