@@ -1,4 +1,4 @@
-# Progress Report — Week 2
+# Progress Report — Week 3
 
 **Project:** SobatKost
 
