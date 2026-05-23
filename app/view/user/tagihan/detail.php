@@ -93,9 +93,9 @@ require_once APP_PATH . '/dao/KontraKDao.php';
             </div>
             <div class="card-body">
                 <?php if ($tagihan->getStatusTagihan() === 'Belum Lunas'): ?>
-                    <a href="/SobatKost/index.php?url=pembayaran/upload&id=<?= $tagihan->getIdTagihan() ?>" class="btn btn-success w-100">
-                        <i class="bi bi-upload me-2"></i> Bayar Sekarang
-                    </a>
+                    <button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#payModal">
+                        <i class="bi bi-credit-card-2-front me-2"></i> Bayar Sekarang
+                    </button>
                 <?php else: ?>
                     <div class="alert alert-success">
                         <i class="bi bi-check-circle me-2"></i>
@@ -119,6 +119,121 @@ require_once APP_PATH . '/dao/KontraKDao.php';
         </div>
     </div>
 </div>
+
+<!-- Modal Pembayaran -->
+<div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="payModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="payModalLabel">Pembayaran Tagihan - <?= htmlspecialchars($tagihan->getIdTagihan()) ?></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="paymentForm" action="/SobatKost/index.php?url=pembayaran/store" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="id_tagihan" value="<?= htmlspecialchars($tagihan->getIdTagihan()) ?>">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Pilih Metode Pembayaran</label>
+                        <select id="metodeSelect" name="metode_pembayaran" class="form-select" required>
+                            <option value="">-- Pilih Metode --</option>
+                            <option value="Transfer">Transfer</option>
+                            <option value="E-Wallet">E-Wallet</option>
+                            <option value="Tunai">Tunai</option>
+                        </select>
+                    </div>
+
+                    <div id="methodFields">
+                        <!-- Dynamic fields inserted by JS -->
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        Total yang harus dibayar: <strong>Rp <?= number_format($tagihan->getTotalTagihan(), 0, ',', '.') ?></strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Kirim Pembayaran</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        const metodeSelect = document.getElementById('metodeSelect');
+        const methodFields = document.getElementById('methodFields');
+
+        function clearFields(){
+            methodFields.innerHTML = '';
+        }
+
+        function createInput(name, label, type='text', required=true){
+            const div = document.createElement('div');
+            div.className = 'mb-3';
+            const lab = document.createElement('label');
+            lab.className = 'form-label';
+            lab.textContent = label;
+            const inp = document.createElement('input');
+            inp.className = 'form-control';
+            inp.name = name;
+            inp.type = type;
+            if(required) inp.required = true;
+            div.appendChild(lab);
+            div.appendChild(inp);
+            return div;
+        }
+
+        function createSelect(name, label, options, required=true){
+            const div = document.createElement('div');
+            div.className = 'mb-3';
+            const lab = document.createElement('label');
+            lab.className = 'form-label';
+            lab.textContent = label;
+            const sel = document.createElement('select');
+            sel.className = 'form-select';
+            sel.name = name;
+            if(required) sel.required = true;
+            const empty = document.createElement('option'); empty.value = ''; empty.textContent = '-- Pilih --'; sel.appendChild(empty);
+            options.forEach(opt => {
+                const o = document.createElement('option'); o.value = opt; o.textContent = opt; sel.appendChild(o);
+            });
+            div.appendChild(lab);
+            div.appendChild(sel);
+            return div;
+        }
+
+        metodeSelect && metodeSelect.addEventListener('change', function(){
+            clearFields();
+            const v = this.value;
+            if(v === 'Transfer'){
+                methodFields.appendChild(createInput('bank_tujuan', 'Nama Bank'));
+                methodFields.appendChild(createInput('no_rekening', 'Nomor Rekening', 'text'));
+                methodFields.appendChild(createInput('nama_pemilik', 'Nama Pemilik Rekening'));
+                // optional bukti
+                const divFile = document.createElement('div');
+                divFile.className = 'mb-3';
+                const lab = document.createElement('label'); lab.className = 'form-label'; lab.textContent = 'Upload Bukti (opsional)';
+                const inp = document.createElement('input'); inp.type = 'file'; inp.className = 'form-control'; inp.name = 'bukti_pembayaran';
+                divFile.appendChild(lab); divFile.appendChild(inp);
+                methodFields.appendChild(divFile);
+            } else if(v === 'E-Wallet'){
+                const wallets = ['GCash','PayMaya','OVO','Dana','LinkAja'];
+                methodFields.appendChild(createSelect('jenis_ewallet', 'Jenis E-Wallet', wallets));
+                methodFields.appendChild(createInput('nomor_akun', 'Nomor Akun', 'text'));
+                methodFields.appendChild(createInput('nama_pemilik', 'Nama Pemilik'));
+                const divFile = document.createElement('div');
+                divFile.className = 'mb-3';
+                const lab = document.createElement('label'); lab.className = 'form-label'; lab.textContent = 'Upload Bukti (opsional)';
+                const inp = document.createElement('input'); inp.type = 'file'; inp.className = 'form-control'; inp.name = 'bukti_pembayaran';
+                divFile.appendChild(lab); divFile.appendChild(inp);
+                methodFields.appendChild(divFile);
+            } else if(v === 'Tunai'){
+                methodFields.appendChild(createInput('nama_penerima', 'Nama Penerima'));
+                methodFields.appendChild(createInput('lokasi_pembayaran', 'Lokasi Pembayaran'));
+            }
+        });
+    })();
+</script>
 
 <!-- Riwayat Pembayaran -->
 <div class="card border-0 shadow-sm">
