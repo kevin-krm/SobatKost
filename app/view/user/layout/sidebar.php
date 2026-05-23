@@ -1,4 +1,11 @@
-<!-- SIDEBAR -->
+<?php
+$currentUrl = $_SERVER['REQUEST_URI'];
+function isActive($path, $currentUrl)
+{
+    return strpos($currentUrl, $path) !== false ? 'active' : '';
+}
+?>
+
 <div id="sidebar-wrapper">
     <div class="sidebar-heading">
         <i class="bi bi-house-heart-fill"></i>
@@ -6,23 +13,23 @@
     </div>
 
     <div class="list-group list-group-flush">
-        <a href="/SobatKost/user" class="list-group-item list-group-item-action">
+        <a href="/SobatKost/user" class="list-group-item list-group-item-action <?= $currentUrl == '/SobatKost/user' ? 'active' : '' ?>">
             <i class="bi bi-speedometer2 me-2"></i> Dashboard
         </a>
 
-        <a href="/SobatKost/user/tagihan" class="list-group-item list-group-item-action">
+        <a href="/SobatKost/user/tagihan" class="list-group-item list-group-item-action <?= isActive('user/tagihan', $currentUrl) ?>">
             <i class="bi bi-receipt me-2"></i> Tagihan
         </a>
 
-        <a href="/SobatKost/user/komplain" class="list-group-item list-group-item-action">
+        <a href="/SobatKost/user/komplain" class="list-group-item list-group-item-action <?= isActive('user/komplain', $currentUrl) ?>">
             <i class="bi bi-tools me-2"></i> Tiket Komplain
         </a>
 
-        <a href="/SobatKost/user/pengumuman" class="list-group-item list-group-item-action">
+        <a href="/SobatKost/user/pengumuman" class="list-group-item list-group-item-action <?= isActive('user/pengumuman', $currentUrl) ?>">
             <i class="bi bi-megaphone me-2"></i> Pengumuman
         </a>
 
-        <a href="/SobatKost/user/aturan" class="list-group-item list-group-item-action">
+        <a href="/SobatKost/user/aturan" class="list-group-item list-group-item-action <?= isActive('user/aturan', $currentUrl) ?>">
             <i class="bi bi-journal-text me-2"></i> Aturan Kost
         </a>
     </div>
