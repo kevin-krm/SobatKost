@@ -47,6 +47,10 @@
 
     </form>
 
+    <div class="login-help" style="margin-top: 20px; font-size: 13px; color: #7f8c8d; text-align: center; line-height: 1.5;">
+        Jika Anda mengalami kesulitan login (lupa password, dll) silakan hubungi email admin <a href="mailto:jonathan@sobatkost.com" style="color: #4F46E5; text-decoration: none; font-weight: bold;">jonathan@sobatkost.com</a>
+    </div>
+
     <div class="footer-text">
         © 2026 SobatKost Management System
     </div>

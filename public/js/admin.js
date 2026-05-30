@@ -167,9 +167,9 @@ function validasiTanggalMulai() {
 }
 
 // TOGGLE PASSWORD VISIBILITY (DETAIL PENGGUNA)
-function togglePasswordVisibility() {
-    const passwordField = document.getElementById("passwordField");
-    const toggleIcon = document.getElementById("toggleIcon");
+function togglePasswordVisibility(fieldId = "passwordField", iconId = "toggleIcon") {
+    const passwordField = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(iconId);
     if (passwordField && toggleIcon) {
         if (passwordField.type === "password") {
             passwordField.type = "text";

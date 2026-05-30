@@ -277,6 +277,14 @@ switch ($url) {
     case 'user/tagihan':
         controller('UserTagihanController')->index();
         break;
+
+    case 'user/about':
+        controller('UserController')->about();
+        break;
+
+    case 'user/about/updatePassword':
+        controller('UserController')->updatePassword();
+        break;
     
     case 'user/tagihan/detail':
         if (!$id) {

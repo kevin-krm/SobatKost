@@ -61,17 +61,6 @@
                                 <input type="text" class="form-control bg-light border-0 py-2 rounded-3 text-secondary" value="<?= htmlspecialchars($pengguna->getEmail()); ?>" readonly>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label text-muted small fw-semibold">PASSWORD (SENSITIF)</label>
-                                <div class="input-group">
-                                    <input type="password" id="passwordField" class="form-control bg-light border-0 py-2 rounded-start-3 text-secondary" value="<?= htmlspecialchars($pengguna->getPassword()); ?>" readonly>
-                                    <button class="btn btn-light border-0 px-3 rounded-end-3" type="button" id="togglePasswordBtn" onclick="togglePasswordVisibility()">
-                                        <i class="bi bi-eye-slash-fill text-muted" id="toggleIcon"></i>
-                                    </button>
-                                </div>
-                                <span class="text-muted small" style="font-size: 11px;">Password terenkripsi (hash). Klik tombol mata untuk menampilkan hash password.</span>
-                            </div>
-
                             <div class="row">
                                 <div class="col-sm-6 mb-3">
                                     <label class="form-label text-muted small fw-semibold">ROLE / PERAN</label>

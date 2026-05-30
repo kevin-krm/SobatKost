@@ -118,6 +118,8 @@ class Route
             'user/komplain' => [1, 3],
             'user/pengumuman' => [1, 3],
             'user/aturan' => [1, 3],
+            'user/about' => [1, 3],
+            'user/about/updatePassword' => [1, 3],
         ];
 
         //ROLE CHECK
