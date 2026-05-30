@@ -38,14 +38,13 @@ class KomplainController
 
     public function create()
     {
-        $contentView = APP_PATH . '/view/komplain/create.php';
-
-        // Pengecekan cerdas untuk meload master layout yang berbeda
         session_status() === PHP_SESSION_ACTIVE ?: session_start();
         if (isset($_SESSION['user']['id_peran']) && $_SESSION['user']['id_peran'] == 3) {
-            require_once APP_PATH . '/view/user/index.php'; // Sidebar Penyewa
+            $contentView = APP_PATH . '/view/user/komplain/create.php';
+            require_once APP_PATH . '/view/user/index.php';
         } else {
-            require_once APP_PATH . '/view/index.php'; // Sidebar Admin
+            $contentView = APP_PATH . '/view/komplain/create.php';
+            require_once APP_PATH . '/view/index.php';
         }
     }
 
@@ -103,7 +102,9 @@ class KomplainController
     // Tetap dipertahankan untuk dropdown cepat di Tabel Index
     public function updateStatus($id)
     {
+        session_status() === PHP_SESSION_ACTIVE ?: session_start();
         $status_baru = $_POST['status_komplain'];
+
         $dao = new KomplainDao();
         $komplain = $dao->getKomplainById($id);
 
@@ -114,7 +115,12 @@ class KomplainController
             $dao->updateStatus($komplain);
         }
 
-        header("Location: /SobatKost/index.php?url=komplain");
+        // Pengecekan cerdas untuk kembali ke halaman yang benar
+        if (isset($_SESSION['user']['id_peran']) && $_SESSION['user']['id_peran'] == 3) {
+            header("Location: /SobatKost/index.php?url=user/komplain");
+        } else {
+            header("Location: /SobatKost/index.php?url=komplain");
+        }
         exit;
     }
 

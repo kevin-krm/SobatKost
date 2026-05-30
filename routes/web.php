@@ -55,7 +55,7 @@ class Route
             'komplain/store' => [1, 2, 3],
             'komplain/edit' => [1, 2],
             'komplain/update' => [1, 2],
-            'komplain/updateStatus' => [1, 2],
+            'komplain/updateStatus' => [1, 2, 3],
             'komplain/delete' => [1, 2],
 
             'inventaris' => [1, 2],

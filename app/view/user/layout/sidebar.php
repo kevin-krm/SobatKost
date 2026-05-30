@@ -25,10 +25,6 @@ function isActive($path, $currentUrl)
             <i class="bi bi-tools me-2"></i> Tiket Komplain
         </a>
 
-        <a href="/SobatKost/user/pengumuman" class="list-group-item list-group-item-action <?= isActive('user/pengumuman', $currentUrl) ?>">
-            <i class="bi bi-megaphone me-2"></i> Pengumuman
-        </a>
-
         <a href="/SobatKost/user/aturan" class="list-group-item list-group-item-action <?= isActive('user/aturan', $currentUrl) ?>">
             <i class="bi bi-journal-text me-2"></i> Aturan Kost
         </a>

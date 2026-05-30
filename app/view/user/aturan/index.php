@@ -8,21 +8,20 @@
         <div class="col-12 text-center mt-5 text-muted">Belum ada aturan yang dicatat oleh pengelola.</div>
     <?php else : ?>
         <div class="col-md-12">
-            <div class="accordion shadow-sm" id="accordionAturan">
-                <?php foreach ($aturanList as $index => $a) : ?>
-                    <div class="accordion-item border-0 border-bottom">
-                        <h2 class="accordion-header" id="heading<?= $index ?>">
-                            <button class="accordion-button <?= $index === 0 ? '' : 'collapsed' ?> fw-bold text-dark bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?= $index ?>" aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>" aria-controls="collapse<?= $index ?>">
-                                <i class="bi bi-bookmark-star text-primary me-2"></i> <?= htmlspecialchars($a->getJudulAturan() ?? '') ?>
-                            </button>
-                        </h2>
-                        <div id="collapse<?= $index ?>" class="accordion-collapse collapse <?= $index === 0 ? 'show' : '' ?>" aria-labelledby="heading<?= $index ?>" data-bs-parent="#accordionAturan">
-                            <div class="accordion-body text-secondary">
-                                <?= nl2br(htmlspecialchars($a->getDeskripsiAturan() ?? '')) ?>
-                            </div>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <?php foreach ($aturanList as $index => $a) : ?>
+                        <div class="p-4 bg-white <?= $index !== count($aturanList) - 1 ? 'border-bottom' : '' ?>">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-bookmark-star-fill text-primary me-2"></i>
+                                <?= htmlspecialchars($a->getJudulAturan() ?? '') ?>
+                            </h5>
+                            <p class="text-secondary mb-0 lh-lg" style="white-space: pre-line;">
+                                <?= htmlspecialchars($a->getDeskripsiAturan() ?? '') ?>
+                            </p>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
     <?php endif; ?>
