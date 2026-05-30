@@ -19,6 +19,7 @@ CREATE TABLE pengguna (
     kata_sandi VARCHAR(255) NOT NULL,
     nomor_telepon VARCHAR(15),
     foto_ktp VARCHAR(255),
+    status_aktif ENUM('aktif', 'nonaktif') DEFAULT 'aktif',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (id_peran) REFERENCES peran(id_peran)
@@ -146,7 +147,8 @@ CREATE PROCEDURE sp_insert_pengguna(
     IN p_telp VARCHAR(20),
     IN p_email VARCHAR(100),
     IN p_pass VARCHAR(255),
-    IN p_foto TEXT
+    IN p_foto TEXT,
+    IN p_status ENUM('aktif', 'nonaktif')
 )
 BEGIN
     DECLARE v_prefix VARCHAR(10);
@@ -172,7 +174,8 @@ BEGIN
         nomor_telepon,
         email,
         kata_sandi,
-        foto_ktp
+        foto_ktp,
+        status_aktif
     ) VALUES (
         v_new_id,
         p_role,
@@ -180,7 +183,8 @@ BEGIN
         p_telp,
         p_email,
         p_pass,
-        p_foto
+        p_foto,
+        IFNULL(p_status, 'aktif')
     );
 
     COMMIT;
@@ -380,8 +384,8 @@ LEFT JOIN pengguna p ON ks.id_pengguna = p.id_pengguna;
 INSERT INTO peran (nama_peran) VALUES ('Owner'), ('Penjaga'), ('Penyewa');
 
 -- Pemanggilan Data via SP (Parameter kembali menggunakan format String aslinya)
-CALL sp_insert_pengguna(1, 'Richard Vincentius','123456789','richard@sobatkost.com', '123','test.jpg');
-CALL sp_insert_pengguna(3, 'Budi Santoso','123456789','budi@mail.com', '123','test.jpg');
+CALL sp_insert_pengguna(1, 'Richard Vincentius','123456789','richard@sobatkost.com', '123','test.jpg', 'aktif');
+CALL sp_insert_pengguna(3, 'Budi Santoso','123456789','budi@mail.com', '123','test.jpg', 'aktif');
 
 CALL sp_insert_kamar('101', 'VIP', 2000000);
 CALL sp_insert_kamar('102', 'Standard', 1500000);

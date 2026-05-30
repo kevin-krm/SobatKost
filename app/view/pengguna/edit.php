@@ -84,6 +84,14 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label">Status Aktif</label>
+                            <select class="form-select" name="status_aktif">
+                                <option value="aktif" <?= ($pengguna->getStatusAktif() === 'aktif') ? 'selected' : '' ?>>Aktif</option>
+                                <option value="nonaktif" <?= ($pengguna->getStatusAktif() === 'nonaktif') ? 'selected' : '' ?>>Nonaktif</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label">Foto KTP Saat Ini</label>
                             <br>
 

@@ -50,6 +50,7 @@ class PenggunaController
             PASSWORD_DEFAULT
         );
         $role = $_POST['id_peran'];
+        $statusAktif = $_POST['status_aktif'] ?? 'aktif';
 
         $fotoPath = null;
 
@@ -92,7 +93,8 @@ class PenggunaController
             $email,
             $password,
             null,
-            $fotoPath
+            $fotoPath,
+            $statusAktif
         );
 
         $dao = new PenggunaDao();
@@ -175,6 +177,8 @@ class PenggunaController
             $fotoPath = $targetDir . $fileName;
         }
 
+        $statusAktif = $_POST['status_aktif'] ?? $penggunaLama->getStatusAktif();
+
         $pengguna = new Pengguna(
             $id,
             $_POST['id_peran'],
@@ -183,7 +187,8 @@ class PenggunaController
             $_POST['email'],
             $password,
             null,
-            $fotoPath
+            $fotoPath,
+            $statusAktif
         );
 
         $dao->updatePengguna($pengguna);

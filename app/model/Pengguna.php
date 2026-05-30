@@ -9,6 +9,7 @@ class Pengguna {
     private $kata_sandi;
     private $created_at;
     private $foto_ktp;
+    private $status_aktif;
     private $nama_peran;
 
     public function __construct(
@@ -20,6 +21,7 @@ class Pengguna {
         $password,
         $created,
         $foto,
+        $statusAktif = 'aktif',
         $namaPeran = null
     ) {
         $this->id_pengguna = $id;
@@ -30,6 +32,7 @@ class Pengguna {
         $this->kata_sandi = $password;
         $this->created_at = $created;
         $this->foto_ktp = $foto;
+        $this->status_aktif = $statusAktif;
         $this->nama_peran = $namaPeran;
     }
 
@@ -41,5 +44,6 @@ class Pengguna {
     public function getPassword() { return $this->kata_sandi; }
     public function getCreatedAt() { return $this->created_at; }
     public function getFotoKtp() { return $this->foto_ktp; }
+    public function getStatusAktif() { return $this->status_aktif; }
     public function getNamaPeran() { return $this->nama_peran; }
 }

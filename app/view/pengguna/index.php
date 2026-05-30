@@ -43,6 +43,7 @@
                     <th>TANGGAL MASUK</th>
                     <th>E-MAIL</th>
                     <th>ROLE</th>
+                    <th>STATUS</th>
                     <th>KTP</th>
                     <th class="text-center">AKSI</th>
                 </tr>
@@ -52,7 +53,7 @@
                 <?php if (empty($penggunaList)) : ?>
 
                     <tr>
-                        <td colspan="7" class="text-center p-4 text-muted">
+                        <td colspan="8" class="text-center p-4 text-muted">
                             Belum ada data pengguna
                         </td>
                     </tr>
@@ -107,6 +108,17 @@
                             <td class="text-center">
                                 <span class="badge <?= $badgeColor ?>">
                                     <?= htmlspecialchars($p->getNamaPeran()) ?>
+                                </span>
+                            </td>
+
+                            <td class="text-center">
+                                <?php
+                                $statusAktif = $p->getStatusAktif();
+                                $statusBadge = ($statusAktif === 'aktif') ? 'bg-success' : 'bg-danger';
+                                $statusLabel = ucfirst($statusAktif);
+                                ?>
+                                <span class="badge <?= $statusBadge ?>">
+                                    <?= $statusLabel ?>
                                 </span>
                             </td>
 
