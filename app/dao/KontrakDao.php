@@ -125,20 +125,24 @@ class KontrakDao
             exit;
         }
 
+        $selesai = $kontrak->getTanggalSelesai();
+        $selesai = !empty($selesai) ? $selesai : null;
+
         // cek bentrok tanggal kontrak
         $checkQuery = "SELECT COUNT(*)
                        FROM kontrak_sewa
                        WHERE id_kamar = :kamar
                        AND status_aktif IN (1,2)
                        AND (
-                            tanggal_mulai <= :tanggal_selesai
-                            AND tanggal_selesai >= :tanggal_mulai
+                            (tanggal_selesai IS NULL OR tanggal_selesai >= :tanggal_mulai)
+                            AND (:selesai_param IS NULL OR tanggal_mulai <= :tanggal_selesai)
                        )";
 
         $checkStmt = $link->prepare($checkQuery);
         $checkStmt->bindValue(':kamar', $kontrak->getIdKamar());
         $checkStmt->bindValue(':tanggal_mulai', $kontrak->getTanggalMulai());
-        $checkStmt->bindValue(':tanggal_selesai', $kontrak->getTanggalSelesai());
+        $checkStmt->bindValue(':tanggal_selesai', $selesai, $selesai === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $checkStmt->bindValue(':selesai_param', $selesai, $selesai === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $checkStmt->execute();
 
         $isBooked = $checkStmt->fetchColumn();
@@ -182,7 +186,7 @@ class KontrakDao
 
         $updateStmt = $link->prepare($updateQuery);
         $updateStmt->bindValue(':mulai', $kontrak->getTanggalMulai());
-        $updateStmt->bindValue(':selesai', $kontrak->getTanggalSelesai());
+        $updateStmt->bindValue(':selesai', $selesai, $selesai === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $updateStmt->bindValue(':status', $kontrak->getStatusAktif());
         $updateStmt->bindValue(':id', $idKontrak);
         $updateStmt->execute();
@@ -193,6 +197,8 @@ class KontrakDao
     public function updateKontrak(Kontrak $kontrak)
     {
         $link = PDOUtil::createConnection();
+        $selesai = $kontrak->getTanggalSelesai();
+        $selesai = !empty($selesai) ? $selesai : null;
 
         $query = "UPDATE kontrak_sewa
                   SET id_pengguna = :pengguna,
@@ -208,7 +214,7 @@ class KontrakDao
         $stmt->bindValue(':pengguna', $kontrak->getIdPengguna());
         $stmt->bindValue(':kamar', $kontrak->getIdKamar());
         $stmt->bindValue(':mulai', $kontrak->getTanggalMulai());
-        $stmt->bindValue(':selesai', $kontrak->getTanggalSelesai());
+        $stmt->bindValue(':selesai', $selesai, $selesai === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $stmt->bindValue(':tipe', $kontrak->getTipeSewa());
         $stmt->bindValue(':status', $kontrak->getStatusAktif());
         $stmt->execute();
@@ -259,10 +265,11 @@ class KontrakDao
 
         $queryUpdateKontrak = "UPDATE kontrak_sewa
                                SET status_aktif = CASE
-                                   WHEN CURDATE() > tanggal_selesai THEN 0
-                                   WHEN CURDATE() BETWEEN tanggal_mulai AND tanggal_selesai THEN 2
+                                   WHEN tanggal_selesai IS NOT NULL AND CURDATE() > tanggal_selesai THEN 0
+                                   WHEN CURDATE() >= tanggal_mulai THEN 2
                                    ELSE 1
-                               END";
+                               END
+                               WHERE status_aktif != 0";
 
         $link->query($queryUpdateKontrak);
 

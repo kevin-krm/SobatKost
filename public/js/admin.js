@@ -117,3 +117,51 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+// VALIDASI TANGGAL AKHIR KONTRAK
+function validateTerminateDate(contractId, startDate) {
+    const input = document.getElementById('terminate_date_' + contractId);
+    if (!input) return false;
+    const selected = new Date(input.value);
+    const start = new Date(startDate);
+    const today = new Date();
+    // Normalize time for accurate comparison
+    selected.setHours(0,0,0,0);
+    start.setHours(0,0,0,0);
+    today.setHours(0,0,0,0);
+    if (selected < start) {
+        alert('Tanggal akhir tidak boleh kurang dari tanggal mulai.');
+        return false;
+    }
+    if (selected < today) {
+        alert('Tanggal akhir tidak boleh kurang dari tanggal hari ini.');
+        return false;
+    }
+    // Compute last day of the selected month
+    const year = selected.getFullYear();
+    const month = selected.getMonth(); // 0‑based month index
+    const lastDay = new Date(year, month + 1, 0);
+    if (selected.getDate() !== lastDay.getDate()) {
+        alert('Tanggal akhir harus berada pada hari terakhir bulan yang dipilih.');
+        return false;
+    }
+    return true;
+}
+
+// VALIDASI TANGGAL MULAI
+function validasiTanggalMulai() {
+    let tipeSewa = document.getElementById('tipe_sewa').value;
+    let tglMulaiInput = document.getElementById('tanggal_mulai');
+    let tglMulaiVal = tglMulaiInput.value;
+    if (!tglMulaiVal) return true;
+
+    if (tipeSewa === 'Bulanan') {
+        let dateParts = tglMulaiVal.split('-'); // [YYYY, MM, DD]
+        if (dateParts[2] !== '01') {
+            alert('Untuk tipe sewa Bulanan, tanggal mulai harus di awal bulan (tanggal 1).');
+            tglMulaiInput.value = `${dateParts[0]}-${dateParts[1]}-01`;
+            return false;
+        }
+    }
+    return true;
+}

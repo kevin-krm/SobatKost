@@ -393,6 +393,13 @@ switch ($url) {
         controller('KontrakController')->delete($id);
         break;
 
+    case 'kontrak/terminate':
+        if (!$id) {
+            die("ID kontrak wajib diisi");
+        }
+        controller('KontrakController')->terminate($id);
+        break;
+
     default:
         http_response_code(404);
         echo "<h3>404 - Halaman tidak ditemukan</h3>";

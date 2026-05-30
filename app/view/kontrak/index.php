@@ -50,7 +50,7 @@
                 <thead class="table-light">
                 <tr>
                     <th>ID KONTRAK</th>
-                    <th>ID PENGGUNA</th>
+                    <th>NAMA PENGGUNA</th>
                     <th>ID KAMAR</th>
                     <th>TANGGAL MULAI</th>
                     <th>TANGGAL SELESAI</th>
@@ -99,7 +99,6 @@
                             <td><?= htmlspecialchars($k->getIdKontrak()) ?></td>
                             <td>
                                 <div class="fw-bold"><?= htmlspecialchars($k->getNamaLengkap()) ?></div>
-                                <small class="text-muted"><?= htmlspecialchars($k->getIdPengguna()) ?></small>
                             </td>
                             <td><?= htmlspecialchars($k->getIdKamar()) ?></td>
 
@@ -108,7 +107,10 @@
                             </td>
 
                             <td>
-                                <?= $k->getTanggalSelesai() ? date('d M Y', strtotime($k->getTanggalSelesai())) : '-' ?>
+                                <?php
+                                $tglSelesai = $k->getTanggalSelesai();
+                                echo (!empty($tglSelesai) && $tglSelesai !== '0000-00-00') ? date('d M Y', strtotime($tglSelesai)) : '-';
+                                ?>
                             </td>
 
                             <td class="text-center">
@@ -145,6 +147,23 @@
                                     </a>
                                 <?php endif; ?>
 
+                                <!-- Logika Tombol Akhiri Kontrak -->
+                                <?php if ($statusValue == 2): ?>
+                                    <?php if (empty($k->getTanggalSelesai())): ?>
+                                        <button class="btn btn-sm btn-outline-warning me-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#terminateModal<?= $k->getIdKontrak() ?>"
+                                                title="Akhiri Kontrak">
+                                            <i class="bi bi-stop-circle"></i>
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-sm btn-outline-secondary" disabled
+                                                title="Kontrak sudah memiliki tanggal selesai">
+                                            <i class="bi bi-stop-circle"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+
                                 <!-- Logika Tombol Hapus -->
                                 <?php if ($statusValue == 1) : ?>
                                     <a href="<?= $deleteUrl ?>" class="btn btn-sm btn-outline-danger" title="Hapus kontrak"
@@ -160,6 +179,54 @@
                                     </button>
                                 <?php endif; ?>
                             </td>
+                        <!-- Modal Akhiri Kontrak -->
+                        <?php if ($statusValue == 2) : ?>
+                            <div class="modal fade" id="terminateModal<?= $k->getIdKontrak() ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">
+                                                <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                                                Akhiri Kontrak - <?= htmlspecialchars($k->getIdKontrak()) ?>
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="POST" action="/SobatKost/index.php?url=kontrak/terminate&id=<?= $k->getIdKontrak() ?>" onsubmit="return validateTerminateDate('<?= $k->getIdKontrak() ?>', '<?= $k->getTanggalMulai() ?>')">
+                                            <div class="modal-body text-start">
+                                                <div class="alert alert-info">
+                                                    Anda akan mengakhiri kontrak kamar <strong><?= htmlspecialchars($k->getNomorKamar()) ?></strong> untuk penyewa <strong><?= htmlspecialchars($k->getNamaLengkap()) ?></strong>.
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Tanggal Akhir Kontrak</label>
+                                                    <?php 
+                                                        $today = date('Y-m-d');
+                                                        $minDate = ($today > $k->getTanggalMulai()) ? $today : $k->getTanggalMulai();
+                                                    ?>
+                                                    <input type="date" 
+                                                           name="tanggal_selesai" 
+                                                           id="terminate_date_<?= $k->getIdKontrak() ?>" 
+                                                           class="form-control" 
+                                                           min="<?= $minDate ?>" 
+                                                           required>
+                                                    <div class="form-text small text-muted mt-2">
+                                                        <ul>
+                                                            <li>Tidak boleh kurang dari tanggal mulai: <strong><?= date('d M Y', strtotime($k->getTanggalMulai())) ?></strong></li>
+                                                            <li>Tidak boleh kurang dari tanggal hari ini.</li>
+                                                            <li>Harus berada di <strong>hari terakhir</strong> pada bulan yang dipilih (misal: tanggal 28/29/30/31).</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-warning text-dark fw-bold">Akhiri Kontrak</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -181,4 +248,5 @@
             </nav>
         </div>
     </div>
+<div>
 </div>

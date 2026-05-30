@@ -61,6 +61,15 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label fw-bold">Tipe Sewa</label>
+                            <select name="tipe_sewa" id="tipe_sewa" class="form-select" required onchange="validasiTanggalMulai()">
+                                <option value="">-- Pilih Tipe Sewa --</option>
+                                <option value="Harian" <?= ($kontrak->getTipeSewa() === 'Harian') ? 'selected' : '' ?>>Harian</option>
+                                <option value="Bulanan" <?= ($kontrak->getTipeSewa() === 'Bulanan') ? 'selected' : '' ?>>Bulanan</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label fw-bold">Tanggal Mulai</label>
                             <?php if ($kontrak->getStatusAktif() == 2) : ?>
                                 <input type="date" class="form-control bg-light" value="<?= htmlspecialchars($kontrak->getTanggalMulai()) ?>" readonly disabled>
@@ -76,25 +85,15 @@
                                        value="<?= htmlspecialchars($kontrak->getTanggalMulai()) ?>"
                                        min="<?= htmlspecialchars($kontrak->getTanggalMulai()) ?>"
                                        required
-                                       onchange="hitungTanggalSelesai()">
+                                       onchange="validasiTanggalMulai()">
                                 <div class="form-text text-muted small">Tanggal tidak boleh dimundurkan dari jadwal semula.</div>
                             <?php endif; ?>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Tipe Sewa</label>
-                            <select name="tipe_sewa" id="tipe_sewa" class="form-select" required onchange="hitungTanggalSelesai()">
-                                <option value="">-- Pilih Tipe Sewa --</option>
-                                <option value="Harian" <?= ($kontrak->getTipeSewa() === 'Harian') ? 'selected' : '' ?>>Harian</option>
-                                <option value="Bulanan" <?= ($kontrak->getTipeSewa() === 'Bulanan') ? 'selected' : '' ?>>Bulanan</option>
-                                <option value="Tahunan" <?= ($kontrak->getTipeSewa() === 'Tahunan') ? 'selected' : '' ?>>Tahunan</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tanggal Selesai</label>
-                            <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control" value="<?= htmlspecialchars($kontrak->getTanggalSelesai()) ?>" readonly>
-                            <small class="text-muted">Otomatis dihitung berdasarkan tanggal mulai dan tipe sewa</small>
+                            <label class="form-label fw-bold">Tanggal Selesai (Opsional)</label>
+                            <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control" value="<?= htmlspecialchars($kontrak->getTanggalSelesai()) ?>">
+                            <small class="text-muted">Kosongkan jika kontrak terus berjalan (Open-ended).</small>
                         </div>
 
                         <button class="btn btn-primary w-100">

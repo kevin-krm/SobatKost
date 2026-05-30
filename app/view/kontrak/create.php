@@ -61,24 +61,23 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Tanggal Mulai</label>
-                            <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control" required onchange="hitungTanggalSelesai()">
-                        </div>
-
-                        <div class="mb-3">
                             <label class="form-label">Tipe Sewa</label>
-                            <select name="tipe_sewa" id="tipe_sewa" class="form-select" required onchange="hitungTanggalSelesai()">
+                            <select name="tipe_sewa" id="tipe_sewa" class="form-select" required onchange="validasiTanggalMulai()">
                                 <option value="">-- Pilih Tipe Sewa --</option>
                                 <option value="Harian">Harian</option>
                                 <option value="Bulanan">Bulanan</option>
-                                <option value="Tahunan">Tahunan</option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Tanggal Selesai</label>
-                            <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control" readonly>
-                            <small class="text-muted">Otomatis dihitung berdasarkan tanggal mulai dan tipe sewa</small>
+                            <label class="form-label">Tanggal Mulai</label>
+                            <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control" required onchange="validasiTanggalMulai()">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tanggal Selesai (Opsional)</label>
+                            <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control">
+                            <small class="text-muted">Kosongkan jika kontrak terus berjalan (Open-ended).</small>
                         </div>
 
                         <button class="btn btn-primary w-100">
