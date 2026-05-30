@@ -49,6 +49,12 @@ class AuthController
             exit;
         }
 
+        if ($user['status_aktif'] === 'nonaktif') {
+            $_SESSION['error'] = 'Akun Anda telah dinonaktifkan. Silahkan hubungi admin.';
+            header('Location: index.php?url=login');
+            exit;
+        }
+
         $_SESSION['user'] = [
             'id' => $user['id_pengguna'],
             'nama' => $user['nama_lengkap'],

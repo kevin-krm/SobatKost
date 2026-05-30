@@ -50,6 +50,7 @@ class PenggunaController
             PASSWORD_DEFAULT
         );
         $role = $_POST['id_peran'];
+        $statusAktif = $_POST['status_aktif'] ?? 'aktif';
 
         $fotoPath = null;
 
@@ -92,7 +93,8 @@ class PenggunaController
             $email,
             $password,
             null,
-            $fotoPath
+            $fotoPath,
+            $statusAktif
         );
 
         $dao = new PenggunaDao();
@@ -100,6 +102,19 @@ class PenggunaController
 
         header("Location: /SobatKost/pengguna");
         exit;
+    }
+
+    public function detail($id)
+    {
+        $dao = new PenggunaDao();
+        $pengguna = $dao->getPenggunaById($id);
+
+        if (!$pengguna) {
+            echo "<h3>Data pengguna tidak ditemukan</h3>";
+            exit;
+        }
+        $contentView = APP_PATH . '/view/pengguna/detail.php';
+        require_once APP_PATH . '/view/index.php';
     }
 
     public function edit($id)
@@ -175,6 +190,8 @@ class PenggunaController
             $fotoPath = $targetDir . $fileName;
         }
 
+        $statusAktif = $_POST['status_aktif'] ?? $penggunaLama->getStatusAktif();
+
         $pengguna = new Pengguna(
             $id,
             $_POST['id_peran'],
@@ -183,7 +200,8 @@ class PenggunaController
             $_POST['email'],
             $password,
             null,
-            $fotoPath
+            $fotoPath,
+            $statusAktif
         );
 
         $dao->updatePengguna($pengguna);

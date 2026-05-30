@@ -51,6 +51,13 @@
                             </select>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Status Aktif</label>
+                            <select name="status_aktif" class="form-control">
+                                <option value="aktif" selected>Aktif</option>
+                                <option value="nonaktif">Nonaktif</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Upload Foto KTP</label>
                             <input
                                     type="file"

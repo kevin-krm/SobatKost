@@ -32,6 +32,7 @@ class PenggunaDao {
                 p.kata_sandi,
                 p.created_at,
                 p.foto_ktp,
+                p.status_aktif,
                 pr.nama_peran
               FROM pengguna p
               JOIN peran pr ON p.id_peran = pr.id_peran
@@ -44,7 +45,7 @@ class PenggunaDao {
     public function insertPengguna(Pengguna $p)
     {
         $link = PDOUtil::createConnection();
-        $query = "CALL sp_insert_pengguna(:role, :nama, :telp, :email, :pass, :foto)";
+        $query = "CALL sp_insert_pengguna(:role, :nama, :telp, :email, :pass, :foto, :status)";
         $stmt = $link->prepare($query);
         $stmt->bindValue(':role', $p->getIdPeran());
         $stmt->bindValue(':nama', $p->getNamaLengkap());
@@ -52,6 +53,7 @@ class PenggunaDao {
         $stmt->bindValue(':email', $p->getEmail());
         $stmt->bindValue(':pass', $p->getPassword());
         $stmt->bindValue(':foto', $p->getFotoKtp());
+        $stmt->bindValue(':status', $p->getStatusAktif());
         $stmt->execute();
         return $link->lastInsertId();
     }
@@ -60,7 +62,10 @@ class PenggunaDao {
     {
         $link = PDOUtil::createConnection();
 
-        $query = "SELECT * FROM pengguna WHERE id_pengguna = :id";
+        $query = "SELECT p.*, pr.nama_peran 
+                  FROM pengguna p
+                  LEFT JOIN peran pr ON p.id_peran = pr.id_peran
+                  WHERE p.id_pengguna = :id";
 
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id);
@@ -80,7 +85,9 @@ class PenggunaDao {
             $row['email'],
             $row['kata_sandi'],
             $row['created_at'],
-            $row['foto_ktp']
+            $row['foto_ktp'],
+            $row['status_aktif'] ?? 'aktif',
+            $row['nama_peran']
         );
     }
 
@@ -95,7 +102,8 @@ class PenggunaDao {
             nomor_telepon=:telp,
             email=:email,
             kata_sandi=:pass,
-            foto_ktp=:foto
+            foto_ktp=:foto,
+            status_aktif=:status
             WHERE id_pengguna=:id";
         } else {
             $query = "UPDATE pengguna SET
@@ -103,7 +111,8 @@ class PenggunaDao {
             nama_lengkap=:nama,
             nomor_telepon=:telp,
             email=:email,
-            foto_ktp=:foto
+            foto_ktp=:foto,
+            status_aktif=:status
             WHERE id_pengguna=:id";
         }
 
@@ -115,6 +124,7 @@ class PenggunaDao {
         $stmt->bindValue(':telp', $p->getNomorTelepon());
         $stmt->bindValue(':email', $p->getEmail());
         $stmt->bindValue(':foto', $p->getFotoKtp());
+        $stmt->bindValue(':status', $p->getStatusAktif());
 
         if ($p->getPassword()) {
             $stmt->bindValue(':pass', $p->getPassword());
@@ -148,6 +158,7 @@ class PenggunaDao {
         p.kata_sandi,
         p.created_at,
         p.foto_ktp,
+        p.status_aktif,
         pr.nama_peran
     FROM pengguna p
     JOIN peran pr ON p.id_peran = pr.id_peran
@@ -171,6 +182,7 @@ class PenggunaDao {
                 $row['kata_sandi'],
                 $row['created_at'],
                 $row['foto_ktp'],
+                $row['status_aktif'] ?? 'aktif',
                 $row['nama_peran']
             );
         }

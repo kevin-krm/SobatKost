@@ -28,6 +28,10 @@ function isActive($path, $currentUrl)
         <a href="/SobatKost/user/aturan" class="list-group-item list-group-item-action <?= isActive('user/aturan', $currentUrl) ?>">
             <i class="bi bi-journal-text me-2"></i> Aturan Kost
         </a>
+
+        <a href="/SobatKost/user/about" class="list-group-item list-group-item-action <?= isActive('user/about', $currentUrl) ?>">
+            <i class="bi bi-person me-2"></i> Tentang Saya
+        </a>
     </div>
 
     <div class="sidebar-footer">

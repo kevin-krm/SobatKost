@@ -61,6 +61,12 @@ switch ($url) {
     case 'pengguna/store':
         controller('PenggunaController')->store();
         break;
+    case 'pengguna/detail':
+        if (!$id) {
+            die("ID pengguna wajib diisi");
+        }
+        controller('PenggunaController')->detail($id);
+        break;
     case 'pengguna/edit':
         if (!$id) {
             die("ID pengguna wajib diisi");
@@ -271,6 +277,14 @@ switch ($url) {
     case 'user/tagihan':
         controller('UserTagihanController')->index();
         break;
+
+    case 'user/about':
+        controller('UserController')->about();
+        break;
+
+    case 'user/about/updatePassword':
+        controller('UserController')->updatePassword();
+        break;
     
     case 'user/tagihan/detail':
         if (!$id) {
@@ -391,6 +405,13 @@ switch ($url) {
             die("ID kontrak wajib diisi");
         }
         controller('KontrakController')->delete($id);
+        break;
+
+    case 'kontrak/terminate':
+        if (!$id) {
+            die("ID kontrak wajib diisi");
+        }
+        controller('KontrakController')->terminate($id);
         break;
 
     default:

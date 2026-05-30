@@ -28,6 +28,7 @@ class Route
             'pengguna/index' => [1, 2],
             'pengguna/create' => [1, 2],
             'pengguna/store' => [1, 2],
+            'pengguna/detail' => [1, 2],
             'pengguna/edit' => [1, 2],
             'pengguna/update' => [1, 2],
             'pengguna/delete' => [1, 2],
@@ -117,6 +118,8 @@ class Route
             'user/komplain' => [1, 3],
             'user/pengumuman' => [1, 3],
             'user/aturan' => [1, 3],
+            'user/about' => [1, 3],
+            'user/about/updatePassword' => [1, 3],
         ];
 
         //ROLE CHECK

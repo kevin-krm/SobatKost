@@ -6,7 +6,7 @@
                     <i class="bi bi-pencil-square"></i>
                     Edit Data Pengguna
                 </h4>
-                <a href="/SobatKost/pengguna" class="btn btn-outline-secondary btn-sm">
+                <a href="/SobatKost/index.php?url=pengguna/detail&id=<?= $pengguna->getId(); ?>" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
             </div>
@@ -80,6 +80,14 @@
                                 <option value="1" <?= ($pengguna->getIdPeran() == 1) ? 'selected' : '' ?>>Owner</option>
                                 <option value="2" <?= ($pengguna->getIdPeran() == 2) ? 'selected' : '' ?>>Penjaga</option>
                                 <option value="3" <?= ($pengguna->getIdPeran() == 3) ? 'selected' : '' ?>>Penyewa</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Status Aktif</label>
+                            <select class="form-select" name="status_aktif">
+                                <option value="aktif" <?= ($pengguna->getStatusAktif() === 'aktif') ? 'selected' : '' ?>>Aktif</option>
+                                <option value="nonaktif" <?= ($pengguna->getStatusAktif() === 'nonaktif') ? 'selected' : '' ?>>Nonaktif</option>
                             </select>
                         </div>
 

@@ -38,12 +38,11 @@
             <table class="table table-bordered table-striped align-middle">
                 <thead class="table-light">
                 <tr>
-                    <th>ID PENGGUNA</th>
                     <th>NAMA PENGGUNA</th>
                     <th>TANGGAL MASUK</th>
-                    <th>E-MAIL</th>
                     <th>ROLE</th>
-                    <th>KTP</th>
+                    <th class="text-center">STATUS</th>
+                    <th class="text-center">DETAIL</th>
                     <th class="text-center">AKSI</th>
                 </tr>
                 </thead>
@@ -52,7 +51,7 @@
                 <?php if (empty($penggunaList)) : ?>
 
                     <tr>
-                        <td colspan="7" class="text-center p-4 text-muted">
+                        <td colspan="6" class="text-center p-4 text-muted">
                             Belum ada data pengguna
                         </td>
                     </tr>
@@ -72,36 +71,17 @@
                             $badgeColor = "bg-success";
                         }
 
-                        $editUrl = "/SobatKost/index.php?url=pengguna/edit&id=" . $p->getId();
+                        $detailUrl = "/SobatKost/index.php?url=pengguna/detail&id=" . $p->getId();
                         $deleteUrl = "/SobatKost/index.php?url=pengguna/delete&id=" . $p->getId();
-                        $modalId = "ktpModal" . $p->getId();
                         ?>
 
                         <tr>
                             <td>
-                                <?= htmlspecialchars($p->getId()) ?>
-                            </td>
-
-                            <td>
-                                <div>
-                                    <?= htmlspecialchars($p->getNamaLengkap()) ?>
-                                </div>
-                                <small class="text-muted">
-                                    <?= htmlspecialchars($p->getNomorTelepon() ?? '-') ?>
-                                </small>
+                                <?= htmlspecialchars($p->getNamaLengkap()) ?>
                             </td>
 
                             <td>
                                 <?= date('d M Y', strtotime($p->getCreatedAt())) ?>
-                            </td>
-
-                            <td>
-                                <div>
-                                    <?= htmlspecialchars($p->getEmail()) ?>
-                                </div>
-                                <small class="text-muted">
-                                    ••••••••
-                                </small>
                             </td>
 
                             <td class="text-center">
@@ -111,24 +91,27 @@
                             </td>
 
                             <td class="text-center">
-                                <button
-                                        class="btn btn-sm btn-outline-info"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#<?= $modalId ?>"
-                                >
-                                    Lihat
-                                </button>
+                                <?php
+                                $statusAktif = $p->getStatusAktif();
+                                $statusBadge = ($statusAktif === 'aktif') ? 'bg-success' : 'bg-danger';
+                                $statusLabel = ucfirst($statusAktif);
+                                ?>
+                                <span class="badge <?= $statusBadge ?>">
+                                    <?= $statusLabel ?>
+                                </span>
                             </td>
 
                             <td class="text-center">
                                 <a
-                                        href="<?= $editUrl ?>"
-                                        class="btn btn-sm btn-outline-primary me-1"
-                                        title="Edit pengguna"
+                                        href="<?= $detailUrl ?>"
+                                        class="btn btn-sm btn-outline-info"
+                                        title="Detail pengguna"
                                 >
-                                    <i class="bi bi-pencil"></i>
+                                    <i class="bi bi-eye"></i> Detail
                                 </a>
+                            </td>
 
+                            <td class="text-center">
                                 <a
                                         href="<?= $deleteUrl ?>"
                                         class="btn btn-sm btn-outline-danger"
@@ -139,26 +122,6 @@
                                 </a>
                             </td>
                         </tr>
-
-                        <div class="modal fade" id="<?= $modalId ?>" tabindex="-1">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">
-                                            Foto KTP
-                                        </h5>
-                                        <button
-                                                type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"
-                                        ></button>
-                                    </div>
-                                    <div class="modal-body text-center">
-                                        <img src="/SobatKost/<?= $p->getFotoKtp() ?>" class="img-fluid rounded">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                     <?php endforeach; ?>
                 <?php endif; ?>
