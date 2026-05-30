@@ -165,3 +165,29 @@ function validasiTanggalMulai() {
     }
     return true;
 }
+
+// TOGGLE PASSWORD VISIBILITY (DETAIL PENGGUNA)
+function togglePasswordVisibility() {
+    const passwordField = document.getElementById("passwordField");
+    const toggleIcon = document.getElementById("toggleIcon");
+    if (passwordField && toggleIcon) {
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.classList.remove("bi-eye-slash-fill");
+            toggleIcon.classList.add("bi-eye-fill");
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.remove("bi-eye-fill");
+            toggleIcon.classList.add("bi-eye-slash-fill");
+        }
+    }
+}
+
+// OPEN FULLSCREEN KTP (DETAIL PENGGUNA)
+function openFullscreenKtp() {
+    const modalEl = document.getElementById('fullscreenKtpModal');
+    if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+}

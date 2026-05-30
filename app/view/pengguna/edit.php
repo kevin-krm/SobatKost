@@ -6,7 +6,7 @@
                     <i class="bi bi-pencil-square"></i>
                     Edit Data Pengguna
                 </h4>
-                <a href="/SobatKost/pengguna" class="btn btn-outline-secondary btn-sm">
+                <a href="/SobatKost/index.php?url=pengguna/detail&id=<?= $pengguna->getId(); ?>" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
             </div>

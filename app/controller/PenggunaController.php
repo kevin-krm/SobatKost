@@ -104,6 +104,19 @@ class PenggunaController
         exit;
     }
 
+    public function detail($id)
+    {
+        $dao = new PenggunaDao();
+        $pengguna = $dao->getPenggunaById($id);
+
+        if (!$pengguna) {
+            echo "<h3>Data pengguna tidak ditemukan</h3>";
+            exit;
+        }
+        $contentView = APP_PATH . '/view/pengguna/detail.php';
+        require_once APP_PATH . '/view/index.php';
+    }
+
     public function edit($id)
     {
         $dao = new PenggunaDao();

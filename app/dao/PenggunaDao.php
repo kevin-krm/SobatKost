@@ -62,7 +62,10 @@ class PenggunaDao {
     {
         $link = PDOUtil::createConnection();
 
-        $query = "SELECT * FROM pengguna WHERE id_pengguna = :id";
+        $query = "SELECT p.*, pr.nama_peran 
+                  FROM pengguna p
+                  LEFT JOIN peran pr ON p.id_peran = pr.id_peran
+                  WHERE p.id_pengguna = :id";
 
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id);
@@ -83,7 +86,8 @@ class PenggunaDao {
             $row['kata_sandi'],
             $row['created_at'],
             $row['foto_ktp'],
-            $row['status_aktif'] ?? 'aktif'
+            $row['status_aktif'] ?? 'aktif',
+            $row['nama_peran']
         );
     }
 

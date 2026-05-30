@@ -61,6 +61,12 @@ switch ($url) {
     case 'pengguna/store':
         controller('PenggunaController')->store();
         break;
+    case 'pengguna/detail':
+        if (!$id) {
+            die("ID pengguna wajib diisi");
+        }
+        controller('PenggunaController')->detail($id);
+        break;
     case 'pengguna/edit':
         if (!$id) {
             die("ID pengguna wajib diisi");
