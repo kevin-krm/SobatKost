@@ -1,5 +1,4 @@
 </div>
-<script src="/SobatKost/public/js/admin.js"></script>
 <footer class="footer text-center py-3">
     <small>
         © <?php echo date("Y"); ?> SobatKost Management System

@@ -1,9 +1,5 @@
 <?php
-$currentUrl = $_SERVER['REQUEST_URI'];
-function isActive($path, $currentUrl)
-{
-    return strpos($currentUrl, $path) !== false ? 'active' : '';
-}
+
 ?>
 
 <div id="sidebar-wrapper">
@@ -13,49 +9,65 @@ function isActive($path, $currentUrl)
     </div>
 
     <div class="list-group list-group-flush">
-        <a href="/SobatKost/" class="list-group-item list-group-item-action <?= $currentUrl == '/SobatKost/' ? 'active' : '' ?>">
+        <a href="/SobatKost/" class="list-group-item list-group-item-action">
             <i class="bi bi-speedometer2 me-2"></i> Dashboard
         </a>
 
-        <a href="/SobatKost/kamar" class="list-group-item list-group-item-action <?= isActive('/kamar', $currentUrl) ?>">
-            <i class="bi bi-door-open me-2"></i> Manajemen Kamar
+        <!-- Kategori: Manajemen Operasional -->
+        <a href="#opMenu" data-bs-toggle="collapse" aria-expanded="false" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-gear-fill me-2"></i> Manajemen Operasional</span>
+            <i class="bi bi-chevron-down chevron-arrow"></i>
         </a>
+        <div class="collapse" id="opMenu">
+            <a href="/SobatKost/kamar" class="list-group-item list-group-item-action submenu-item">
+                <i class="bi bi-door-open me-2"></i> Manajemen Kamar
+            </a>
+            <a href="/SobatKost/inventaris" class="list-group-item list-group-item-action submenu-item">
+                <i class="bi bi-box-seam me-2"></i> Inventaris Kamar
+            </a>
+            <a href="/SobatKost/komplain" class="list-group-item list-group-item-action submenu-item">
+                <i class="bi bi-tools me-2"></i> Tiket Komplain
+            </a>
+            <a href="/SobatKost/pengumuman" class="list-group-item list-group-item-action submenu-item">
+                <i class="bi bi-megaphone me-2"></i> Pengumuman
+            </a>
+        </div>
 
-        <a href="/SobatKost/inventaris" class="list-group-item list-group-item-action <?= isActive('/inventaris', $currentUrl) ?>">
-            <i class="bi bi-box-seam me-2"></i> Inventaris Kamar
+        <!-- Kategori: Keuangan & Transaksi -->
+        <a href="#finMenu" data-bs-toggle="collapse" aria-expanded="false" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-cash-coin me-2"></i> Keuangan & Transaksi</span>
+            <i class="bi bi-chevron-down chevron-arrow"></i>
         </a>
+        <div class="collapse" id="finMenu">
+            <a href="/SobatKost/tagihan" class="list-group-item list-group-item-action submenu-item">
+                <i class="bi bi-receipt me-2"></i> Tagihan
+            </a>
+            <a href="/SobatKost/pembayaran" class="list-group-item list-group-item-action submenu-item">
+                <i class="bi bi-credit-card me-2"></i> Pembayaran
+            </a>
+        </div>
 
-        <a href="/SobatKost/pengguna" class="list-group-item list-group-item-action <?= isActive('/pengguna', $currentUrl) ?>">
-            <i class="bi bi-people me-2"></i> Data Pengguna
-        </a>
-
-        <a href="/SobatKost/komplain" class="list-group-item list-group-item-action <?= isActive('/komplain', $currentUrl) ?>">
-            <i class="bi bi-tools me-2"></i> Tiket Komplain
-        </a>
-
-        <a href="/SobatKost/pengumuman" class="list-group-item list-group-item-action <?= isActive('/pengumuman', $currentUrl) ?>">
-            <i class="bi bi-megaphone me-2"></i> Pengumuman
-        </a>
-
-        <a href="/SobatKost/aturan" class="list-group-item list-group-item-action <?= isActive('/aturan', $currentUrl) ?>">
-            <i class="bi bi-journal-text me-2"></i> E-Rules / Aturan Kost
-        </a>
-
-        <a href="/SobatKost/kontrak" class="list-group-item list-group-item-action <?= isActive('/kontrak', $currentUrl) ?>">
-            <i class="bi bi-file-earmark-text me-2"></i> Kontrak Sewa
-        </a>
-
-        <a href="/SobatKost/keuangan" class="list-group-item list-group-item-action <?= isActive('/keuangan', $currentUrl) ?>">
-            <i class="bi bi-cash-coin me-2"></i> Laporan Keuangan
-        </a>
-
-        <a href="/SobatKost/tagihan" class="list-group-item list-group-item-action <?= isActive('/tagihan', $currentUrl) ?>">
-            <i class="bi bi-receipt me-2"></i> Tagihan
-        </a>
-
-        <a href="/SobatKost/pembayaran" class="list-group-item list-group-item-action <?= isActive('/pembayaran', $currentUrl) ?>">
-            <i class="bi bi-credit-card me-2"></i> Pembayaran
-        </a>
+        <!-- Kategori: Pengaturan & Master (Hanya Admin/Owner) -->
+        <?php if (Auth::isOwner()): ?>
+            <a href="#adminMenu" data-bs-toggle="collapse" aria-expanded="false" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-shield-lock-fill me-2"></i> Pengaturan & Master</span>
+                <i class="bi bi-chevron-down chevron-arrow"></i>
+            </a>
+            <div class="collapse" id="adminMenu">
+                <a href="/SobatKost/pengguna" class="list-group-item list-group-item-action submenu-item">
+                    <i class="bi bi-people me-2"></i> Data Pengguna
+                </a>
+                <a href="/SobatKost/kontrak" class="list-group-item list-group-item-action submenu-item">
+                    <i class="bi bi-file-earmark-text me-2"></i> Kontrak Sewa
+                </a>
+                <a href="/SobatKost/keuangan" class="list-group-item list-group-item-action submenu-item">
+                    <i class="bi bi-cash-coin me-2"></i> Laporan Keuangan
+                </a>
+                <a href="/SobatKost/aturan" class="list-group-item list-group-item-action submenu-item">
+                    <i class="bi bi-journal-text me-2"></i> E-Rules / Aturan Kost
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="sidebar-footer">
@@ -83,3 +95,9 @@ function isActive($path, $currentUrl)
         </div>
     </nav>
     <div class="container-fluid p-4 content-area ">
+
+<script>
+    if (typeof initSidebar === "function") {
+        initSidebar("<?= $_GET['url'] ?? '' ?>");
+    }
+</script>

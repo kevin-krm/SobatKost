@@ -191,3 +191,105 @@ function openFullscreenKtp() {
         modal.show();
     }
 }
+
+// INISIALISASI HIGHLIGHT & COLLAPSE SIDEBAR
+function initSidebar(urlParam) {
+    let url = urlParam || "";
+    
+    // Jika urlParam kosong, ambil dari parameter query 'url' atau segment pathname
+    if (!url) {
+        const urlParams = new URLSearchParams(window.location.search);
+        url = urlParams.get('url') || "";
+    }
+    
+    if (!url) {
+        const pathname = window.location.pathname;
+        const root = "/SobatKost/";
+        if (pathname.startsWith(root)) {
+            url = pathname.substring(root.length);
+        }
+        url = url.replace(/^\/+|\/+$/g, '');
+    }
+    
+    const segments = url.split('/');
+    const firstSegment = segments[0] || "";
+    
+    const sidebar = document.getElementById("sidebar-wrapper");
+    if (!sidebar) return;
+    
+    const links = sidebar.querySelectorAll(".list-group-item");
+    const dashboardLink = sidebar.querySelector("a[href='/SobatKost/']");
+    
+    // Helper to close collapses using Bootstrap Collapse API
+    function closeAllCollapses() {
+        sidebar.querySelectorAll(".collapse").forEach(collapseEl => {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                const bsCollapse = bootstrap.Collapse.getInstance(collapseEl);
+                if (bsCollapse) {
+                    bsCollapse.hide();
+                } else {
+                    collapseEl.classList.remove("show");
+                }
+            } else {
+                collapseEl.classList.remove("show");
+            }
+        });
+        sidebar.querySelectorAll(".list-group-item[data-bs-toggle='collapse']").forEach(trigger => {
+            trigger.classList.remove("active-parent");
+            trigger.setAttribute("aria-expanded", "false");
+            trigger.classList.add("collapsed");
+        });
+    }
+    
+    // 1. Check Dashboard
+    if (dashboardLink) {
+        if (firstSegment === "" || firstSegment === "home" || firstSegment === "index.php") {
+            dashboardLink.classList.add("active");
+            closeAllCollapses();
+            return;
+        } else {
+            dashboardLink.classList.remove("active");
+        }
+    }
+    
+    // 2. Loop links untuk menandai submenu yang aktif
+    links.forEach(link => {
+        if (link === dashboardLink) return;
+        
+        const href = link.getAttribute("href");
+        if (!href) return;
+        
+        // Bersihkan path untuk dicocokkan, misal "/SobatKost/kamar" -> "kamar"
+        const menuPath = href.replace("/SobatKost/", "").replace(/^\/+|\/+$/g, '');
+        
+        if (menuPath && firstSegment === menuPath) {
+            link.classList.add("active");
+            
+            // Buka container collapse induk menggunakan Bootstrap API
+            const collapseContainer = link.closest(".collapse");
+            if (collapseContainer) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseContainer, {
+                        toggle: false
+                    });
+                    bsCollapse.show();
+                } else {
+                    collapseContainer.classList.add("show");
+                }
+                
+                const collapseId = collapseContainer.getAttribute("id");
+                const parentTrigger = sidebar.querySelector(`a[href="#${collapseId}"]`);
+                if (parentTrigger) {
+                    parentTrigger.classList.add("active-parent");
+                    parentTrigger.setAttribute("aria-expanded", "true");
+                    parentTrigger.classList.remove("collapsed");
+                }
+            }
+        } else {
+            // Jangan hapus active dari parent trigger yang bertindak sebagai tombol collapse
+            if (!link.hasAttribute("data-bs-toggle")) {
+                link.classList.remove("active");
+            }
+        }
+    });
+}
