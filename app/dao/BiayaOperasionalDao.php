@@ -3,10 +3,13 @@ require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/BiayaOperasional.php';
 
 class BiayaOperasionalDao {
-    public function getBiayaPage($limit, $offset) {
+    public function getBiayaPage($limit, $offset, $filterType = 'all', $filterValue = null) {
         $link = PDOUtil::createConnection();
-        $query = "SELECT * FROM biaya_operasional ORDER BY tanggal_pengeluaran DESC LIMIT :limit OFFSET :offset";
+        $query = "SELECT * FROM biaya_operasional";
+        $query .= $this->buildDateFilter('tanggal_pengeluaran', $filterType);
+        $query .= " ORDER BY tanggal_pengeluaran DESC LIMIT :limit OFFSET :offset";
         $stmt = $link->prepare($query);
+        $this->bindDateFilter($stmt, $filterType, $filterValue);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -18,9 +21,97 @@ class BiayaOperasionalDao {
         return $result;
     }
 
-    public function countBiaya() {
+    public function countBiaya($filterType = 'all', $filterValue = null) {
         $link = PDOUtil::createConnection();
-        return $link->query("SELECT COUNT(*) FROM biaya_operasional")->fetchColumn();
+        $query = "SELECT COUNT(*) FROM biaya_operasional";
+        $query .= $this->buildDateFilter('tanggal_pengeluaran', $filterType);
+        $stmt = $link->prepare($query);
+        $this->bindDateFilter($stmt, $filterType, $filterValue);
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function getPemasukanPage($limit, $offset, $filterType = 'all', $filterValue = null) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT p.id_pembayaran,
+                         p.id_tagihan,
+                         p.metode_pembayaran,
+                         p.tanggal_bayar,
+                         p.status_verifikasi,
+                         t.total_biaya_sewa,
+                         t.biaya_tambahan,
+                         pg.nama_lengkap,
+                         k.nomor_kamar
+                  FROM pembayaran p
+                  JOIN tagihan t ON p.id_tagihan = t.id_tagihan
+                  LEFT JOIN kontrak_sewa ks ON t.id_kontrak = ks.id_kontrak
+                  LEFT JOIN pengguna pg ON ks.id_pengguna = pg.id_pengguna
+                  LEFT JOIN kamar k ON ks.id_kamar = k.id_kamar
+                  WHERE p.status_verifikasi = 'Berhasil'";
+
+        $query .= $this->buildDateFilter('p.tanggal_bayar', $filterType, true);
+        $query .= " ORDER BY p.tanggal_bayar DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $link->prepare($query);
+        $this->bindDateFilter($stmt, $filterType, $filterValue);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function countPemasukan($filterType = 'all', $filterValue = null) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT COUNT(*)
+                  FROM pembayaran p
+                  WHERE p.status_verifikasi = 'Berhasil'";
+
+        $query .= $this->buildDateFilter('p.tanggal_bayar', $filterType, true);
+        $stmt = $link->prepare($query);
+        $this->bindDateFilter($stmt, $filterType, $filterValue);
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function getRingkasanKeuangan($filterType = 'all', $filterValue = null) {
+        $pemasukan = $this->getTotalPemasukan($filterType, $filterValue);
+        $pengeluaran = $this->getTotalPengeluaran($filterType, $filterValue);
+
+        return [
+            'total_pemasukan' => $pemasukan,
+            'total_pengeluaran' => $pengeluaran,
+            'total_profit' => $pemasukan - $pengeluaran
+        ];
+    }
+
+    public function getTotalPemasukan($filterType = 'all', $filterValue = null) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT COALESCE(SUM(t.total_biaya_sewa + t.biaya_tambahan), 0)
+                  FROM pembayaran p
+                  JOIN tagihan t ON p.id_tagihan = t.id_tagihan
+                  WHERE p.status_verifikasi = 'Berhasil'";
+
+        $query .= $this->buildDateFilter('p.tanggal_bayar', $filterType, true);
+        $stmt = $link->prepare($query);
+        $this->bindDateFilter($stmt, $filterType, $filterValue);
+        $stmt->execute();
+
+        return (float) $stmt->fetchColumn();
+    }
+
+    public function getTotalPengeluaran($filterType = 'all', $filterValue = null) {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT COALESCE(SUM(jumlah_biaya), 0) FROM biaya_operasional";
+        $query .= $this->buildDateFilter('tanggal_pengeluaran', $filterType);
+
+        $stmt = $link->prepare($query);
+        $this->bindDateFilter($stmt, $filterType, $filterValue);
+        $stmt->execute();
+
+        return (float) $stmt->fetchColumn();
     }
 
     public function getBiayaById($id) {
@@ -68,81 +159,22 @@ class BiayaOperasionalDao {
         $stmt->execute();
     }
 
-    public function getTotalByKategori() {
-        $link = PDOUtil::createConnection();
-        $query = "SELECT kategori_biaya, SUM(jumlah_biaya) as total 
-                  FROM biaya_operasional 
-                  GROUP BY kategori_biaya";
-        $stmt = $link->prepare($query);
-        $stmt->execute();
-        
-        $result = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[$row['kategori_biaya']] = (float)$row['total'];
+    private function buildDateFilter($column, $filterType, $hasWhere = false) {
+        if ($filterType === 'month') {
+            return ($hasWhere ? " AND " : " WHERE ") . "DATE_FORMAT($column, '%Y-%m') = :filter_value";
         }
-        return $result;
+
+        if ($filterType === 'year') {
+            return ($hasWhere ? " AND " : " WHERE ") . "YEAR($column) = :filter_value";
+        }
+
+        return '';
     }
 
-    public function getTotalBiayaKeseluruhan() {
-        $link = PDOUtil::createConnection();
-        $query = "SELECT SUM(jumlah_biaya) as total FROM biaya_operasional";
-        $stmt = $link->prepare($query);
-        $stmt->execute();
-        return (float)($stmt->fetchColumn() ?? 0);
-    }
-
-    public function getTotalBiayaCurrentMonth() {
-        $link = PDOUtil::createConnection();
-        $query = "SELECT SUM(jumlah_biaya) FROM biaya_operasional 
-                  WHERE MONTH(tanggal_pengeluaran) = MONTH(CURRENT_DATE()) 
-                    AND YEAR(tanggal_pengeluaran) = YEAR(CURRENT_DATE())";
-        $stmt = $link->prepare($query);
-        $stmt->execute();
-        return (float)($stmt->fetchColumn() ?? 0.0);
-    }
-
-    public function getTotalByKategoriFiltered($filterType, $year = null, $month = null) {
-        $link = PDOUtil::createConnection();
-        $query = "SELECT kategori_biaya, SUM(jumlah_biaya) as total FROM biaya_operasional";
-        $where = [];
-        $params = [];
-        
-        if ($filterType === 'year' && $year) {
-            $where[] = "YEAR(tanggal_pengeluaran) = :year";
-            $params[':year'] = $year;
-        } else if ($filterType === 'month' && $year && $month) {
-            $where[] = "YEAR(tanggal_pengeluaran) = :year AND MONTH(tanggal_pengeluaran) = :month";
-            $params[':year'] = $year;
-            $params[':month'] = $month;
+    private function bindDateFilter(PDOStatement $stmt, $filterType, $filterValue) {
+        if ($filterType === 'month' || $filterType === 'year') {
+            $stmt->bindValue(':filter_value', $filterValue);
         }
-        
-        if (!empty($where)) {
-            $query .= " WHERE " . implode(" AND ", $where);
-        }
-        
-        $query .= " GROUP BY kategori_biaya";
-        $stmt = $link->prepare($query);
-        foreach ($params as $key => $val) {
-            $stmt->bindValue($key, $val, PDO::PARAM_INT);
-        }
-        $stmt->execute();
-        
-        $result = [
-            'Listrik' => 0.0,
-            'Air' => 0.0,
-            'Kebersihan' => 0.0,
-            'Gaji Karyawan' => 0.0,
-            'Perbaikan' => 0.0,
-            'Lainnya' => 0.0
-        ];
-        
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $cat = $row['kategori_biaya'];
-            if (array_key_exists($cat, $result)) {
-                $result[$cat] = (float)$row['total'];
-            }
-        }
-        return $result;
     }
 }
 ?>
