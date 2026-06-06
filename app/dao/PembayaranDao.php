@@ -252,9 +252,7 @@ class PembayaranDao
         $stmt->execute();
     }
 
-    /**
-     * Map row database ke object Pembayaran
-     */
+    // Map row database ke object Pembayaran
     private function mapRowToPembayaran($row)
     {
         $pembayaran = new Pembayaran(
@@ -273,9 +271,6 @@ class PembayaranDao
         return $pembayaran;
     }
 
-    /**
-     * Get statistik pembayaran
-     */
     public function getStatistik()
     {
         $link = PDOUtil::createConnection();
@@ -290,6 +285,136 @@ class PembayaranDao
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function countByVerificationStatus()
+    {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT status_verifikasi, COUNT(*) as jumlah 
+                  FROM pembayaran 
+                  GROUP BY status_verifikasi";
+        $stmt = $link->prepare($query);
+        $stmt->execute();
+        
+        $result = [
+            'Proses' => 0,
+            'Berhasil' => 0,
+            'Ditolak' => 0
+        ];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $status = $row['status_verifikasi'];
+            if (isset($result[$status])) {
+                $result[$status] = (int)$row['jumlah'];
+            }
+        }
+        return $result;
+    }
+
+    public function getRevenueCurrentMonth()
+    {
+        $link = PDOUtil::createConnection();
+        $query = "
+            SELECT SUM(t.total_biaya_sewa + t.biaya_tambahan) as total
+            FROM pembayaran p
+            JOIN tagihan t ON p.id_tagihan = t.id_tagihan
+            WHERE p.status_verifikasi = 'Berhasil'
+              AND MONTH(p.tanggal_bayar) = MONTH(CURRENT_DATE())
+              AND YEAR(p.tanggal_bayar) = YEAR(CURRENT_DATE())
+        ";
+        $stmt = $link->prepare($query);
+        $stmt->execute();
+        return (float)($stmt->fetchColumn() ?? 0.0);
+    }
+
+    public function getAvailableYears()
+    {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT DISTINCT YEAR(tanggal_bayar) as tahun 
+                  FROM pembayaran 
+                  WHERE status_verifikasi = 'Berhasil'
+                  ORDER BY tahun DESC";
+        $stmt = $link->prepare($query);
+        $stmt->execute();
+        $years = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        if (empty($years)) {
+            $years = [date('Y')];
+        }
+        return $years;
+    }
+
+    public function getRevenueByMonthForYear($year)
+    {
+        $link = PDOUtil::createConnection();
+        $query = "
+            SELECT 
+                DATE_FORMAT(p.tanggal_bayar, '%m') as bulan,
+                SUM(t.total_biaya_sewa + t.biaya_tambahan) as total
+            FROM pembayaran p
+            JOIN tagihan t ON p.id_tagihan = t.id_tagihan
+            WHERE p.status_verifikasi = 'Berhasil'
+              AND YEAR(p.tanggal_bayar) = :year
+            GROUP BY DATE_FORMAT(p.tanggal_bayar, '%m')
+            ORDER BY bulan ASC
+        ";
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':year', $year, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $raw = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $raw[$row['bulan']] = (float)$row['total'];
+        }
+        
+        $result = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $key = str_pad($m, 2, '0', STR_PAD_LEFT);
+            $result[$key] = $raw[$key] ?? 0.0;
+        }
+        return $result;
+    }
+
+    public function countByVerificationStatusFiltered($filterType, $year = null, $month = null)
+    {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT status_verifikasi, COUNT(*) as jumlah FROM pembayaran";
+        $where = [];
+        $params = [];
+        
+        if ($filterType === 'year' && $year) {
+            $where[] = "YEAR(tanggal_bayar) = :year";
+            $params[':year'] = $year;
+        } else if ($filterType === 'month' && $year && $month) {
+            $where[] = "YEAR(tanggal_bayar) = :year AND MONTH(tanggal_bayar) = :month";
+            $params[':year'] = $year;
+            $params[':month'] = $month;
+        }
+        
+        if (!empty($where)) {
+            $query .= " WHERE " . implode(" AND ", $where);
+        }
+        
+        $query .= " GROUP BY status_verifikasi";
+        $stmt = $link->prepare($query);
+        foreach ($params as $key => $val) {
+            $stmt->bindValue($key, $val, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        
+        $result = [
+            'Proses' => 0,
+            'Berhasil' => 0,
+            'Ditolak' => 0
+        ];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $status = $row['status_verifikasi'];
+            if (isset($result[$status])) {
+                $result[$status] = (int)$row['jumlah'];
+            }
+        }
+        return $result;
     }
 }
 ?>

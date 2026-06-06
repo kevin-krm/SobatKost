@@ -198,3 +198,107 @@ table{
     }
 
 }
+
+/* DASHBOARD KPI CARDS */
+.dashboard-kpi-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    background: #FFFFFF;
+    border-radius: 12px;
+}
+
+.dashboard-kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.kpi-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.kpi-label {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+    color: #1E293B;
+    font-size: 20px;
+}
+
+/* KPI Theme Colors */
+.kpi-indigo {
+    border-left: 4px solid #4F46E5 !important;
+}
+.kpi-indigo .kpi-icon-wrapper {
+    background: rgba(79, 70, 229, 0.1);
+    color: #4F46E5;
+}
+
+.kpi-emerald {
+    border-left: 4px solid #10B981 !important;
+}
+.kpi-emerald .kpi-icon-wrapper {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+}
+
+.kpi-amber {
+    border-left: 4px solid #F59E0B !important;
+}
+.kpi-amber .kpi-icon-wrapper {
+    background: rgba(245, 158, 11, 0.1);
+    color: #F59E0B;
+}
+
+.kpi-rose {
+    border-left: 4px solid #EF4444 !important;
+}
+.kpi-rose .kpi-icon-wrapper {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+}
+
+.kpi-orange {
+    border-left: 4px solid #F97316 !important;
+}
+.kpi-orange .kpi-icon-wrapper {
+    background: rgba(249, 115, 22, 0.1);
+    color: #F97316;
+}
+
+.kpi-slate {
+    border-left: 4px solid #64748B !important;
+}
+.kpi-slate .kpi-icon-wrapper {
+    background: rgba(100, 116, 139, 0.1);
+    color: #64748B;
+}
+
+/* DASHBOARD CHART CARDS */
+.dashboard-chart-card {
+    border-radius: 12px;
+    background: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.dashboard-chart-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05) !important;
+}
+
+.text-indigo {
+    color: #4F46E5 !important;
+}
+.text-slate {
+    color: #334155 !important;
+}

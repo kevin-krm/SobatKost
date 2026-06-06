@@ -249,4 +249,47 @@ class KamarDao {
             ->query("SELECT COUNT(*) FROM kamar")
             ->fetchColumn();
     }
+
+    public function countOccupiedRooms()
+    {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT COUNT(*) FROM kamar k WHERE EXISTS (SELECT 1 FROM kontrak_sewa ks WHERE ks.id_kamar = k.id_kamar AND ks.status_aktif = 1 AND CURDATE() BETWEEN ks.tanggal_mulai AND ks.tanggal_selesai)";
+        return $link->query($query)->fetchColumn();
+    }
+
+    public function countRoomsByStatus()
+    {
+        $link = PDOUtil::createConnection();
+        $query = "
+            SELECT 
+                CASE
+                    WHEN k.status_kamar = 'Perbaikan' THEN 'Perbaikan'
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM kontrak_sewa ks
+                        WHERE ks.id_kamar = k.id_kamar
+                        AND ks.status_aktif = 1
+                        AND CURDATE() BETWEEN ks.tanggal_mulai AND ks.tanggal_selesai
+                    ) THEN 'Terisi'
+                    ELSE k.status_kamar
+                END AS status_real,
+                COUNT(*) as jumlah
+            FROM kamar k
+            GROUP BY status_real
+        ";
+        $stmt = $link->prepare($query);
+        $stmt->execute();
+
+        $result = [
+            'Tersedia' => 0,
+            'Terisi' => 0,
+            'Perbaikan' => 0
+        ];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $status = $row['status_real'];
+            $result[$status] = (int)$row['jumlah'];
+        }
+        return $result;
+    }
 }

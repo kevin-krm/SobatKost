@@ -210,4 +210,13 @@ class PenggunaDao {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function countPenyewaAktif()
+    {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT COUNT(*) FROM pengguna WHERE id_peran = 3 AND status_aktif = 'aktif'";
+        $stmt = $link->prepare($query);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
 }

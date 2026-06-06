@@ -121,4 +121,32 @@ class KomplainDao {
         $stmt->bindValue(':id', $id);
         $stmt->execute();
     }
+
+    public function countKomplainByStatus() {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT status_komplain, COUNT(*) as jumlah 
+                  FROM komplain 
+                  GROUP BY status_komplain";
+        $stmt = $link->prepare($query);
+        $stmt->execute();
+
+        $result = [
+            'Menunggu' => 0,
+            'Diproses' => 0,
+            'Selesai' => 0
+        ];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $status = $row['status_komplain'];
+            // Normalize status to proper keys (case-insensitive)
+            $normalized = ucfirst(strtolower($status));
+            if (isset($result[$normalized])) {
+                $result[$normalized] = (int)$row['jumlah'];
+            } else {
+                // If unexpected status, add it dynamically
+                $result[$normalized] = (int)$row['jumlah'];
+            }
+        }
+        return $result;
+    }
 }

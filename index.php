@@ -3,6 +3,7 @@ session_start();
 
 define('APP_PATH', __DIR__ . '/app');
 define('PUBLIC_PATH', __DIR__ . '/public');
+define('BASE_URL', '/SobatKost');
 
 require_once APP_PATH . '/middleware/Auth.php';
 require_once __DIR__ . '/routes/web.php';
@@ -48,6 +49,15 @@ switch ($url) {
     //HOME
     case 'home':
         controller('HomeController')->index();
+        break;
+    case 'home/revenue':
+        controller('HomeController')->getRevenueData();
+        break;
+    case 'home/pembayaran':
+        controller('HomeController')->getPembayaranData();
+        break;
+    case 'home/biaya':
+        controller('HomeController')->getBiayaData();
         break;
 
     // ADMIN MENU

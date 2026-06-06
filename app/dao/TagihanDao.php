@@ -262,5 +262,65 @@ class TagihanDao
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getTotalRevenue()
+    {
+        $stats = $this->getStatistik();
+        return $stats['total_penerimaan'] ?? 0;
+    }
+
+    public function getTagihanStatusSummary()
+    {
+        $stats = $this->getStatistik();
+        return [
+            'Lunas' => (int)($stats['total_lunas'] ?? 0),
+            'Belum Lunas' => (int)($stats['total_belum_lunas'] ?? 0),
+            'Overdue' => (int)($stats['total_overdue'] ?? 0)
+        ];
+    }
+
+    public function getRevenueByMonth($months = 6)
+    {
+        $link = PDOUtil::createConnection();
+        $query = "
+            SELECT 
+                DATE_FORMAT(updated_at, '%Y-%m') as bulan,
+                SUM(total_biaya_sewa + biaya_tambahan) as total
+            FROM tagihan
+            WHERE status_tagihan = 'Lunas' 
+              AND updated_at >= DATE_SUB(CURDATE(), INTERVAL :months MONTH)
+            GROUP BY DATE_FORMAT(updated_at, '%Y-%m')
+            ORDER BY bulan ASC
+        ";
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':months', $months, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $raw = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $raw[$row['bulan']] = (float)$row['total'];
+        }
+        
+        $result = [];
+        for ($i = $months - 1; $i >= 0; $i--) {
+            $date = new DateTime();
+            $date->modify("-$i months");
+            $key = $date->format('Y-m');
+            $result[$key] = $raw[$key] ?? 0.0;
+        }
+        
+        return $result;
+    }
+
+    public function countTagihanBelumLunasCurrentMonth() {
+        $link = PDOUtil::createConnection();
+        $query = "SELECT COUNT(*) FROM tagihan 
+                  WHERE status_tagihan = 'Belum Lunas' 
+                    AND MONTH(created_at) = MONTH(CURRENT_DATE()) 
+                    AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+        $stmt = $link->prepare($query);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
 }
 ?>
