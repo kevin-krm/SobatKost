@@ -12,7 +12,12 @@ class PDOUtil {
                 self::$connection = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
                 self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                die("Koneksi gagal: " . $e->getMessage());
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                session_unset();
+                @session_destroy();
+                die("Koneksi gagal: " . $e->getMessage() . ". Anda telah terlogout secara otomatis.");
             }
         }
         return self::$connection;
