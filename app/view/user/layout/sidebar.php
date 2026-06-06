@@ -14,7 +14,7 @@ function isActive($path, $currentUrl)
 
     <div class="list-group list-group-flush">
         <a href="/SobatKost/user" class="list-group-item list-group-item-action <?= $currentUrl == '/SobatKost/user' ? 'active' : '' ?>">
-            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            <i class="bi bi-megaphone me-2"></i> Pengumuman
         </a>
 
         <a href="/SobatKost/user/tagihan" class="list-group-item list-group-item-action <?= isActive('user/tagihan', $currentUrl) ?>">
