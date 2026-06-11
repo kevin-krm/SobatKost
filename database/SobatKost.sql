@@ -383,17 +383,212 @@ LEFT JOIN pengguna p ON ks.id_pengguna = p.id_pengguna;
 
 INSERT INTO peran (nama_peran) VALUES ('Owner'), ('Penjaga'), ('Penyewa');
 
--- Pemanggilan Data via SP (Parameter kembali menggunakan format String aslinya)
-CALL sp_insert_pengguna(1, 'Richard Vincentius','123456789','richard@sobatkost.com', '123','test.jpg', 'aktif');
-CALL sp_insert_pengguna(3, 'Budi Santoso','123456789','budi@mail.com', '123','test.jpg', 'aktif');
+-- Pemanggilan Data via SP (Dengan password terenkripsi '$2y$10$VXFHOxYNAPMyt6MyQj44f..Gp8YlKK93oAP4u.ECP64OkPNj3gtoa' yang merupakan hash dari '123')
+CALL sp_insert_pengguna(1, 'Richard Vincentius', '081234567890', 'richard@sobatkost.com', '$2y$10$VXFHOxYNAPMyt6MyQj44f..Gp8YlKK93oAP4u.ECP64OkPNj3gtoa', 'ktp_richard.jpg', 'aktif');
+CALL sp_insert_pengguna(2, 'Agus Setiawan', '081234567891', 'agus@sobatkost.com', '$2y$10$VXFHOxYNAPMyt6MyQj44f..Gp8YlKK93oAP4u.ECP64OkPNj3gtoa', 'ktp_agus.jpg', 'aktif');
+CALL sp_insert_pengguna(3, 'Budi Santoso', '081234567892', 'budi@mail.com', '$2y$10$VXFHOxYNAPMyt6MyQj44f..Gp8YlKK93oAP4u.ECP64OkPNj3gtoa', 'ktp_budi.jpg', 'aktif');
+CALL sp_insert_pengguna(3, 'Siti Rahma', '081234567893', 'siti@mail.com', '$2y$10$VXFHOxYNAPMyt6MyQj44f..Gp8YlKK93oAP4u.ECP64OkPNj3gtoa', 'ktp_siti.jpg', 'aktif');
+CALL sp_insert_pengguna(3, 'Joko Widodo', '081234567894', 'joko@mail.com', '$2y$10$VXFHOxYNAPMyt6MyQj44f..Gp8YlKK93oAP4u.ECP64OkPNj3gtoa', 'ktp_joko.jpg', 'aktif');
+CALL sp_insert_pengguna(3, 'Dewi Lestari', '081234567895', 'dewi@mail.com', '$2y$10$VXFHOxYNAPMyt6MyQj44f..Gp8YlKK93oAP4u.ECP64OkPNj3gtoa', 'ktp_dewi.jpg', 'aktif');
 
+-- Menyimpan referensi ID Pengguna secara dinamis
+SET @owner_id = (SELECT id_pengguna FROM pengguna WHERE email = 'richard@sobatkost.com');
+SET @penjaga_id = (SELECT id_pengguna FROM pengguna WHERE email = 'agus@sobatkost.com');
+SET @budi_id = (SELECT id_pengguna FROM pengguna WHERE email = 'budi@mail.com');
+SET @siti_id = (SELECT id_pengguna FROM pengguna WHERE email = 'siti@mail.com');
+SET @joko_id = (SELECT id_pengguna FROM pengguna WHERE email = 'joko@mail.com');
+SET @dewi_id = (SELECT id_pengguna FROM pengguna WHERE email = 'dewi@mail.com');
+
+-- Tambah Kamar
 CALL sp_insert_kamar('101', 'VIP', 2000000);
 CALL sp_insert_kamar('102', 'Standard', 1500000);
+CALL sp_insert_kamar('103', 'Standard', 1500000);
+CALL sp_insert_kamar('104', 'VIP', 2200000);
+CALL sp_insert_kamar('105', 'Deluxe', 1800000);
+CALL sp_insert_kamar('201', 'Standard', 1400000);
+CALL sp_insert_kamar('202', 'Deluxe', 1750000);
+CALL sp_insert_kamar('203', 'Standard', 1400000);
+CALL sp_insert_kamar('204', 'VIP', 2100000);
+CALL sp_insert_kamar('205', 'Standard', 1400000);
 
-CALL sp_insert_biaya('Kebersihan', 150000, 'Iuran Kebersihan Lingkungan');
-
-CALL sp_insert_pengumuman('Kerja Bakti', 'Minggu pagi harap kumpul di depan kost.');
-
-CALL sp_insert_aturan('Jam Malam', 'Tamu harap lapor sebelum jam 22.00 WIB.');
-
+-- Tambah Inventaris Kamar
 CALL sp_insert_inventaris('K-101', 'AC LG 1/2 PK', 'Bagus');
+CALL sp_insert_inventaris('K-101', 'Tempat Tidur Queen Size', 'Bagus');
+CALL sp_insert_inventaris('K-101', 'Lemari Pakaian Kayu', 'Bagus');
+CALL sp_insert_inventaris('K-101', 'Meja Belajar & Kursi', 'Bagus');
+
+CALL sp_insert_inventaris('K-102', 'Tempat Tidur Single', 'Bagus');
+CALL sp_insert_inventaris('K-102', 'Kipas Angin Miyako', 'Bagus');
+CALL sp_insert_inventaris('K-102', 'Lemari Pakaian Plastik', 'Bagus');
+
+CALL sp_insert_inventaris('K-103', 'Tempat Tidur Single', 'Bagus');
+CALL sp_insert_inventaris('K-103', 'Kipas Angin Miyako', 'Bagus');
+CALL sp_insert_inventaris('K-103', 'Lemari Pakaian Plastik', 'Cukup');
+
+CALL sp_insert_inventaris('K-104', 'AC Sharp 1/2 PK', 'Bagus');
+CALL sp_insert_inventaris('K-104', 'Tempat Tidur Queen Size', 'Bagus');
+CALL sp_insert_inventaris('K-104', 'Televisi LED 32 Inch', 'Bagus');
+
+CALL sp_insert_inventaris('K-105', 'AC LG 1/2 PK', 'Bagus');
+CALL sp_insert_inventaris('K-105', 'Tempat Tidur Single', 'Bagus');
+CALL sp_insert_inventaris('K-105', 'Lemari Pakaian Kayu', 'Bagus');
+
+-- Tambah Kontrak Sewa
+-- Kontrak Budi di Kamar 101 (Bulanan, Aktif)
+CALL sp_insert_kontrak(@budi_id, 'K-101', 'Bulanan');
+SET @budi_kontrak_id = (SELECT id_kontrak FROM kontrak_sewa WHERE id_pengguna = @budi_id ORDER BY created_at DESC LIMIT 1);
+UPDATE kontrak_sewa 
+SET tanggal_mulai = DATE_SUB(CURDATE(), INTERVAL 1 MONTH), 
+    tanggal_selesai = DATE_ADD(CURDATE(), INTERVAL 11 MONTH),
+    status_aktif = 2 
+WHERE id_kontrak = @budi_kontrak_id;
+
+-- Kontrak Siti di Kamar 102 (Bulanan, Aktif)
+CALL sp_insert_kontrak(@siti_id, 'K-102', 'Bulanan');
+SET @siti_kontrak_id = (SELECT id_kontrak FROM kontrak_sewa WHERE id_pengguna = @siti_id ORDER BY created_at DESC LIMIT 1);
+UPDATE kontrak_sewa 
+SET tanggal_mulai = DATE_SUB(CURDATE(), INTERVAL 15 DAY), 
+    tanggal_selesai = DATE_ADD(CURDATE(), INTERVAL 15 DAY),
+    status_aktif = 2 
+WHERE id_kontrak = @siti_kontrak_id;
+
+-- Kontrak Joko di Kamar 105 (Tahunan, Aktif)
+CALL sp_insert_kontrak(@joko_id, 'K-105', 'Tahunan');
+SET @joko_kontrak_id = (SELECT id_kontrak FROM kontrak_sewa WHERE id_pengguna = @joko_id ORDER BY created_at DESC LIMIT 1);
+UPDATE kontrak_sewa 
+SET tanggal_mulai = DATE_SUB(CURDATE(), INTERVAL 3 MONTH), 
+    tanggal_selesai = DATE_ADD(CURDATE(), INTERVAL 9 MONTH),
+    status_aktif = 2 
+WHERE id_kontrak = @joko_kontrak_id;
+
+-- Kontrak Expired (Penyewa Budi di Kamar 103, sudah selesai/tidak aktif)
+CALL sp_insert_kontrak(@budi_id, 'K-103', 'Bulanan');
+SET @expired_kontrak_id = (SELECT id_kontrak FROM kontrak_sewa WHERE id_pengguna = @budi_id ORDER BY created_at DESC LIMIT 1);
+UPDATE kontrak_sewa 
+SET tanggal_mulai = DATE_SUB(CURDATE(), INTERVAL 3 MONTH), 
+    tanggal_selesai = DATE_SUB(CURDATE(), INTERVAL 1 MONTH),
+    status_aktif = 0 
+WHERE id_kontrak = @expired_kontrak_id;
+
+-- Tambah Tagihan & Pembayaran
+-- 1. Tagihan Lunas Budi (Bulan lalu)
+CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 0);
+SET @tagihan_budi_lunas = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @budi_kontrak_id ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan 
+SET tanggal_jatuh_tempo = DATE_SUB(CURDATE(), INTERVAL 15 DAY),
+    status_tagihan = 'Lunas',
+    created_at = DATE_SUB(CURDATE(), INTERVAL 20 DAY),
+    updated_at = DATE_SUB(CURDATE(), INTERVAL 20 DAY)
+WHERE id_tagihan = @tagihan_budi_lunas;
+
+CALL sp_insert_pembayaran(@tagihan_budi_lunas, 'Transfer Bank');
+SET @pembayaran_budi_lunas = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_budi_lunas ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran
+SET tanggal_bayar = DATE_SUB(CURDATE(), INTERVAL 20 DAY),
+    status_verifikasi = 'Berhasil',
+    bukti_pembayaran = 'bukti_transfer_budi.jpg',
+    created_at = DATE_SUB(CURDATE(), INTERVAL 20 DAY),
+    updated_at = DATE_SUB(CURDATE(), INTERVAL 20 DAY)
+WHERE id_pembayaran = @pembayaran_budi_lunas;
+
+-- 2. Tagihan Belum Lunas Budi (Bulan ini, overdue)
+CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 50000);
+SET @tagihan_budi_belum_lunas = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @budi_kontrak_id ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan 
+SET tanggal_jatuh_tempo = DATE_SUB(CURDATE(), INTERVAL 2 DAY),
+    status_tagihan = 'Belum Lunas',
+    created_at = DATE_SUB(CURDATE(), INTERVAL 9 DAY),
+    updated_at = DATE_SUB(CURDATE(), INTERVAL 9 DAY)
+WHERE id_tagihan = @tagihan_budi_belum_lunas;
+
+-- Pembayaran Budi dalam status verifikasi (Proses)
+CALL sp_insert_pembayaran(@tagihan_budi_belum_lunas, 'Transfer Bank');
+SET @pembayaran_budi_proses = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_budi_belum_lunas ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran
+SET tanggal_bayar = NOW(),
+    status_verifikasi = 'Proses',
+    bukti_pembayaran = 'bukti_budi_pending.jpg',
+    created_at = NOW(),
+    updated_at = NOW()
+WHERE id_pembayaran = @pembayaran_budi_proses;
+
+-- 3. Tagihan Lunas Siti (Bulan ini)
+CALL sp_insert_tagihan(@siti_kontrak_id, 1500000, 0);
+SET @tagihan_siti_lunas = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @siti_kontrak_id ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan 
+SET tanggal_jatuh_tempo = DATE_ADD(CURDATE(), INTERVAL 15 DAY),
+    status_tagihan = 'Lunas',
+    created_at = DATE_SUB(CURDATE(), INTERVAL 5 DAY),
+    updated_at = DATE_SUB(CURDATE(), INTERVAL 4 DAY)
+WHERE id_tagihan = @tagihan_siti_lunas;
+
+CALL sp_insert_pembayaran(@tagihan_siti_lunas, 'E-Wallet (OVO)');
+SET @pembayaran_siti_lunas = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_siti_lunas ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran
+SET tanggal_bayar = DATE_SUB(CURDATE(), INTERVAL 4 DAY),
+    status_verifikasi = 'Berhasil',
+    bukti_pembayaran = 'bukti_ovo_siti.jpg',
+    created_at = DATE_SUB(CURDATE(), INTERVAL 4 DAY),
+    updated_at = DATE_SUB(CURDATE(), INTERVAL 4 DAY)
+WHERE id_pembayaran = @pembayaran_siti_lunas;
+
+-- 4. Tagihan Lunas Joko (Tahunan)
+CALL sp_insert_tagihan(@joko_kontrak_id, 21600000, 0);
+SET @tagihan_joko_lunas = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @joko_kontrak_id ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan 
+SET tanggal_jatuh_tempo = DATE_SUB(CURDATE(), INTERVAL 2 MONTH),
+    status_tagihan = 'Lunas',
+    created_at = DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
+    updated_at = DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+WHERE id_tagihan = @tagihan_joko_lunas;
+
+CALL sp_insert_pembayaran(@tagihan_joko_lunas, 'Transfer Bank');
+SET @pembayaran_joko_lunas = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_joko_lunas ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran
+SET tanggal_bayar = DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
+    status_verifikasi = 'Berhasil',
+    bukti_pembayaran = 'bukti_transfer_joko.jpg',
+    created_at = DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
+    updated_at = DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+WHERE id_pembayaran = @pembayaran_joko_lunas;
+
+-- Tambah Biaya Operasional
+CALL sp_insert_biaya('Kebersihan', 150000, 'Iuran Kebersihan Lingkungan');
+CALL sp_insert_biaya('Listrik', 750000, 'Token Listrik Koridor & Area Umum');
+CALL sp_insert_biaya('Air', 300000, 'Tagihan PDAM Bulan Mei');
+CALL sp_insert_biaya('Gaji Karyawan', 1200000, 'Gaji Pak Agus (Penjaga Kost)');
+CALL sp_insert_biaya('Perbaikan', 250000, 'Perbaikan Pompa Air Utama');
+CALL sp_insert_biaya('Lainnya', 100000, 'Pembelian Sapu dan Alat Pel Baru');
+
+-- Tambah Pengumuman
+CALL sp_insert_pengumuman('Kerja Bakti', 'Minggu pagi harap kumpul di depan kost.');
+CALL sp_insert_pengumuman('Pemberitahuan Fogging', 'Akan diadakan fogging DBD di area kost pada hari Sabtu depan mulai jam 09.00 WIB.');
+CALL sp_insert_pengumuman('Pembayaran Tagihan Tepat Waktu', 'Diingatkan kepada seluruh penghuni untuk melakukan pembayaran sewa paling lambat tanggal 10 setiap bulannya.');
+
+-- Tambah Aturan Kost
+CALL sp_insert_aturan('Jam Malam', 'Tamu harap lapor sebelum jam 22.00 WIB.');
+CALL sp_insert_aturan('Dilarang Membawa Hewan Peliharaan', 'Demi kenyamanan bersama, penghuni kost dilarang membawa dan memelihara hewan peliharaan di dalam kamar maupun lingkungan kost.');
+CALL sp_insert_aturan('Menjaga Ketenangan', 'Harap menjaga ketenangan dan tidak berisik di atas pukul 22.00 WIB.');
+CALL sp_insert_aturan('Penggunaan Parkir', 'Setiap penghuni wajib memarkirkan kendaraannya dengan rapi di area parkir yang telah disediakan dan mengunci ganda kendaraan.');
+
+-- Tambah Komplain
+CALL sp_insert_komplain(@budi_id, 'Kran Air Bocor', 'Kran air di kamar mandi dalam kamar K-101 bocor dan terus menetes.');
+SET @komplain_budi = (SELECT id_komplain FROM komplain WHERE id_pengguna = @budi_id ORDER BY created_at DESC LIMIT 1);
+UPDATE komplain 
+SET status_komplain = 'Diproses',
+    tanggal_lapor = DATE_SUB(NOW(), INTERVAL 3 DAY)
+WHERE id_komplain = @komplain_budi;
+
+CALL sp_insert_komplain(@siti_id, 'AC Kurang Dingin', 'AC di kamar K-102 terasa kurang dingin meskipun suhu sudah diatur ke 16 derajat.');
+SET @komplain_siti = (SELECT id_komplain FROM komplain WHERE id_pengguna = @siti_id ORDER BY created_at DESC LIMIT 1);
+UPDATE komplain 
+SET status_komplain = 'Menunggu',
+    tanggal_lapor = NOW()
+WHERE id_komplain = @komplain_siti;
+
+CALL sp_insert_komplain(@joko_id, 'Lampu Koridor Mati', 'Lampu di koridor lantai 2 depan kamar K-202 mati.');
+SET @komplain_joko = (SELECT id_komplain FROM komplain WHERE id_pengguna = @joko_id ORDER BY created_at DESC LIMIT 1);
+UPDATE komplain 
+SET status_komplain = 'Selesai',
+    tanggal_lapor = DATE_SUB(NOW(), INTERVAL 5 DAY)
+WHERE id_komplain = @komplain_joko;
