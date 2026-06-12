@@ -126,6 +126,8 @@ class Route
             'user/aturan' => [1, 3],
             'user/about' => [1, 3],
             'user/about/updatePassword' => [1, 3],
+            'user/about/changeEmail' => [1, 3],
+            'user/about/updateEmail' => [1, 3],
         ];
 
         //ROLE CHECK

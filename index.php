@@ -319,6 +319,14 @@ switch ($url) {
     case 'user/about/updatePassword':
         controller('UserController')->updatePassword();
         break;
+
+    case 'user/about/changeEmail':
+        controller('UserController')->changeEmail();
+        break;
+
+    case 'user/about/updateEmail':
+        controller('UserController')->updateEmail();
+        break;
     
     case 'user/tagihan/detail':
         if (!$id) {

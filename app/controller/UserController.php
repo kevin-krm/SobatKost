@@ -86,4 +86,91 @@ class UserController
         header("Location: /SobatKost/index.php?url=user/about");
         exit;
     }
+
+    public function changeEmail()
+    {
+        $id_pengguna = $_SESSION['user']['id'];
+        $pengguna = $this->penggunaDao->getPenggunaById($id_pengguna);
+
+        if (!$pengguna) {
+            echo "<h3>Data pengguna tidak ditemukan</h3>";
+            exit;
+        }
+
+        $contentView = APP_PATH . '/view/user/about/change_email.php';
+        require_once APP_PATH . '/view/user/index.php';
+    }
+
+    public function updateEmail()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: /SobatKost/index.php?url=user/about");
+            exit;
+        }
+
+        $id_pengguna = $_SESSION['user']['id'];
+        $pengguna = $this->penggunaDao->getPenggunaById($id_pengguna);
+
+        if (!$pengguna) {
+            $_SESSION['error'] = 'Pengguna tidak ditemukan';
+            header("Location: /SobatKost/index.php?url=user/about");
+            exit;
+        }
+
+        $email_baru = trim($_POST['email_baru'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+
+        if (empty($email_baru) || empty($password)) {
+            $_SESSION['error'] = 'Semua field harus diisi!';
+            header("Location: /SobatKost/index.php?url=user/about/changeEmail");
+            exit;
+        }
+
+        // Verify password
+        if (!password_verify($password, $pengguna->getPassword())) {
+            $_SESSION['error'] = 'Password salah!';
+            header("Location: /SobatKost/index.php?url=user/about/changeEmail");
+            exit;
+        }
+
+        // Check if email already exists for another user
+        $existingEmail = $this->penggunaDao->findByEmail($email_baru);
+        if ($existingEmail && $existingEmail['id_pengguna'] != $id_pengguna) {
+            $_SESSION['error'] = 'Email sudah digunakan oleh akun lain!';
+            header("Location: /SobatKost/index.php?url=user/about/changeEmail");
+            exit;
+        }
+
+        // Check if new email is identical to current email
+        if ($email_baru === $pengguna->getEmail()) {
+            $_SESSION['error'] = 'Email baru tidak boleh sama dengan email lama!';
+            header("Location: /SobatKost/index.php?url=user/about/changeEmail");
+            exit;
+        }
+
+        // Update email in DB
+        $updatedPengguna = new Pengguna(
+            $pengguna->getId(),
+            $pengguna->getIdPeran(),
+            $pengguna->getNamaLengkap(),
+            $pengguna->getNomorTelepon(),
+            $email_baru,
+            $pengguna->getPassword(),
+            $pengguna->getCreatedAt(),
+            $pengguna->getFotoKtp(),
+            $pengguna->getStatusAktif()
+        );
+
+        $this->penggunaDao->updatePengguna($updatedPengguna);
+
+        // Clear session and logout user
+        session_unset();
+        session_destroy();
+
+        // Start new session to store success message for the login view
+        session_start();
+        $_SESSION['success'] = 'Email berhasil diperbarui secara mandiri. Silakan login kembali dengan email baru Anda.';
+        header("Location: /SobatKost/index.php?url=login");
+        exit;
+    }
 }

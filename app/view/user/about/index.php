@@ -60,7 +60,12 @@
 
                     <div class="mb-3">
                         <label class="form-label text-muted small fw-semibold">EMAIL</label>
-                        <input type="text" class="form-control bg-light border-0 py-2 rounded-3 text-secondary" value="<?= htmlspecialchars($pengguna->getEmail()); ?>" readonly>
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 py-2 rounded-start-3 text-secondary" value="<?= htmlspecialchars($pengguna->getEmail()); ?>" readonly>
+                            <a href="/SobatKost/index.php?url=user/about/changeEmail" class="btn btn-primary px-3 rounded-end-3 d-flex align-items-center fw-semibold">
+                                <i class="bi bi-pencil-square me-1"></i> Ubah
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
