@@ -146,12 +146,7 @@ class PenggunaController
 
         $dao = new PenggunaDao();
         $penggunaLama = $dao->getPenggunaById($id);
-        $password = !empty($_POST['kata_sandi'])
-            ? password_hash(
-                $_POST['kata_sandi'],
-                PASSWORD_DEFAULT
-            )
-            : $penggunaLama->getPassword();
+        $password = $penggunaLama->getPassword();
 
         $fotoPath = $penggunaLama->getFotoKtp();
 

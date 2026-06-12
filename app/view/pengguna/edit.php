@@ -58,19 +58,10 @@
                             <label class="form-label">Email</label>
                             <input
                                     type="email"
-                                    class="form-control"
+                                    class="form-control bg-light"
                                     name="email"
                                     value="<?= htmlspecialchars($pengguna->getEmail()); ?>"
-                            >
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label">Password Baru</label>
-                            <input
-                                    type="password"
-                                    class="form-control"
-                                    name="kata_sandi"
-                                    placeholder="Kosongkan jika tidak ingin mengganti password"
+                                    readonly
                             >
                         </div>
 
