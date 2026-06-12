@@ -46,6 +46,30 @@ switch ($url) {
         controller('AuthController')->logout();
         break;
 
+    case 'forgot-password':
+        controller('AuthController')->forgotPassword();
+        break;
+
+    case 'forgot-password/submit-email':
+        controller('AuthController')->forgotPasswordSubmitEmail();
+        break;
+
+    case 'forgot-password/otp':
+        controller('AuthController')->forgotPasswordOtp();
+        break;
+
+    case 'forgot-password/verify-otp':
+        controller('AuthController')->forgotPasswordVerifyOtp();
+        break;
+
+    case 'forgot-password/reset':
+        controller('AuthController')->forgotPasswordReset();
+        break;
+
+    case 'forgot-password/update':
+        controller('AuthController')->forgotPasswordUpdate();
+        break;
+
     //HOME
     case 'home':
         controller('HomeController')->index();

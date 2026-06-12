@@ -219,4 +219,14 @@ class PenggunaDao {
         $stmt->execute();
         return (int)$stmt->fetchColumn();
     }
+
+    public function updatePasswordByEmail($email, $passwordHash)
+    {
+        $link = PDOUtil::createConnection();
+        $query = "UPDATE pengguna SET kata_sandi = :pass WHERE email = :email";
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':pass', $passwordHash);
+        $stmt->bindValue(':email', $email);
+        return $stmt->execute();
+    }
 }

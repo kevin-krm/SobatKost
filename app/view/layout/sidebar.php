@@ -47,10 +47,10 @@
             </a>
         </div>
 
-        <!-- Kategori: Pengaturan & Master (Hanya Admin/Owner) -->
+        <!-- Kategori: Administrasi (Hanya Admin/Owner) -->
         <?php if (Auth::isOwner()): ?>
             <a href="#adminMenu" data-bs-toggle="collapse" aria-expanded="false" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-shield-lock-fill me-2"></i> Pengaturan & Master</span>
+                <span><i class="bi bi-shield-lock-fill me-2"></i> Administrasi</span>
                 <i class="bi bi-chevron-down chevron-arrow"></i>
             </a>
             <div class="collapse" id="adminMenu">

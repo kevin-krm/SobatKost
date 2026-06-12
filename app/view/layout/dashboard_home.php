@@ -106,13 +106,13 @@ $kpis = $dashboardData['kpiCards'];
             </div>
         </div>
     </div>
-    <!-- Revenue Trend (Line) -->
+    <!-- Revenue (Line) -->
     <div class="col-12 col-lg-7">
         <div class="card dashboard-chart-card border-0 shadow-sm h-100">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title fw-bold mb-0 text-slate">
-                        <i class="bi bi-graph-up-arrow me-2 text-indigo"></i>Tren Pendapatan Bulanan
+                        <i class="bi bi-graph-up-arrow me-2 text-indigo"></i>Pendapatan Bulanan
                     </h5>
                     <div class="d-flex align-items-center gap-2">
                         <label for="revenueYearSelect" class="form-label mb-0 small text-muted">Tahun:</label>

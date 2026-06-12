@@ -20,6 +20,13 @@
         <?php unset($_SESSION['error']); ?>
     <?php endif; ?>
 
+    <?php if (isset($_SESSION['success'])) : ?>
+        <div class="success-message" style="background: #e6f9ed; color: #2ecc71; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; text-align: center; border: 1px solid #c2f0d0;">
+            <?= $_SESSION['success']; ?>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
     <form method="POST" action="index.php?url=login/process">
 
         <div class="form-group">
@@ -38,7 +45,11 @@
                     type="password"
                     class="form-control"
                     name="password"
+                    required
             >
+            <div style="text-align: right; margin-top: 8px;">
+                <a href="index.php?url=forgot-password" style="color: #4F46E5; text-decoration: none; font-size: 13px; font-weight: 600; transition: color 0.2s;" onmouseover="this.style.color='#3730A3'" onmouseout="this.style.color='#4F46E5'">Lupa Password?</a>
+            </div>
         </div>
 
         <button type="submit" class="login-btn">

@@ -10,7 +10,13 @@ class Route
             '',
             'login',
             'login/process',
-            'logout'
+            'logout',
+            'forgot-password',
+            'forgot-password/submit-email',
+            'forgot-password/otp',
+            'forgot-password/verify-otp',
+            'forgot-password/reset',
+            'forgot-password/update'
         ];
         if (!in_array($url, $publicRoutes) && !Auth::check()) {
             header('Location: index.php?url=login');

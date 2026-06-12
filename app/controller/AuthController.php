@@ -80,4 +80,137 @@ class AuthController
         header('Location: index.php?url=login');
         exit;
     }
+
+    public function forgotPassword()
+    {
+        if (isset($_SESSION['user'])) {
+            header('Location: index.php?url=home');
+            exit;
+        }
+        require_once APP_PATH . '/view/auth/forgot_password.php';
+    }
+
+    public function forgotPasswordSubmitEmail()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?url=forgot-password');
+            exit;
+        }
+
+        $email = trim($_POST['email'] ?? '');
+        if (empty($email)) {
+            $_SESSION['error'] = 'Email wajib diisi';
+            header('Location: index.php?url=forgot-password');
+            exit;
+        }
+
+        $user = $this->penggunaDao->findByEmail($email);
+        if (!$user) {
+            $_SESSION['error'] = 'Email tidak ditemukan';
+            header('Location: index.php?url=forgot-password');
+            exit;
+        }
+
+        $_SESSION['reset_email'] = $email;
+        $_SESSION['otp_attempts'] = 0;
+        $_SESSION['otp_verified'] = false;
+
+        header('Location: index.php?url=forgot-password/otp');
+        exit;
+    }
+
+    public function forgotPasswordOtp()
+    {
+        if (!isset($_SESSION['reset_email'])) {
+            header('Location: index.php?url=forgot-password');
+            exit;
+        }
+        require_once APP_PATH . '/view/auth/otp.php';
+    }
+
+    public function forgotPasswordVerifyOtp()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?url=forgot-password/otp');
+            exit;
+        }
+
+        if (!isset($_SESSION['reset_email'])) {
+            header('Location: index.php?url=forgot-password');
+            exit;
+        }
+
+        $otp = trim($_POST['otp'] ?? '');
+        $hardcodedOtp = '123456';
+
+        if ($otp === $hardcodedOtp) {
+            $_SESSION['otp_verified'] = true;
+            unset($_SESSION['otp_attempts']); // Clean up attempt counter
+            header('Location: index.php?url=forgot-password/reset');
+            exit;
+        } else {
+            $_SESSION['otp_attempts'] = ($_SESSION['otp_attempts'] ?? 0) + 1;
+            if ($_SESSION['otp_attempts'] >= 3) {
+                // Clear reset session
+                unset($_SESSION['reset_email']);
+                unset($_SESSION['otp_attempts']);
+                unset($_SESSION['otp_verified']);
+                $_SESSION['error'] = 'Batas percobaan OTP habis. Silakan coba lagi.';
+                header('Location: index.php?url=login');
+                exit;
+            } else {
+                $_SESSION['error'] = 'OTP salah. Sisa percobaan: ' . (3 - $_SESSION['otp_attempts']);
+                header('Location: index.php?url=forgot-password/otp');
+                exit;
+            }
+        }
+    }
+
+    public function forgotPasswordReset()
+    {
+        if (!isset($_SESSION['reset_email']) || !($_SESSION['otp_verified'] ?? false)) {
+            header('Location: index.php?url=forgot-password');
+            exit;
+        }
+        require_once APP_PATH . '/view/auth/reset_password.php';
+    }
+
+    public function forgotPasswordUpdate()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?url=forgot-password/reset');
+            exit;
+        }
+
+        if (!isset($_SESSION['reset_email']) || !($_SESSION['otp_verified'] ?? false)) {
+            header('Location: index.php?url=forgot-password');
+            exit;
+        }
+
+        $password = trim($_POST['password'] ?? '');
+        $confirmPassword = trim($_POST['confirm_password'] ?? '');
+
+        if (empty($password)) {
+            $_SESSION['error'] = 'Password baru wajib diisi';
+            header('Location: index.php?url=forgot-password/reset');
+            exit;
+        }
+
+        if ($password !== $confirmPassword) {
+            $_SESSION['error'] = 'Konfirmasi password tidak cocok dengan password baru';
+            header('Location: index.php?url=forgot-password/reset');
+            exit;
+        }
+
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $this->penggunaDao->updatePasswordByEmail($_SESSION['reset_email'], $passwordHash);
+
+        // Clear reset session variables
+        unset($_SESSION['reset_email']);
+        unset($_SESSION['otp_verified']);
+
+        $_SESSION['success'] = 'Password berhasil diperbarui. Silakan login.';
+        header('Location: index.php?url=login');
+        exit;
+    }
 }
