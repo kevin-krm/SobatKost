@@ -1,9 +1,43 @@
 <?php
 $currentUrl = $_SERVER['REQUEST_URI'];
 $userId = $_SESSION['user']['id'] ?? null;
+
+if ($userId) {
+    require_once APP_PATH . '/dao/TagihanDao.php';
+    require_once APP_PATH . '/dao/KontrakDao.php';
+    require_once APP_PATH . '/model/TagihanReminderService.php';
+
+    // Clear existing notifications to keep it updated with database changes (e.g. if paid)
+    unset($_SESSION['reminder_notifications'][$userId]);
+
+    $tagihanDao = new TagihanDao();
+    $kontrakDao = new KontrakDao();
+    $kontrakList = $kontrakDao->getKontrakByPengguna($userId);
+
+    $dueTagihanList = [];
+    foreach ($kontrakList as $kontrak) {
+        $tagihan_kontrak = $tagihanDao->getTagihanByKontrakId($kontrak->getIdKontrak());
+        foreach ($tagihan_kontrak as $tagihan) {
+            if ($tagihan->getStatusTagihan() === 'Belum Lunas') {
+                $dueDate = strtotime($tagihan->getTanggalJatuhTempo());
+                $limitDate = strtotime('+7 days');
+                if ($dueDate <= $limitDate) {
+                    $dueTagihanList[] = $tagihan;
+                }
+            }
+        }
+    }
+
+    if (!empty($dueTagihanList)) {
+        $reminderService = new TagihanReminderService();
+        $reminderService->kirimReminder($dueTagihanList);
+    }
+}
+
 $reminderNotifications = $userId && isset($_SESSION['reminder_notifications'][$userId])
     ? array_values($_SESSION['reminder_notifications'][$userId])
     : [];
+
 function isActive($path, $currentUrl)
 {
     return strpos($currentUrl, $path) !== false ? 'active' : '';
