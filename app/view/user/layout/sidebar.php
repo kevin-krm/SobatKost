@@ -1,5 +1,9 @@
 <?php
 $currentUrl = $_SERVER['REQUEST_URI'];
+$userId = $_SESSION['user']['id'] ?? null;
+$reminderNotifications = $userId && isset($_SESSION['reminder_notifications'][$userId])
+    ? array_values($_SESSION['reminder_notifications'][$userId])
+    : [];
 function isActive($path, $currentUrl)
 {
     return strpos($currentUrl, $path) !== false ? 'active' : '';
@@ -67,7 +71,7 @@ function isActive($path, $currentUrl)
                     >
                         <i class="bi bi-bell fs-5"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
+                            <?= count($reminderNotifications) ?>
                         </span>
                     </button>
 
@@ -77,12 +81,25 @@ function isActive($path, $currentUrl)
                             Notifikasi
                         </li>
 
-                        <li class="text-center py-5 px-3">
-                            <i class="bi bi-bell-slash fs-1 text-muted"></i>
-                            <p class="text-muted mt-3 mb-0">
-                                Belum ada notifikasi
-                            </p>
-                        </li>
+                        <?php if (empty($reminderNotifications)): ?>
+                            <li class="text-center py-5 px-3">
+                                <i class="bi bi-bell-slash fs-1 text-muted"></i>
+                                <p class="text-muted mt-3 mb-0">
+                                    Belum ada notifikasi
+                                </p>
+                            </li>
+                        <?php else: ?>
+                            <?php foreach ($reminderNotifications as $notif): ?>
+                                <li class="px-3 py-3 border-bottom">
+                                    <div class="fw-bold small mb-1">
+                                        <?= htmlspecialchars($notif['judul']) ?>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <?= htmlspecialchars($notif['pesan']) ?>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </ul>
                 </div>
 

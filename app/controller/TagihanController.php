@@ -3,6 +3,7 @@ require_once APP_PATH . '/dao/TagihanDao.php';
 require_once APP_PATH . '/dao/KontrakDao.php';
 require_once APP_PATH . '/dao/KamarDao.php';
 require_once APP_PATH . '/model/TagihanFactory.php';
+require_once APP_PATH . '/model/TagihanReminderService.php';
 require_once APP_PATH . '/dao/PembayaranDao.php';
 
 class TagihanController
@@ -56,7 +57,7 @@ class TagihanController
         }
 
         $id_kontrak = $_POST['id_kontrak'] ?? null;
-        $biaya_tambahan = $_POST['biaya_tambahan'] ?? 0;
+        $biaya_tambahan = max(0, (float) ($_POST['biaya_tambahan'] ?? 0));
 
         if (!$id_kontrak) {
             $_SESSION['error'] = 'ID Kontrak tidak valid';
@@ -74,21 +75,17 @@ class TagihanController
             exit;
         }
 
-        // Ambil harga kamar
-        $kamarDao = new KamarDao();
-        $kamar = $kamarDao->getKamarById($kontrak->getIdKamar());
-
-        if (!$kamar) {
-            $_SESSION['error'] = 'Data kamar tidak ditemukan';
+        if ($kontrak->getHargaDasar() === null) {
+            $_SESSION['error'] = 'Harga kamar pada kontrak tidak ditemukan';
             header("Location: /SobatKost/index.php?url=tagihan/create");
             exit;
         }
 
-        // Gunakan Factory untuk membuat tagihan
+        // Total biaya sewa dihitung otomatis dari kontrak_sewa.tipe_sewa.
         $tagihan = TagihanFactory::createTagihan(
             $kontrak->getTipeSewa(),
             $id_kontrak,
-            $kamar->getHargaDasar(),
+            $kontrak->getHargaDasar(),
             $biaya_tambahan,
             $kontrak->getTanggalMulai()
         );
@@ -209,9 +206,24 @@ class TagihanController
         $statistik = $this->tagihanDao->getStatistik();
         $tagihanBelumLunas = $this->tagihanDao->countTagihanBelumLunas();
         $tagihanOverdue = $this->tagihanDao->countTagihanOverdue();
+        $tagihanJatuhTempo = $this->tagihanDao->getTagihanJatuhTempoDalamHari(7);
 
         $contentView = APP_PATH . '/view/tagihan/dashboard.php';
         require_once APP_PATH . '/view/index.php';
+    }
+
+    /**
+     * Kirim reminder jatuh tempo ke penyewa melalui adapter notifikasi.
+     */
+    public function sendReminders()
+    {
+        $tagihanJatuhTempo = $this->tagihanDao->getTagihanJatuhTempoDalamHari(7);
+        $reminderService = new TagihanReminderService();
+        $totalTerkirim = $reminderService->kirimReminder($tagihanJatuhTempo);
+
+        $_SESSION['success'] = "Reminder jatuh tempo berhasil dikirim untuk {$totalTerkirim} tagihan.";
+        header("Location: /SobatKost/index.php?url=tagihan/dashboard");
+        exit;
     }
 }
 ?>

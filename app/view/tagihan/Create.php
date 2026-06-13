@@ -31,6 +31,7 @@
                                     <option value="<?= $k->getIdKontrak() ?>" 
                                             data-tipe="<?= $k->getTipeSewa() ?>"
                                             data-harga="<?= $k->getHargaDasar() ?>"
+                                            data-total-sewa="<?= TagihanFactory::hitungTotalBiayaSewa($k->getTipeSewa(), $k->getHargaDasar()) ?>"
                                             data-penyewa="<?= htmlspecialchars($k->getNamaLengkap()) ?>"
                                             data-kamar="<?= $k->getNomorKamar() ?>">
                                         <?= $k->getIdKontrak() ?> - <?= $k->getNamaLengkap() ?> (<?= $k->getNomorKamar() ?>)
@@ -47,6 +48,7 @@
                         <div class="alert alert-info" id="kontrakInfo">
                             <p class="mb-1"><strong>Tipe Sewa:</strong> <span id="tipe_sewa">-</span></p>
                             <p class="mb-1"><strong>Harga Dasar:</strong> Rp <span id="harga_dasar">0</span></p>
+                            <p class="mb-1"><strong>Biaya Sewa Otomatis:</strong> Rp <span id="biaya_sewa_otomatis">0</span></p>
                             <p class="mb-0"><strong>Penyewa:</strong> <span id="nama_penyewa">-</span></p>
                         </div>
                     </div>
@@ -61,7 +63,7 @@
                             <span class="input-group-text">Rp</span>
                             <input type="number" id="biaya_tambahan" name="biaya_tambahan" class="form-control" value="0" min="0" step="1000">
                         </div>
-                        <small class="text-muted">Biaya tambahan seperti denda atau biaya layanan tambahan</small>
+                        <small class="text-muted">Biaya tambahan seperti denda, inventaris, atau layanan tambahan</small>
                     </div>
                 </div>
 
@@ -104,14 +106,15 @@ function updateKontrakInfo() {
     
     document.getElementById('tipe_sewa').textContent = option.dataset.tipe || '-';
     document.getElementById('harga_dasar').textContent = formatCurrency(option.dataset.harga || 0);
+    document.getElementById('biaya_sewa_otomatis').textContent = formatCurrency(option.dataset.totalSewa || 0);
     document.getElementById('nama_penyewa').textContent = option.dataset.penyewa || '-';
     
     // Update preview
-    const harga = parseInt(option.dataset.harga) || 0;
+    const biayaSewa = parseInt(option.dataset.totalSewa) || 0;
     const tambahan = parseInt(document.getElementById('biaya_tambahan').value) || 0;
-    const total = harga + tambahan;
+    const total = biayaSewa + tambahan;
     
-    document.getElementById('preview_sewa').textContent = formatCurrency(harga);
+    document.getElementById('preview_sewa').textContent = formatCurrency(biayaSewa);
     document.getElementById('preview_tambahan').textContent = formatCurrency(tambahan);
     document.getElementById('preview_total').textContent = formatCurrency(total);
 }

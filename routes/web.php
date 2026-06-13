@@ -85,6 +85,7 @@ class Route
             'tagihan/update' => [1, 2],
             'tagihan/delete' => [1, 2],
             'tagihan/dashboard' => [1, 2],
+            'tagihan/send-reminders' => [1, 2],
 
             'pembayaran' => [1, 2],
             'pembayaran/index' => [1, 2],
