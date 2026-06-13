@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/Tagihan.php';
+require_once __DIR__ . '/../model/TagihanFactory.php';
 
 class TagihanDao
 {
@@ -10,7 +11,7 @@ class TagihanDao
     public function getAllTagihan()
     {
         $link = PDOUtil::createConnection();
-        $query = "SELECT * FROM tagihan ORDER BY created_at DESC";
+        $query = $this->getTagihanWithKontrakQuery() . " ORDER BY t.created_at DESC";
         $stmt = $link->prepare($query);
         $stmt->execute();
 
@@ -28,7 +29,7 @@ class TagihanDao
     public function getTagihanById($id_tagihan)
     {
         $link = PDOUtil::createConnection();
-        $query = "SELECT * FROM tagihan WHERE id_tagihan = :id";
+        $query = $this->getTagihanWithKontrakQuery() . " WHERE t.id_tagihan = :id";
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id', $id_tagihan);
         $stmt->execute();
@@ -43,7 +44,7 @@ class TagihanDao
     public function getTagihanByKontrakId($id_kontrak)
     {
         $link = PDOUtil::createConnection();
-        $query = "SELECT * FROM tagihan WHERE id_kontrak = :id_kontrak ORDER BY created_at DESC";
+        $query = $this->getTagihanWithKontrakQuery() . " WHERE t.id_kontrak = :id_kontrak ORDER BY t.created_at DESC";
         $stmt = $link->prepare($query);
         $stmt->bindParam(':id_kontrak', $id_kontrak);
         $stmt->execute();
@@ -62,11 +63,7 @@ class TagihanDao
     public function getTagihanWithKontrak($limit = 10, $offset = 0)
     {
         $link = PDOUtil::createConnection();
-        $query = "SELECT t.*, ks.tipe_sewa, p.nama_lengkap, k.nomor_kamar
-                  FROM tagihan t
-                  JOIN kontrak_sewa ks ON t.id_kontrak = ks.id_kontrak
-                  JOIN pengguna p ON ks.id_pengguna = p.id_pengguna
-                  JOIN kamar k ON ks.id_kamar = k.id_kamar
+        $query = $this->getTagihanWithKontrakQuery() . "
                   ORDER BY t.created_at DESC
                   LIMIT :limit OFFSET :offset";
         
@@ -133,6 +130,29 @@ class TagihanDao
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['total'];
+    }
+
+    /**
+     * Ambil tagihan belum lunas yang mendekati jatuh tempo untuk reminder.
+     */
+    public function getTagihanJatuhTempoDalamHari($jumlah_hari = 7)
+    {
+        $link = PDOUtil::createConnection();
+        $query = $this->getTagihanWithKontrakQuery() . "
+                  WHERE t.status_tagihan = 'Belum Lunas'
+                  AND t.tanggal_jatuh_tempo BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL :jumlah_hari DAY)
+                  ORDER BY t.tanggal_jatuh_tempo ASC";
+
+        $stmt = $link->prepare($query);
+        $stmt->bindValue(':jumlah_hari', $jumlah_hari, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = $this->mapRowToTagihan($row);
+        }
+
+        return $result;
     }
 
     /**
@@ -239,8 +259,21 @@ class TagihanDao
             $row['created_at'],
             $row['updated_at'],
             $row['nama_lengkap'] ?? null,
-            $row['nomor_kamar'] ?? null
+            $row['nomor_kamar'] ?? null,
+            $row['id_pengguna'] ?? null
         );
+    }
+
+    /**
+     * Query dasar tagihan yang selalu terhubung ke kontrak_sewa.
+     */
+    private function getTagihanWithKontrakQuery()
+    {
+        return "SELECT t.*, ks.id_pengguna, ks.tipe_sewa, p.nama_lengkap, k.nomor_kamar
+                FROM tagihan t
+                JOIN kontrak_sewa ks ON t.id_kontrak = ks.id_kontrak
+                JOIN pengguna p ON ks.id_pengguna = p.id_pengguna
+                JOIN kamar k ON ks.id_kamar = k.id_kamar";
     }
 
     /**

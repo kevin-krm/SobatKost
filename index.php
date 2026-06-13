@@ -373,6 +373,9 @@ switch ($url) {
     case 'tagihan/dashboard':
         controller('TagihanController')->dashboard();
         break;
+    case 'tagihan/send-reminders':
+        controller('TagihanController')->sendReminders();
+        break;
 
     // PEMBAYARAN
     case 'pembayaran':

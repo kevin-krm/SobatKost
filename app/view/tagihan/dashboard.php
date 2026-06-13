@@ -7,6 +7,15 @@
     </div>
 </div>
 
+<?php if (isset($_SESSION['success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        <?= $_SESSION['success'] ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
 <!-- Statistik Utama -->
 <div class="row mb-4">
     <div class="col-md-3">
@@ -81,7 +90,6 @@
     </div>
 </div>
 
-<!-- Aksi Cepat -->
 <div class="row mb-4">
     <div class="col-md-12">
         <div class="card border-0 shadow-sm">
@@ -106,10 +114,56 @@
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="/SobatKost/index.php?url=pengumuman/create" class="btn btn-outline-warning w-100">
-                            <i class="bi bi-megaphone me-2"></i> Buat Pengumuman
+                        <a href="/SobatKost/index.php?url=tagihan/send-reminders" class="btn btn-outline-warning w-100">
+                            <i class="bi bi-bell me-2"></i> Kirim Reminder
                         </a>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reminder Jatuh Tempo -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Reminder Jatuh Tempo 7 Hari</h5>
+                <span class="badge bg-warning text-dark"><?= count($tagihanJatuhTempo ?? []) ?> tagihan</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID TAGIHAN</th>
+                                <th>PENYEWA</th>
+                                <th>KAMAR</th>
+                                <th>TOTAL</th>
+                                <th>JATUH TEMPO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($tagihanJatuhTempo)): ?>
+                                <tr>
+                                    <td colspan="5" class="text-center p-4 text-muted">
+                                        Tidak ada tagihan yang jatuh tempo dalam 7 hari.
+                                    </td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($tagihanJatuhTempo as $t): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($t->getIdTagihan()) ?></td>
+                                        <td><?= htmlspecialchars($t->getNamaLengkap() ?? '-') ?></td>
+                                        <td><?= htmlspecialchars($t->getNomorKamar() ?? '-') ?></td>
+                                        <td class="fw-bold">Rp <?= number_format($t->getTotalTagihan(), 0, ',', '.') ?></td>
+                                        <td><?= date('d/m/Y', strtotime($t->getTanggalJatuhTempo())) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -1,8 +1,4 @@
 <?php
-/**
- * Invoice Factory
- * Factory Pattern untuk membuat objek Tagihan berdasarkan tipe sewa
- */
 class TagihanFactory
 {
     /**
@@ -48,8 +44,7 @@ class TagihanFactory
      */
     private static function createTagihanHarian($id_kontrak, $harga_dasar, $biaya_tambahan, $tanggal_mulai)
     {
-        $total_hari = 1;
-        $total_biaya_sewa = $harga_dasar * $total_hari;
+        $total_biaya_sewa = self::hitungTotalBiayaSewa('Harian', $harga_dasar);
         
         // Jatuh tempo besok
         $tanggal_jatuh_tempo = date('Y-m-d', strtotime($tanggal_mulai . ' +1 day'));
@@ -74,11 +69,8 @@ class TagihanFactory
      */
     private static function createTagihanBulanan($id_kontrak, $harga_dasar, $biaya_tambahan, $tanggal_mulai)
     {
-        // Hitung jumlah hari dalam bulan
-        $hari_dalam_bulan = cal_days_in_month(CAL_GREGORIAN, date('m', strtotime($tanggal_mulai)), date('Y', strtotime($tanggal_mulai)));
-        
         // Total biaya: harga dasar dianggap untuk 30 hari, jadi ambil rata-rata
-        $total_biaya_sewa = $harga_dasar; // Harga sudah untuk 1 bulan
+        $total_biaya_sewa = self::hitungTotalBiayaSewa('Bulanan', $harga_dasar);
         
         // Jatuh tempo: akhir bulan atau 30 hari kemudian
         $tanggal_jatuh_tempo = date('Y-m-d', strtotime($tanggal_mulai . ' +1 month'));
@@ -105,7 +97,7 @@ class TagihanFactory
     {
         // Asumsi harga_dasar adalah harga per bulan
         // Untuk tahunan, kalikan dengan 12
-        $total_biaya_sewa = $harga_dasar * 12;
+        $total_biaya_sewa = self::hitungTotalBiayaSewa('Tahunan', $harga_dasar);
         
         // Jatuh tempo: setahun kemudian
         $tanggal_jatuh_tempo = date('Y-m-d', strtotime($tanggal_mulai . ' +1 year'));
@@ -187,6 +179,28 @@ class TagihanFactory
         }
 
         return $result;
+    }
+
+    /**
+     * Hitung total biaya sewa otomatis berdasarkan tipe sewa kontrak.
+     *
+     * @param string $tipe_sewa Harian, Bulanan, atau Tahunan
+     * @param float $harga_dasar Harga dasar kamar per hari/bulan sesuai tipe
+     * @return float
+     */
+    public static function hitungTotalBiayaSewa($tipe_sewa, $harga_dasar)
+    {
+        switch (strtolower($tipe_sewa)) {
+            case 'harian':
+            case 'bulanan':
+                return $harga_dasar;
+
+            case 'tahunan':
+                return $harga_dasar * 12;
+
+            default:
+                throw new Exception("Tipe sewa '$tipe_sewa' tidak dikenali");
+        }
     }
 }
 ?>
