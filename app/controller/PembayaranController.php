@@ -91,7 +91,7 @@ class PembayaranController
 
         if (!$id_tagihan || !$metode) {
             $_SESSION['error'] = 'Data pembayaran tidak lengkap';
-            header("Location: /SobatKost/index.php?url=pembayaran/upload&id=" . $id_tagihan);
+            header("Location: /SobatKost/index.php?url=user/tagihan/detail&id=" . $id_tagihan);
             exit;
         }
 
@@ -99,8 +99,23 @@ class PembayaranController
 
         if (!$tagihan) {
             $_SESSION['error'] = 'Tagihan tidak ditemukan';
-            header("Location: /SobatKost/index.php?url=tagihan");
+            header("Location: /SobatKost/index.php?url=user/tagihan");
             exit;
+        }
+
+        if ($tagihan->getStatusTagihan() === 'Lunas') {
+            $_SESSION['error'] = 'Tagihan ini sudah lunas, tidak bisa mengunggah pembayaran baru.';
+            header("Location: /SobatKost/index.php?url=user/tagihan/detail&id=" . $id_tagihan);
+            exit;
+        }
+
+        $existingPembayaran = $this->pembayaranDao->getPembayaranByTagihanId($id_tagihan);
+        foreach ($existingPembayaran as $p) {
+            if (in_array($p->getStatusVerifikasi(), ['Proses', 'Berhasil'])) {
+                $_SESSION['error'] = 'Sudah ada pembayaran yang sedang diproses atau berhasil untuk tagihan ini.';
+                header("Location: /SobatKost/index.php?url=user/tagihan/detail&id=" . $id_tagihan);
+                exit;
+            }
         }
 
         // Pilih strategy pembayaran
@@ -108,7 +123,7 @@ class PembayaranController
 
         if (!$strategy) {
             $_SESSION['error'] = 'Metode pembayaran tidak dikenali';
-            header("Location: /SobatKost/index.php?url=pembayaran/upload&id=" . $id_tagihan);
+            header("Location: /SobatKost/index.php?url=user/tagihan/detail&id=" . $id_tagihan);
             exit;
         }
 
@@ -120,19 +135,19 @@ class PembayaranController
 
         if (!$validation['valid']) {
             $_SESSION['error'] = 'Validasi gagal: ' . implode(', ', $validation['errors']);
-            header("Location: /SobatKost/index.php?url=pembayaran/upload&id=" . $id_tagihan);
+            header("Location: /SobatKost/index.php?url=user/tagihan/detail&id=" . $id_tagihan);
             exit;
         }
 
         // Handle upload bukti pembayaran
         $bukti_pembayaran = null;
 
-        if ($metode !== 'Tunai' && isset($_FILES['bukti_pembayaran'])) {
+        if ($metode !== 'Tunai' && isset($_FILES['bukti_pembayaran']) && $_FILES['bukti_pembayaran']['error'] !== UPLOAD_ERR_NO_FILE) {
             $bukti_pembayaran = $this->uploadBukti($_FILES['bukti_pembayaran']);
 
             if (!$bukti_pembayaran) {
-                $_SESSION['error'] = 'Gagal upload bukti pembayaran';
-                header("Location: /SobatKost/index.php?url=pembayaran/upload&id=" . $id_tagihan);
+                $_SESSION['error'] = 'Gagal upload bukti pembayaran. Periksa format dan ukuran file.';
+                header("Location: /SobatKost/index.php?url=user/tagihan/detail&id=" . $id_tagihan);
                 exit;
             }
         }
@@ -151,7 +166,7 @@ class PembayaranController
         $id_pembayaran = $this->pembayaranDao->insertPembayaran($pembayaran);
 
         $_SESSION['success'] = 'Pembayaran berhasil diupload. ID Pembayaran: ' . $id_pembayaran . '. Menunggu verifikasi admin.';
-        header("Location: /SobatKost/index.php?url=pembayaran/detail&id=" . $id_pembayaran);
+        header("Location: /SobatKost/index.php?url=user/tagihan/detail&id=" . $id_tagihan);
         exit;
     }
 

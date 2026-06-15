@@ -17,12 +17,12 @@ if ($userId) {
     $dueTagihanList = [];
     foreach ($kontrakList as $kontrak) {
         $tagihan_kontrak = $tagihanDao->getTagihanByKontrakId($kontrak->getIdKontrak());
-        foreach ($tagihan_kontrak as $tagihan) {
-            if ($tagihan->getStatusTagihan() === 'Belum Lunas') {
-                $dueDate = strtotime($tagihan->getTanggalJatuhTempo());
+        foreach ($tagihan_kontrak as $tagihan_item) {
+            if ($tagihan_item->getStatusTagihan() === 'Belum Lunas') {
+                $dueDate = strtotime($tagihan_item->getTanggalJatuhTempo());
                 $limitDate = strtotime('+7 days');
                 if ($dueDate <= $limitDate) {
-                    $dueTagihanList[] = $tagihan;
+                    $dueTagihanList[] = $tagihan_item;
                 }
             }
         }
