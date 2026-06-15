@@ -470,125 +470,100 @@ SET tanggal_mulai = DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
     status_aktif = 0 
 WHERE id_kontrak = @expired_kontrak_id;
 
--- Tambah Tagihan & Pembayaran
--- 1. Tagihan Lunas Budi (Bulan lalu)
-CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 0);
-SET @tagihan_budi_lunas = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @budi_kontrak_id ORDER BY created_at DESC LIMIT 1);
-UPDATE tagihan 
-SET tanggal_jatuh_tempo = DATE_SUB(CURDATE(), INTERVAL 15 DAY),
-    status_tagihan = 'Lunas',
-    created_at = DATE_SUB(CURDATE(), INTERVAL 20 DAY),
-    updated_at = DATE_SUB(CURDATE(), INTERVAL 20 DAY)
-WHERE id_tagihan = @tagihan_budi_lunas;
+-- Tambah Tagihan & Pembayaran (Data Dummy Realistis untuk Presentasi)
 
-CALL sp_insert_pembayaran(@tagihan_budi_lunas, 'Transfer Bank');
-SET @pembayaran_budi_lunas = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_budi_lunas ORDER BY created_at DESC LIMIT 1);
-UPDATE pembayaran
-SET tanggal_bayar = DATE_SUB(CURDATE(), INTERVAL 20 DAY),
-    status_verifikasi = 'Berhasil',
-    bukti_pembayaran = 'bukti_transfer_budi.jpg',
-    created_at = DATE_SUB(CURDATE(), INTERVAL 20 DAY),
-    updated_at = DATE_SUB(CURDATE(), INTERVAL 20 DAY)
-WHERE id_pembayaran = @pembayaran_budi_lunas;
-
--- 2. Tagihan Belum Lunas Budi (Bulan ini, overdue)
-CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 50000);
-SET @tagihan_budi_belum_lunas = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @budi_kontrak_id ORDER BY created_at DESC LIMIT 1);
-UPDATE tagihan 
-SET tanggal_jatuh_tempo = DATE_SUB(CURDATE(), INTERVAL 2 DAY),
-    status_tagihan = 'Belum Lunas',
-    created_at = DATE_SUB(CURDATE(), INTERVAL 9 DAY),
-    updated_at = DATE_SUB(CURDATE(), INTERVAL 9 DAY)
-WHERE id_tagihan = @tagihan_budi_belum_lunas;
-
--- Pembayaran Budi dalam status verifikasi (Proses)
-CALL sp_insert_pembayaran(@tagihan_budi_belum_lunas, 'Transfer Bank');
-SET @pembayaran_budi_proses = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_budi_belum_lunas ORDER BY created_at DESC LIMIT 1);
-UPDATE pembayaran
-SET tanggal_bayar = NOW(),
-    status_verifikasi = 'Proses',
-    bukti_pembayaran = 'bukti_budi_pending.jpg',
-    created_at = NOW(),
-    updated_at = NOW()
-WHERE id_pembayaran = @pembayaran_budi_proses;
-
--- 3. Tagihan Lunas Siti (Bulan ini)
-CALL sp_insert_tagihan(@siti_kontrak_id, 1500000, 0);
-SET @tagihan_siti_lunas = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @siti_kontrak_id ORDER BY created_at DESC LIMIT 1);
-UPDATE tagihan 
-SET tanggal_jatuh_tempo = DATE_ADD(CURDATE(), INTERVAL 15 DAY),
-    status_tagihan = 'Lunas',
-    created_at = DATE_SUB(CURDATE(), INTERVAL 5 DAY),
-    updated_at = DATE_SUB(CURDATE(), INTERVAL 4 DAY)
-WHERE id_tagihan = @tagihan_siti_lunas;
-
-CALL sp_insert_pembayaran(@tagihan_siti_lunas, 'E-Wallet (OVO)');
-SET @pembayaran_siti_lunas = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_siti_lunas ORDER BY created_at DESC LIMIT 1);
-UPDATE pembayaran
-SET tanggal_bayar = DATE_SUB(CURDATE(), INTERVAL 4 DAY),
-    status_verifikasi = 'Berhasil',
-    bukti_pembayaran = 'bukti_ovo_siti.jpg',
-    created_at = DATE_SUB(CURDATE(), INTERVAL 4 DAY),
-    updated_at = DATE_SUB(CURDATE(), INTERVAL 4 DAY)
-WHERE id_pembayaran = @pembayaran_siti_lunas;
-
--- 4. Tagihan Lunas Joko (Tahunan)
+-- 1. JOKO (Pembayaran Tahunan di Desember 2025, agar tidak merusak skala grafik 2026)
 CALL sp_insert_tagihan(@joko_kontrak_id, 21600000, 0);
-SET @tagihan_joko_lunas = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @joko_kontrak_id ORDER BY created_at DESC LIMIT 1);
-UPDATE tagihan 
-SET tanggal_jatuh_tempo = DATE_SUB(CURDATE(), INTERVAL 2 MONTH),
-    status_tagihan = 'Lunas',
-    created_at = DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
-    updated_at = DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
-WHERE id_tagihan = @tagihan_joko_lunas;
+SET @tagihan_joko = (SELECT id_tagihan FROM tagihan WHERE id_kontrak = @joko_kontrak_id ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2025-12-10', status_tagihan = 'Lunas', created_at = '2025-12-01 08:00:00', updated_at = '2025-12-05 10:00:00' WHERE id_tagihan = @tagihan_joko;
 
-CALL sp_insert_pembayaran(@tagihan_joko_lunas, 'Transfer Bank');
-SET @pembayaran_joko_lunas = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_joko_lunas ORDER BY created_at DESC LIMIT 1);
-UPDATE pembayaran
-SET tanggal_bayar = DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
-    status_verifikasi = 'Berhasil',
-    bukti_pembayaran = 'bukti_transfer_joko.jpg',
-    created_at = DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
-    updated_at = DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
-WHERE id_pembayaran = @pembayaran_joko_lunas;
+CALL sp_insert_pembayaran(@tagihan_joko, 'Transfer Bank');
+SET @pembayaran_joko = (SELECT id_pembayaran FROM pembayaran WHERE id_tagihan = @tagihan_joko ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2025-12-05 10:00:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_joko_jan.jpg', created_at = '2025-12-05 10:00:00', updated_at = '2025-12-05 10:00:00' WHERE id_pembayaran = @pembayaran_joko;
 
--- Tambah Biaya Operasional
-CALL sp_insert_biaya('Kebersihan', 150000, 'Iuran Kebersihan Lingkungan');
-CALL sp_insert_biaya('Listrik', 750000, 'Token Listrik Koridor & Area Umum');
-CALL sp_insert_biaya('Air', 300000, 'Tagihan PDAM Bulan Mei');
-CALL sp_insert_biaya('Gaji Karyawan', 1200000, 'Gaji Pak Agus (Penjaga Kost)');
-CALL sp_insert_biaya('Perbaikan', 250000, 'Perbaikan Pompa Air Utama');
-CALL sp_insert_biaya('Lainnya', 100000, 'Pembelian Sapu dan Alat Pel Baru');
+-- 2. HISTORI JANUARI 2026
+CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-01-05', status_tagihan = 'Lunas', created_at = '2026-01-01 08:00:00', updated_at = '2026-01-02 09:00:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'Transfer Bank');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-01-02 09:00:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_budi_jan.jpg', created_at = '2026-01-02 09:00:00', updated_at = '2026-01-02 09:00:00' WHERE id_pembayaran = @pembayaran;
 
--- Tambah Pengumuman
-CALL sp_insert_pengumuman('Kerja Bakti', 'Minggu pagi harap kumpul di depan kost.');
-CALL sp_insert_pengumuman('Pemberitahuan Fogging', 'Akan diadakan fogging DBD di area kost pada hari Sabtu depan mulai jam 09.00 WIB.');
-CALL sp_insert_pengumuman('Pembayaran Tagihan Tepat Waktu', 'Diingatkan kepada seluruh penghuni untuk melakukan pembayaran sewa paling lambat tanggal 10 setiap bulannya.');
+CALL sp_insert_tagihan(@siti_kontrak_id, 1500000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-01-10', status_tagihan = 'Lunas', created_at = '2026-01-01 08:00:00', updated_at = '2026-01-08 11:00:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'E-Wallet (OVO)');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-01-08 11:00:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_siti_jan.jpg', created_at = '2026-01-08 11:00:00', updated_at = '2026-01-08 11:00:00' WHERE id_pembayaran = @pembayaran;
 
--- Tambah Aturan Kost
-CALL sp_insert_aturan('Jam Malam', 'Tamu harap lapor sebelum jam 22.00 WIB.');
-CALL sp_insert_aturan('Dilarang Membawa Hewan Peliharaan', 'Demi kenyamanan bersama, penghuni kost dilarang membawa dan memelihara hewan peliharaan di dalam kamar maupun lingkungan kost.');
-CALL sp_insert_aturan('Menjaga Ketenangan', 'Harap menjaga ketenangan dan tidak berisik di atas pukul 22.00 WIB.');
-CALL sp_insert_aturan('Penggunaan Parkir', 'Setiap penghuni wajib memarkirkan kendaraannya dengan rapi di area parkir yang telah disediakan dan mengunci ganda kendaraan.');
+-- 3. HISTORI FEBRUARI 2026
+CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-02-05', status_tagihan = 'Lunas', created_at = '2026-02-01 08:00:00', updated_at = '2026-02-03 09:00:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'Transfer Bank');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-02-03 09:00:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_budi_feb.jpg', created_at = '2026-02-03 09:00:00', updated_at = '2026-02-03 09:00:00' WHERE id_pembayaran = @pembayaran;
 
--- Tambah Komplain
-CALL sp_insert_komplain(@budi_id, 'Kran Air Bocor', 'Kran air di kamar mandi dalam kamar K-101 bocor dan terus menetes.');
-SET @komplain_budi = (SELECT id_komplain FROM komplain WHERE id_pengguna = @budi_id ORDER BY created_at DESC LIMIT 1);
-UPDATE komplain 
-SET status_komplain = 'Diproses',
-    tanggal_lapor = DATE_SUB(NOW(), INTERVAL 3 DAY)
-WHERE id_komplain = @komplain_budi;
+CALL sp_insert_tagihan(@siti_kontrak_id, 1500000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-02-10', status_tagihan = 'Lunas', created_at = '2026-02-01 08:00:00', updated_at = '2026-02-09 11:00:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'E-Wallet (OVO)');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-02-09 11:00:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_siti_feb.jpg', created_at = '2026-02-09 11:00:00', updated_at = '2026-02-09 11:00:00' WHERE id_pembayaran = @pembayaran;
 
-CALL sp_insert_komplain(@siti_id, 'AC Kurang Dingin', 'AC di kamar K-102 terasa kurang dingin meskipun suhu sudah diatur ke 16 derajat.');
-SET @komplain_siti = (SELECT id_komplain FROM komplain WHERE id_pengguna = @siti_id ORDER BY created_at DESC LIMIT 1);
-UPDATE komplain 
-SET status_komplain = 'Menunggu',
-    tanggal_lapor = NOW()
-WHERE id_komplain = @komplain_siti;
+-- 4. HISTORI MARET 2026
+CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-03-05', status_tagihan = 'Lunas', created_at = '2026-03-01 08:00:00', updated_at = '2026-03-02 09:00:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'Transfer Bank');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-03-02 09:00:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_budi_mar.jpg', created_at = '2026-03-02 09:00:00', updated_at = '2026-03-02 09:00:00' WHERE id_pembayaran = @pembayaran;
 
-CALL sp_insert_komplain(@joko_id, 'Lampu Koridor Mati', 'Lampu di koridor lantai 2 depan kamar K-202 mati.');
-SET @komplain_joko = (SELECT id_komplain FROM komplain WHERE id_pengguna = @joko_id ORDER BY created_at DESC LIMIT 1);
-UPDATE komplain 
-SET status_komplain = 'Selesai',
-    tanggal_lapor = DATE_SUB(NOW(), INTERVAL 5 DAY)
-WHERE id_komplain = @komplain_joko;
+CALL sp_insert_tagihan(@siti_kontrak_id, 1500000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-03-10', status_tagihan = 'Lunas', created_at = '2026-03-01 08:00:00', updated_at = '2026-03-08 11:00:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'E-Wallet (OVO)');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-03-08 11:00:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_siti_mar.jpg', created_at = '2026-03-08 11:00:00', updated_at = '2026-03-08 11:00:00' WHERE id_pembayaran = @pembayaran;
+
+-- 5. HISTORI APRIL 2026
+CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 50000);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-04-05', status_tagihan = 'Lunas', created_at = '2026-04-01 08:00:00', updated_at = '2026-04-07 14:00:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'Transfer Bank');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-04-07 14:00:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_budi_apr.jpg', created_at = '2026-04-07 14:00:00', updated_at = '2026-04-07 14:00:00' WHERE id_pembayaran = @pembayaran;
+
+CALL sp_insert_tagihan(@siti_kontrak_id, 1500000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-04-10', status_tagihan = 'Lunas', created_at = '2026-04-01 08:00:00', updated_at = '2026-04-09 10:30:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'E-Wallet (OVO)');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-04-09 10:30:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_siti_apr.jpg', created_at = '2026-04-09 10:30:00', updated_at = '2026-04-09 10:30:00' WHERE id_pembayaran = @pembayaran;
+
+-- 6. HISTORI MEI 2026
+CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-05-05', status_tagihan = 'Lunas', created_at = '2026-05-01 08:00:00', updated_at = '2026-05-03 08:15:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'Transfer Bank');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-05-03 08:15:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_budi_mei.jpg', created_at = '2026-05-03 08:15:00', updated_at = '2026-05-03 08:15:00' WHERE id_pembayaran = @pembayaran;
+
+CALL sp_insert_tagihan(@siti_kontrak_id, 1500000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-05-10', status_tagihan = 'Lunas', created_at = '2026-05-01 08:00:00', updated_at = '2026-05-09 16:45:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'E-Wallet (GoPay)');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-05-09 16:45:00', status_verifikasi = 'Berhasil', bukti_pembayaran = 'bukti_siti_mei.jpg', created_at = '2026-05-09 16:45:00', updated_at = '2026-05-09 16:45:00' WHERE id_pembayaran = @pembayaran;
+
+-- 7. BULAN JUNI 2026 (Bulan Berjalan / Real-time Status)
+CALL sp_insert_tagihan(@budi_kontrak_id, 2000000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-06-05', status_tagihan = 'Belum Lunas', created_at = '2026-06-01 08:00:00', updated_at = '2026-06-04 19:00:00' WHERE id_tagihan = @tagihan;
+CALL sp_insert_pembayaran(@tagihan, 'Transfer Bank');
+SET @pembayaran = (SELECT id_pembayaran FROM pembayaran ORDER BY created_at DESC LIMIT 1);
+UPDATE pembayaran SET tanggal_bayar = '2026-06-04 19:00:00', status_verifikasi = 'Proses', bukti_pembayaran = 'bukti_budi_jun_pending.jpg', created_at = '2026-06-04 19:00:00', updated_at = '2026-06-04 19:00:00' WHERE id_pembayaran = @pembayaran;
+
+CALL sp_insert_tagihan(@siti_kontrak_id, 1500000, 0);
+SET @tagihan = (SELECT id_tagihan FROM tagihan ORDER BY created_at DESC LIMIT 1);
+UPDATE tagihan SET tanggal_jatuh_tempo = '2026-06-10', status_tagihan = 'Belum Lunas', created_at = '2026-06-01 08:00:00', updated_at = '2026-06-01 08:00:00' WHERE id_tagihan = @tagihan;
