@@ -112,7 +112,7 @@ class PembayaranController
         $existingPembayaran = $this->pembayaranDao->getPembayaranByTagihanId($id_tagihan);
         foreach ($existingPembayaran as $p) {
             if (in_array($p->getStatusVerifikasi(), ['Proses', 'Berhasil'])) {
-                $_SESSION['error'] = 'Sudah ada pembayaran yang sedang diproses atau berhasil untuk tagihan ini.';
+                $_SESSION['error'] = 'Sudah ada pembayaran yang sedang diproses.';
                 header("Location: /SobatKost/index.php?url=user/tagihan/detail&id=" . $id_tagihan);
                 exit;
             }
