@@ -148,7 +148,7 @@
 
     <div class="col-md-4">
         <!-- Aksi Verifikasi (Admin) -->
-        <?php if ($_SESSION['user']['role'] === 'Admin' && $pembayaran->getStatusVerifikasi() === 'Proses'): ?>
+        <?php if (in_array($_SESSION['user']['role'], ['Owner', 'Penjaga']) && $pembayaran->getStatusVerifikasi() === 'Proses'): ?>
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">Aksi Verifikasi</h5>

@@ -75,11 +75,6 @@
                 <h5 class="mb-0">Aksi</h5>
             </div>
             <div class="card-body">
-                <?php if ($tagihan->getStatusTagihan() === 'Belum Lunas'): ?>
-                    <a href="/SobatKost/index.php?url=pembayaran/upload&id=<?= $tagihan->getIdTagihan() ?>" class="btn btn-success w-100 mb-2">
-                        <i class="bi bi-upload me-2"></i> Upload Pembayaran
-                    </a>
-                <?php endif; ?>
 
                 <a href="/SobatKost/index.php?url=tagihan/edit&id=<?= $tagihan->getIdTagihan() ?>" class="btn btn-warning w-100 mb-2">
                     <i class="bi bi-pencil me-2"></i> Edit

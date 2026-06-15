@@ -58,7 +58,7 @@
                         <th>METODE</th>
                         <th>TANGGAL</th>
                         <th class="text-center">STATUS</th>
-                        <th class="text-center">AKSI</th>
+                        <th class="text-center">DETAIL</th>
                     </tr>
                 </thead>
                 <tbody>
