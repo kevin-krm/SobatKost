@@ -42,12 +42,18 @@ xampp/htdocs/SobatKost/database/SobatKost.sql
 **Cara import database:**
 
 1. Buka phpMyAdmin melalui XAMPP.
-2. Buat database baru dengan nama `sobatkost` (sesuaikan jika diperlukan).
-3. Pilih menu **Import**.
-4. Upload file `SobatKost.sql` dari folder database project.
-5. Klik **Go** untuk menjalankan import.
+2. Pilih menu **Import**.
+3. Upload file `SobatKost.sql` dari folder database project.
+4. Klik **Import** untuk menjalankan import.
 
 Setelah semua selesai, buka browser di alamat [http://localhost/SobatKost](http://localhost/SobatKost) untuk melihat hasilnya.
+
+Untuk Login dengan Data Dummy yang ada, gunakan:
+- richard@sobatkost.com (Owner)
+- agus@sobatkost.com (Penjaga)
+- siti@mail.com (Penyewa)
+
+Silahkan reset password terlebih dahulu dan buat password baru untuk login
 
 ---
 
