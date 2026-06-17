@@ -30,6 +30,12 @@ class TagihanSewaComponent implements TagihanComponent
     }
 }
 
+/**
+ * Menerapkan Decorator Pattern (Structural).
+ * Memungkinkan kita untuk membungkus (menumpuk) biaya fasilitas tambahan 
+ * (seperti kipas angin/parkir) di atas biaya sewa dasar secara dinamis, 
+ * tanpa harus mengubah kode rumus tagihan intinya.
+ */
 abstract class TagihanDecorator implements TagihanComponent
 {
     protected $tagihan;

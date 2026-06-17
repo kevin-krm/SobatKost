@@ -1,4 +1,9 @@
 <?php
+/**
+ * Menerapkan Adapter Pattern
+ * Bertindak sebagai penerjemah/penghubung (Adapter)
+ * Jika kita ingin mengintegrasikan notifikasi internal SobatKost ke layanan eksternal, class ini mengubah format data tagihan agar cocok dan bisa dipahami oleh sistem eksternal tersebut.
+ */
 interface ReminderNotificationAdapter
 {
     public function sendReminder(Tagihan $tagihan);
