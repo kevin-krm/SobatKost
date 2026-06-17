@@ -2,6 +2,11 @@
 require_once __DIR__ . '/Subject.php';
 require_once __DIR__ . '/Observer.php';
 
+/**
+ * Menerapkan Observer Pattern
+ * Berfungsi sebagai sumber informasi utama. 
+ * Setiap kali status komplain diubah oleh admin, class ini akan otomatis memberi sinyal (notify) kepada DashboardNotifier agar layar penyewa langsung diperbarui (update).
+ */
 class Komplain implements Subject {
     private $id_komplain;
     private $id_pengguna;

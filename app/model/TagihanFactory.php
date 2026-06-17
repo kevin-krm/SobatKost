@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class TagihanFactory
+ * Menerapkan Factory Pattern Berfungsi sebagai "Pabrik" yang merakit objek Tagihan. 
+ * Controller cukup memanggil class ini untuk mendapatkan Tagihan tanpa perlu merakit rumus biayanya sendiri.
+ */
 class TagihanFactory
 {
     /**

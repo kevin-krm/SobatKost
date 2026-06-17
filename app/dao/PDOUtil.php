@@ -1,4 +1,10 @@
 <?php
+/**
+ * Class PDOUtil
+ * Menerapkan Singleton Pattern
+ * Memastikan aplikasi hanya membuka satu koneksi (instance) database saja 
+ * untuk mencegah pemborosan memory dan server overload saat query intensif.
+ */
 class PDOUtil {
     private static $connection;
     public static function createConnection() {

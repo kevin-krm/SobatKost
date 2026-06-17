@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Menerapkan Observer Pattern
+ * Berperan sebagai pendengar/pemantau (Observer).
+ * Saat menerima sinyal dari Komplain, class ini akan mengeksekusi logika untuk memperbarui notifikasi atau dashboard penyewa secara real-time.
+ */
 class DashboardNotifier implements Observer {
     public function update(Subject $subject) {
         // Logika saat menerima notifikasi perubahan status

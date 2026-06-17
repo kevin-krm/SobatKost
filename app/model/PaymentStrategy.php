@@ -1,7 +1,8 @@
 <?php
 /**
- * Payment Strategy Interface
- * Mendefinisikan kontrak untuk berbagai metode pembayaran
+ * Menerapkan Strategy Pattern
+ * Berfungsi memisahkan algoritma/logika berbagai metode pembayaran (Transfer, E-Wallet, Cash) agar berdiri sendiri. 
+ * Jika ingin menambah metode baru, cukup buat class baru tanpa membongkar class lama.
  */
 interface PaymentStrategy
 {
