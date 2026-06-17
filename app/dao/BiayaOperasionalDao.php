@@ -3,6 +3,9 @@ require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/BiayaOperasional.php';
 
 class BiayaOperasionalDao {
+    /**
+     * Mengambil data pengeluaran operasional yang difilter dan menggunakan metode pagination.
+     */
     public function getBiayaPage($limit, $offset, $filterType = 'all', $filterValue = null) {
         $link = PDOUtil::createConnection();
         $query = "SELECT * FROM biaya_operasional";
@@ -21,6 +24,9 @@ class BiayaOperasionalDao {
         return $result;
     }
 
+    /**
+     * Menghitung total jumlah baris data pengeluaran operasional setelah diterapkan filter.
+     */
     public function countBiaya($filterType = 'all', $filterValue = null) {
         $link = PDOUtil::createConnection();
         $query = "SELECT COUNT(*) FROM biaya_operasional";
@@ -32,6 +38,9 @@ class BiayaOperasionalDao {
         return (int) $stmt->fetchColumn();
     }
 
+    /**
+     * Mengambil data uang masuk (pemasukan tagihan lunas) untuk keperluan rekap keuangan.
+     */
     public function getPemasukanPage($limit, $offset, $filterType = 'all', $filterValue = null) {
         $link = PDOUtil::createConnection();
         $query = "SELECT p.id_pembayaran,
@@ -62,6 +71,9 @@ class BiayaOperasionalDao {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Menghitung total jumlah baris data transaksi uang masuk.
+     */
     public function countPemasukan($filterType = 'all', $filterValue = null) {
         $link = PDOUtil::createConnection();
         $query = "SELECT COUNT(*)
@@ -76,6 +88,9 @@ class BiayaOperasionalDao {
         return (int) $stmt->fetchColumn();
     }
 
+    /**
+     * Merangkum total pemasukan dan pengeluaran secara komprehensif untuk melihat sisa laba bersih.
+     */
     public function getRingkasanKeuangan($filterType = 'all', $filterValue = null) {
         $pemasukan = $this->getTotalPemasukan($filterType, $filterValue);
         $pengeluaran = $this->getTotalPengeluaran($filterType, $filterValue);
@@ -87,6 +102,9 @@ class BiayaOperasionalDao {
         ];
     }
 
+    /**
+     * Menghitung nominal keseluruhan pemasukan uang dari pembayaran sewa kamar.
+     */
     public function getTotalPemasukan($filterType = 'all', $filterValue = null) {
         $link = PDOUtil::createConnection();
         $query = "SELECT COALESCE(SUM(t.total_biaya_sewa + t.biaya_tambahan), 0)
@@ -102,6 +120,9 @@ class BiayaOperasionalDao {
         return (float) $stmt->fetchColumn();
     }
 
+    /**
+     * Menghitung nominal keseluruhan biaya operasional bulanan yang telah dikeluarkan.
+     */
     public function getTotalPengeluaran($filterType = 'all', $filterValue = null) {
         $link = PDOUtil::createConnection();
         $query = "SELECT COALESCE(SUM(jumlah_biaya), 0) FROM biaya_operasional";
@@ -114,6 +135,9 @@ class BiayaOperasionalDao {
         return (float) $stmt->fetchColumn();
     }
 
+    /**
+     * Mencari detail satu pengeluaran operasional secara spesifik di database.
+     */
     public function getBiayaById($id) {
         $link = PDOUtil::createConnection();
         $query = "SELECT * FROM biaya_operasional WHERE id_biaya = :id";
@@ -127,6 +151,9 @@ class BiayaOperasionalDao {
         return new BiayaOperasional($row['id_biaya'], $row['kategori_biaya'], $row['jumlah_biaya'], $row['tanggal_pengeluaran'], $row['keterangan']);
     }
 
+    /**
+     * Menyimpan data catatan pengeluaran uang baru ke dalam tabel operasional.
+     */
     public function insertBiaya(BiayaOperasional $biaya) {
         $link = PDOUtil::createConnection();
         $query = "CALL sp_insert_biaya(:kat, :jml, :ket)";
@@ -137,6 +164,9 @@ class BiayaOperasionalDao {
         $stmt->execute();
     }
 
+    /**
+     * Memperbarui rincian data pengeluaran operasional yang sudah ada sebelumnya.
+     */
     public function updateBiaya(BiayaOperasional $biaya) {
         $link = PDOUtil::createConnection();
         $query = "UPDATE biaya_operasional SET kategori_biaya = :kat, jumlah_biaya = :jml, tanggal_pengeluaran = :tgl, keterangan = :ket WHERE id_biaya = :id";
@@ -151,6 +181,9 @@ class BiayaOperasionalDao {
         $stmt->execute();
     }
 
+    /**
+     * Menghapus rekam jejak biaya pengeluaran operasional secara permanen.
+     */
     public function deleteBiaya($id) {
         $link = PDOUtil::createConnection();
         $query = "DELETE FROM biaya_operasional WHERE id_biaya = :id";

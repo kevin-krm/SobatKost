@@ -1,8 +1,14 @@
 <?php
+/**
+ * Menyimpan data kesepakatan sewa. Nyawa penting sebelum tagihan bisa dicetak.
+ */
 require_once APP_PATH . '/dao/KontrakDao.php';
 require_once APP_PATH . '/model/Kontrak.php';
 
 class KontrakController {
+    /**
+     * Menampilkan halaman utama daftar perjanjian kontrak sewa.
+     */
     public function index() {
         $dao = new KontrakDao();
         $limit = 10;
@@ -37,6 +43,10 @@ class KontrakController {
             APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menampilkan form untuk membuat kontrak sewa baru.
+     * Relasi: Memanggil data kamar dan pengguna untuk dipilih di form.
+     */
     public function create() {
         require_once APP_PATH . '/dao/KamarDao.php';
         require_once APP_PATH . '/dao/KontrakDao.php';
@@ -56,6 +66,10 @@ class KontrakController {
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menyimpan data kontrak sewa baru ke sistem.
+     * Relasi: Fungsi ini akan otomatis memengaruhi status kamar (menjadi 'Terisi') di KamarDao.php.
+     */
     public function store() {
         $id_kamar = $_POST['id_kamar'];
         $mulai = $_POST['tanggal_mulai'];
@@ -141,6 +155,9 @@ class KontrakController {
         exit;
     }
 
+    /**
+     * Menampilkan form untuk memperbarui data perjanjian sewa.
+     */
     public function edit($id) {
         require_once APP_PATH . '/dao/KamarDao.php';
         require_once APP_PATH . '/dao/KontrakDao.php';
@@ -166,6 +183,9 @@ class KontrakController {
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menyimpan hasil editan data kontrak kembali ke database via KontrakDao.php.
+     */
     public function update($id) {
         require_once APP_PATH . '/dao/KontrakDao.php';
         $dao = new KontrakDao();
@@ -288,6 +308,9 @@ class KontrakController {
         exit;
     }
 
+    /**
+     * Menghapus data rekam jejak kontrak dari sistem.
+     */
     public function delete($id) {
         $dao = new KontrakDao();
         $kontrak = $dao->getKontrakById($id);
@@ -324,6 +347,9 @@ class KontrakController {
         exit;
     }
 
+    /**
+     * Menghentikan status aktif kontrak sewa sebelum batas waktunya secara paksa.
+     */
     public function terminate($id) {
         require_once APP_PATH . '/dao/KontrakDao.php';
         $dao = new KontrakDao();

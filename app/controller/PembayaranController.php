@@ -1,4 +1,7 @@
 <?php
+/**
+ * Menangani proses transaksi dan verifikasi upload bukti transfer penghuni.
+ */
 require_once APP_PATH . '/dao/PembayaranDao.php';
 require_once APP_PATH . '/dao/TagihanDao.php';
 require_once APP_PATH . '/model/TagihanFactory.php';
@@ -20,6 +23,9 @@ class PembayaranController
 
     /**
      * Tampilkan daftar pembayaran (Admin)
+     */
+/**
+     * Menampilkan daftar semua transaksi pembayaran yang masuk, siap untuk diverifikasi oleh admin.
      */
     public function index()
     {
@@ -173,6 +179,9 @@ class PembayaranController
     /**
      * Detail pembayaran
      */
+/**
+     * Membuka halaman detail untuk melihat foto bukti transfer struk pembayaran.
+     */
     public function detail($id_pembayaran)
     {
         $pembayaran = $this->pembayaranDao->getPembayaranById($id_pembayaran);
@@ -224,6 +233,9 @@ class PembayaranController
 
     /**
      * Reject pembayaran dengan alasan
+     */
+/**
+     * Tombol tolak jika bukti transfer palsu atau tidak sesuai nominalnya.
      */
     public function reject($id_pembayaran)
     {

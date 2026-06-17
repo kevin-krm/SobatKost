@@ -18,6 +18,10 @@ class TagihanController
     /**
      * Tampilkan daftar tagihan (Admin)
      */
+/**
+     * Menampilkan tabel daftar seluruh tagihan sewa.
+     * Relasi: Mengambil data dari fungsi getTagihanPage() di TagihanDao.php agar tampilannya dibagi per halaman (pagination).
+     */
     public function index()
     {
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -37,6 +41,10 @@ class TagihanController
     /**
      * Generate tagihan baru (Admin)
      */
+/**
+     * Menampilkan form halaman untuk mencetak tagihan baru.
+     * Relasi: Menarik data penyewa yang sedang aktif dari getKontrakAktif() di KontrakDao.php untuk dipilih admin.
+     */
     public function create()
     {
         $kontrakDao = new KontrakDao();
@@ -48,6 +56,10 @@ class TagihanController
 
     /**
      * Store tagihan baru ke database
+     */
+/**
+     * Menangkap data dari form buat tagihan lalu mengeksekusi penyimpanannya.
+     * Relasi: Memanggil TagihanFactory.php untuk merakit total biaya otomatis, lalu disuruh simpan ke MySQL lewat insertTagihan() di TagihanDao.php.
      */
     public function store()
     {
@@ -101,6 +113,10 @@ class TagihanController
     /**
      * Detail tagihan (Admin & User)
      */
+/**
+     * Menampilkan halaman rincian satu tagihan spesifik.
+     * Relasi: Menarik juga riwayat bayarnya lewat getPembayaranByTagihanId() di PembayaranDao.php.
+     */
     public function detail($id_tagihan)
     {
         $tagihan = $this->tagihanDao->getTagihanById($id_tagihan);
@@ -121,6 +137,9 @@ class TagihanController
     /**
      * Edit tagihan (Admin)
      */
+/**
+     * Menampilkan form edit untuk merevisi tagihan yang salah ketik (contoh: ubah biaya tambahan atau tanggal jatuh tempo).
+     */
     public function edit($id_tagihan)
     {
         $tagihan = $this->tagihanDao->getTagihanById($id_tagihan);
@@ -137,6 +156,9 @@ class TagihanController
 
     /**
      * Update tagihan
+     */
+/**
+     * Menangkap data perubahan dari form edit tagihan, lalu menyimpannya ulang ke database via updateTagihan() di TagihanDao.php.
      */
     public function update($id_tagihan)
     {
@@ -171,6 +193,10 @@ class TagihanController
     /**
      * Delete tagihan
      */
+/**
+     * Menghapus tagihan dari sistem.
+     * Logika ketat: Sistem memblokir penghapusan tagihan jika sudah ada uang pembayaran yang masuk (nyambung ke PembayaranDao.php).
+     */
     public function delete($id_tagihan)
     {
         $tagihan = $this->tagihanDao->getTagihanById($id_tagihan);
@@ -201,6 +227,9 @@ class TagihanController
     /**
      * Dashboard / Ringkasan tagihan
      */
+/**
+     * Menampilkan widget ringkasan tagihan di halaman awal (seperti total tagihan belum lunas, tagihan yang nunggak/overdue).
+     */
     public function dashboard()
     {
         $statistik = $this->tagihanDao->getStatistik();
@@ -214,6 +243,10 @@ class TagihanController
 
     /**
      * Kirim reminder jatuh tempo ke penyewa melalui adapter notifikasi.
+     */
+/**
+     * Mengeksekusi penagihan otomatis.
+     * Relasi: Memanggil class TagihanReminderService.php (Adapter Pattern) untuk mengirim notifikasi peringatan ke penyewa yang hampir jatuh tempo.
      */
     public function sendReminders()
     {

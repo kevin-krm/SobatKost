@@ -1,4 +1,8 @@
 <?php
+/**
+ * Jantung keamanan aplikasi! Mengurus proses Login, validasi, sampai reset password.
+ * Pintu gerbang utama sebelum user bisa mengakses sistem.
+ */
 require_once APP_PATH . '/dao/PenggunaDao.php';
 
 class AuthController
@@ -10,6 +14,9 @@ class AuthController
         $this->penggunaDao = new PenggunaDao();
     }
 
+    /**
+     * Menampilkan halaman form login untuk akses masuk sistem.
+     */
     public function login()
     {
         if (isset($_SESSION['user'])) {
@@ -26,6 +33,9 @@ class AuthController
         require_once APP_PATH . '/view/auth/login.php';
     }
 
+    /**
+     * Memverifikasi email dan kata sandi. Jika valid, sistem akan membuat sesi login.
+     */
     public function loginProcess()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -73,6 +83,9 @@ class AuthController
         exit;
     }
 
+    /**
+     * Menghapus sesi login dan mengarahkan pengguna kembali ke halaman utama.
+     */
     public function logout()
     {
         session_unset();
@@ -81,6 +94,9 @@ class AuthController
         exit;
     }
 
+    /**
+     * Menampilkan halaman awal untuk proses pemulihan kata sandi (input email).
+     */
     public function forgotPassword()
     {
         if (isset($_SESSION['user'])) {
@@ -90,6 +106,9 @@ class AuthController
         require_once APP_PATH . '/view/auth/forgot_password.php';
     }
 
+    /**
+     * Memverifikasi ketersediaan email di database lalu mengirimkan kode OTP via email.
+     */
     public function forgotPasswordSubmitEmail()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -119,6 +138,9 @@ class AuthController
         exit;
     }
 
+    /**
+     * Menampilkan halaman form untuk memasukkan kode OTP.
+     */
     public function forgotPasswordOtp()
     {
         if (!isset($_SESSION['reset_email'])) {
@@ -128,6 +150,9 @@ class AuthController
         require_once APP_PATH . '/view/auth/otp.php';
     }
 
+    /**
+     * Memvalidasi apakah kode OTP yang dimasukkan pengguna sesuai dengan data sistem.
+     */
     public function forgotPasswordVerifyOtp()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -166,6 +191,9 @@ class AuthController
         }
     }
 
+    /**
+     * Menampilkan form untuk membuat kata sandi baru.
+     */
     public function forgotPasswordReset()
     {
         if (!isset($_SESSION['reset_email']) || !($_SESSION['otp_verified'] ?? false)) {
@@ -175,6 +203,9 @@ class AuthController
         require_once APP_PATH . '/view/auth/reset_password.php';
     }
 
+    /**
+     * Menyimpan kata sandi baru yang sudah dienkripsi (di-hash) ke database via PenggunaDao.php.
+     */
     public function forgotPasswordUpdate()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

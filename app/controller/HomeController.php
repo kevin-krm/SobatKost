@@ -32,6 +32,9 @@ class HomeController {
         return true;
     }
 
+    /**
+     * Mengatur tampilan antarmuka halaman Beranda (Dashboard), meringkas data vital seperti ketersediaan kamar dan total profit.
+     */
     public function index() {
         if (!$this->checkAccess()) {
             header('Location: /SobatKost/user');
@@ -123,6 +126,9 @@ class HomeController {
     }
 
     // AJAX Endpoint: Get Revenue Data for Year
+    /**
+     * Menyediakan format data metrik pendapatan bulanan untuk dirender menjadi representasi grafik statistik.
+     */
     public function getRevenueData() {
         if (!$this->checkAccess()) {
             http_response_code(403);
@@ -153,6 +159,9 @@ class HomeController {
     }
 
     // AJAX Endpoint: Get Payments Verification Data
+    /**
+     * Menyediakan format data status pembayaran untuk keperluan visualisasi grafik proporsi.
+     */
     public function getPembayaranData() {
         if (!$this->checkAccess()) {
             http_response_code(403);
@@ -171,6 +180,9 @@ class HomeController {
     }
 
     // AJAX Endpoint: Get Operational Expenses Data
+    /**
+     * Menyediakan format data persebaran biaya operasional dalam bentuk grafik visualisasi.
+     */
     public function getBiayaData() {
         if (!$this->checkAccess()) {
             http_response_code(403);

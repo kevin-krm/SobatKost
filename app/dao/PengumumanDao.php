@@ -4,6 +4,9 @@ require_once __DIR__ . '/../model/Pengumuman.php';
 
 class PengumumanDao {
 
+    /**
+     * Mengambil semua daftar pengumuman dari database.
+     */
     public function showAllPengumuman() {
         $link = PDOUtil::createConnection();
         $query = "SELECT * FROM pengumuman ORDER BY created_at DESC";
@@ -27,6 +30,9 @@ class PengumumanDao {
         return $result;
     }
 
+    /**
+     * Menulis pesan pengumuman baru ke dalam tabel database.
+     */
     public function addPengumuman(Pengumuman $pengumuman) {
         $link = PDOUtil::createConnection();
         $query = "CALL sp_insert_pengumuman(?, ?)";
@@ -38,6 +44,9 @@ class PengumumanDao {
         return $result;
     }
 
+    /**
+     * Mengambil isi satu pengumuman spesifik berdasarkan ID-nya.
+     */
     public function getPengumumanById($id) {
         $link = PDOUtil::createConnection();
         $query = "SELECT * FROM pengumuman WHERE id_pengumuman = :id";
@@ -60,6 +69,9 @@ class PengumumanDao {
         return $p;
     }
 
+    /**
+     * Mengupdate teks pengumuman lama dengan yang baru.
+     */
     public function updatePengumuman(Pengumuman $p) {
         $link = PDOUtil::createConnection();
         $query = "UPDATE pengumuman SET judul = :judul, konten = :konten WHERE id_pengumuman = :id";
@@ -72,6 +84,9 @@ class PengumumanDao {
         return $result;
     }
 
+    /**
+     * Menghapus data pengumuman dari tabel database.
+     */
     public function deletePengumuman($id) {
         $link = PDOUtil::createConnection();
         $query = "DELETE FROM pengumuman WHERE id_pengumuman = ?";

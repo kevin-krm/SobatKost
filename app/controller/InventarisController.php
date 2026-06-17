@@ -1,8 +1,15 @@
 <?php
+/**
+ * Mengurus pendataan barang-barang yang ada di kamar (AC, kasur, lemari, dll).
+ */
 require_once APP_PATH . '/dao/InventarisDao.php';
 require_once APP_PATH . '/dao/KamarDao.php';
 
 class InventarisController {
+    /**
+     * Menampilkan halaman daftar barang-barang inventaris.
+     * Relasi: Memanggil getInventarisPage() dari InventarisDao.php untuk data berhalaman.
+     */
     public function index() {
         $dao = new InventarisDao();
 
@@ -18,6 +25,9 @@ class InventarisController {
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menangkap data form tambah barang lalu memerintahkan InventarisDao.php menyimpannya ke database.
+     */
     public function store() {
         $id_kamar = $_POST['id_kamar'];
         $nama_barang = $_POST['nama_barang'];
@@ -31,6 +41,9 @@ class InventarisController {
         exit;
     }
 
+    /**
+     * Jalur cepat untuk sekadar mengubah kondisi barang
+     */
     public function updateStatus($id) {
         if (isset($_POST['kondisi_barang'])) {
             $kondisi = $_POST['kondisi_barang'];
@@ -41,6 +54,10 @@ class InventarisController {
         exit;
     }
 
+    /**
+     * Menampilkan form untuk mencatat barang baru.
+     * Relasi: Memanggil KamarDao.php untuk menampilkan pilihan kamar mana yang mau diisi barang.
+     */
     public function create() {
         $kamarDao = new KamarDao();
         $kamarList = $kamarDao->getKamarPage(100, 0);
@@ -49,6 +66,9 @@ class InventarisController {
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menampilkan form edit barang. Menarik data barang lewat getInventarisById() di InventarisDao.php.
+     */
     public function edit($id) {
         $dao = new InventarisDao();
         $inventaris = $dao->getInventarisById($id);
@@ -65,6 +85,9 @@ class InventarisController {
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menangkap data perubahan barang lalu menimpanya ke database via updateInventaris() di InventarisDao.php.
+     */
     public function update($id) {
         $id_kamar = $_POST['id_kamar'];
         $nama_barang = $_POST['nama_barang'];
@@ -78,6 +101,9 @@ class InventarisController {
         exit;
     }
 
+    /**
+     * Mengeksekusi penghapusan barang dari sistem.
+     */
     public function delete($id) {
         $dao = new InventarisDao();
         $dao->deleteInventaris($id);

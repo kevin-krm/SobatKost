@@ -3,6 +3,9 @@ require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/Pengguna.php';
 
 class PenggunaDao {
+    /**
+     * Mengambil data pengguna berdasarkan email untuk keperluan validasi kata sandi saat proses login.
+     */
     public function login($email)
     {
         $link = PDOUtil::createConnection();
@@ -22,6 +25,9 @@ class PenggunaDao {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Mengambil seluruh data pengguna tanpa batasan halaman.
+     */
     public function getAllPengguna() {
         $link = PDOUtil::createConnection();
         $query = "SELECT 
@@ -42,6 +48,9 @@ class PenggunaDao {
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Pengguna');
     }
 
+    /**
+     * Menyimpan data akun pengguna baru ke dalam tabel pengguna di database.
+     */
     public function insertPengguna(Pengguna $p)
     {
         $link = PDOUtil::createConnection();
@@ -58,6 +67,9 @@ class PenggunaDao {
         return $link->lastInsertId();
     }
 
+    /**
+     * Mencari profil satu pengguna secara spesifik menggunakan ID pengguna.
+     */
     public function getPenggunaById($id)
     {
         $link = PDOUtil::createConnection();
@@ -91,6 +103,9 @@ class PenggunaDao {
         );
     }
 
+    /**
+     * Memperbarui informasi data profil pengguna yang sudah ada di database.
+     */
     public function updatePengguna(Pengguna $p)
     {
         $link = PDOUtil::createConnection();
@@ -133,6 +148,9 @@ class PenggunaDao {
         $stmt->execute();
     }
 
+    /**
+     * Menghapus data pengguna secara permanen dari tabel database.
+     */
     public function deletePengguna($id)
     {
         $link = PDOUtil::createConnection();
@@ -145,6 +163,9 @@ class PenggunaDao {
         $stmt->execute();
     }
 
+    /**
+     * Mengambil daftar pengguna menggunakan pagination agar sistem memuat halaman lebih cepat.
+     */
     public function getPenggunaPage($limit, $offset)
     {
         $link = PDOUtil::createConnection();
@@ -189,6 +210,9 @@ class PenggunaDao {
         return $result;
     }
 
+    /**
+     * Menghitung total keseluruhan akun pengguna yang terdaftar di dalam sistem.
+     */
     public function countPengguna()
     {
         $link = PDOUtil::createConnection();
@@ -198,6 +222,9 @@ class PenggunaDao {
         return $stmt->fetchColumn();
     }
 
+    /**
+     * Memeriksa apakah suatu alamat email sudah terdaftar sebelumnya di database.
+     */
     public function findByEmail($email)
     {
         $link = PDOUtil::createConnection();
@@ -211,6 +238,9 @@ class PenggunaDao {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Menghitung jumlah pengguna yang memiliki status penyewa aktif untuk ditampilkan di dashboard.
+     */
     public function countPenyewaAktif()
     {
         $link = PDOUtil::createConnection();
@@ -220,6 +250,9 @@ class PenggunaDao {
         return (int)$stmt->fetchColumn();
     }
 
+    /**
+     * Mengubah kata sandi pengguna di database, umumnya digunakan dalam proses lupa password.
+     */
     public function updatePasswordByEmail($email, $passwordHash)
     {
         $link = PDOUtil::createConnection();

@@ -17,6 +17,9 @@ class UserTagihanController
     /**
      * Tampilkan daftar tagihan untuk penyewa
      */
+    /**
+     * Menampilkan riwayat keseluruhan tagihan pribadi yang ditujukan untuk penyewa yang sedang login.
+     */
     public function index()
     {
         $id_pengguna = $_SESSION['user']['id'];
@@ -51,6 +54,9 @@ class UserTagihanController
 
     /**
      * Detail tagihan untuk penyewa
+     */
+    /**
+     * Menampilkan rincian detail spesifik dari satu lembar tagihan pribadi milik penyewa.
      */
     public function detail($id_tagihan)
     {

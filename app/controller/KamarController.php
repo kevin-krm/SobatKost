@@ -3,6 +3,10 @@ require_once APP_PATH . '/dao/KamarDao.php';
 
 class KamarController
 {
+    /**
+     * Mengatur tampilan halaman utama daftar kamar.
+     * Relasi: Memanggil fungsi getKamarPage() dari KamarDao.php untuk mengambil data sepotong-sepotong (pagination).
+     */
     public function index()
     {
         $dao = new KamarDao();
@@ -19,12 +23,18 @@ class KamarController
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menampilkan form halaman kosong agar admin bisa mendaftarkan fisik kamar baru ke sistem.
+     */
     public function create()
     {
         $contentView = APP_PATH . '/view/kamar/create.php';
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menangkap data dari form "Tambah Kamar", merakitnya jadi objek Kamar, lalu menyuruh KamarDao.php (insertKamar) untuk menyimpannya ke MySQL.
+     */
     public function store()
     {
         $nomor = $_POST['nomor_kamar'];
@@ -46,6 +56,11 @@ class KamarController
         exit;
     }
 
+    /**
+     * Menampilkan halaman form edit. 
+     * Relasi: Memanggil fungsi getKamarById() di KamarDao.php. 
+     * Sistem juga memblokir admin jika mencoba mengedit harga kamar yang sedang berstatus 'Terisi'.
+     */
     public function edit($id)
     {
         require_once APP_PATH . '/dao/KontrakDao.php';
@@ -67,6 +82,9 @@ class KamarController
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menangkap perubahan data dari form "Edit Kamar", lalu meneruskannya ke fungsi updateKamar() di KamarDao.php agar tersimpan di database.
+     */
     public function update($id)
     {
         $kamar = new Kamar(
@@ -84,6 +102,9 @@ class KamarController
         exit;
     }
 
+    /**
+     * Jalur khusus untuk sekadar mengubah status kamar (misalnya tiba-tiba AC rusak, admin mengubah status kamar jadi 'Perbaikan').
+     */
     public function updateStatus($id)
     {
         if (isset($_POST['status_kamar'])) {
@@ -97,6 +118,10 @@ class KamarController
         exit;
     }
 
+    /**
+     * Mengeksekusi penghapusan data kamar. 
+     * Sistem akan menolak perintah hapus jika fungsi getKamarById() dari KamarDao mendeteksi kamar ini masih dipakai (Terisi).
+     */
     public function delete($id)
     {
         require_once APP_PATH . '/dao/KontrakDao.php';

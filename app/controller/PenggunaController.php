@@ -9,6 +9,9 @@ class PenggunaController
         $this->penggunaDao = new PenggunaDao();
     }
 
+    /**
+     * Menampilkan daftar seluruh pengguna (penyewa dan admin) beserta hak aksesnya.
+     */
     public function index()
     {
         $dao = new PenggunaDao();
@@ -25,12 +28,18 @@ class PenggunaController
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menampilkan form untuk mendaftarkan akun pengguna baru ke sistem.
+     */
     public function create()
     {
         $contentView = APP_PATH . '/view/pengguna/create.php';
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menyimpan data pengguna baru beserta kata sandi yang telah di-hash ke database.
+     */
     public function store()
     {
         $email = $_POST['email'];
@@ -104,6 +113,9 @@ class PenggunaController
         exit;
     }
 
+    /**
+     * Menampilkan informasi profil pengguna secara detail beserta status kontrak sewanya jika ada.
+     */
     public function detail($id)
     {
         $dao = new PenggunaDao();
@@ -117,6 +129,9 @@ class PenggunaController
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menampilkan form untuk memperbarui data profil atau hak akses pengguna.
+     */
     public function edit($id)
     {
         $dao = new PenggunaDao();
@@ -130,6 +145,9 @@ class PenggunaController
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menangkap data perubahan profil pengguna dan menyimpannya ke database via PenggunaDao.php.
+     */
     public function update($id)
     {
         $email = $_POST['email'];
@@ -205,6 +223,9 @@ class PenggunaController
         exit;
     }
 
+    /**
+     * Menghapus akun pengguna dari sistem secara permanen.
+     */
     public function delete($id)
     {
         $dao = new PenggunaDao();

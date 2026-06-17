@@ -1,4 +1,7 @@
 <?php
+/**
+ * Mengeksekusi simpan data tagihan bulanan yang sudah dirakit oleh TagihanFactory ke MySQL.
+ */
 require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/Tagihan.php';
 require_once __DIR__ . '/../model/TagihanFactory.php';
@@ -91,6 +94,9 @@ class TagihanDao
     /**
      * Count semua tagihan
      */
+/**
+     * Menghitung total seluruh tagihan yang pernah dibuat di sistem ini.
+     */
     public function countTagihan()
     {
         $link = PDOUtil::createConnection();
@@ -105,6 +111,9 @@ class TagihanDao
     /**
      * Count tagihan belum lunas
      */
+/**
+     * Menghitung angka total tagihan yang belum dibayar.
+     */
     public function countTagihanBelumLunas()
     {
         $link = PDOUtil::createConnection();
@@ -118,6 +127,9 @@ class TagihanDao
 
     /**
      * Count tagihan overdue
+     */
+/**
+     * Menghitung angka total tagihan yang nunggak (lewat batas waktu).
      */
     public function countTagihanOverdue()
     {
@@ -158,6 +170,9 @@ class TagihanDao
     /**
      * Insert tagihan
      */
+/**
+     * Menulis data tagihan baru ke dalam tabel tagihan di database.
+     */
     public function insertTagihan(Tagihan $tagihan)
     {
         $link = PDOUtil::createConnection();
@@ -187,6 +202,9 @@ class TagihanDao
 
     /**
      * Update tagihan
+     */
+/**
+     * Menyimpan perubahan data tagihan (seperti status lunas atau perubahan jatuh tempo) ke database.
      */
     public function updateTagihan(Tagihan $tagihan)
     {
@@ -278,6 +296,9 @@ class TagihanDao
 
     /**
      * Get statistik tagihan
+     */
+/**
+     * Merekap total uang dari tagihan yang Lunas, Belum Lunas, dan Nunggak. Untuk keperluan grafik di Dashboard.
      */
     public function getStatistik()
     {

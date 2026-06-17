@@ -1,7 +1,13 @@
 <?php
+/**
+ * Pusat rekapitulasi duit kost! Menghitung total pemasukan (dari sewa) dikurangi pengeluaran bulanan.
+ */
 require_once APP_PATH . '/dao/BiayaOperasionalDao.php';
 
 class KeuanganController {
+    /**
+     * Menampilkan halaman rekapitulasi data keuangan, serta membandingkan angka pemasukan dan pengeluaran operasional.
+     */
     public function index() {
         $dao = new BiayaOperasionalDao();
 
@@ -61,6 +67,9 @@ class KeuanganController {
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menyimpan catatan pengeluaran operasional baru ke sistem via BiayaOperasionalDao.php.
+     */
     public function store() {
         $kategori_biaya = $_POST['kategori_biaya'];
         $jumlah_biaya = $_POST['jumlah_biaya'];
@@ -74,11 +83,17 @@ class KeuanganController {
         exit;
     }
 
+    /**
+     * Menampilkan form untuk mencatat pengeluaran operasional rutin kost.
+     */
     public function create() {
         $contentView = APP_PATH . '/view/keuangan/create.php';
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menampilkan form untuk merevisi data pencatatan pengeluaran yang sudah ada.
+     */
     public function edit($id) {
         $dao = new BiayaOperasionalDao();
         $biaya = $dao->getBiayaById($id);
@@ -92,6 +107,9 @@ class KeuanganController {
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menyimpan hasil revisi data pengeluaran ke dalam database.
+     */
     public function update($id) {
         $kategori_biaya = $_POST['kategori_biaya'];
         $jumlah_biaya = $_POST['jumlah_biaya'];
@@ -106,6 +124,9 @@ class KeuanganController {
         exit;
     }
 
+    /**
+     * Menghapus catatan pengeluaran operasional dari sistem keuangan.
+     */
     public function delete($id) {
         $dao = new BiayaOperasionalDao();
         $dao->deleteBiaya($id);

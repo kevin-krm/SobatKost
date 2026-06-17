@@ -5,6 +5,10 @@ require_once __DIR__ . '/../model/Kamar.php';
 
 class KamarDao {
 
+    /**
+     * Mengambil semua daftar kamar dari database.
+     * Logika: Mengecek langsung apakah hari ini ada kontrak sewa yang aktif (Tersambung ke tabel kontrak_sewa). Jika ada, otomatis statusnya berubah jadi 'Terisi'.
+     */
     public function getAllKamar() {
 
         $link = PDOUtil::createConnection();
@@ -53,6 +57,10 @@ class KamarDao {
         return $result;
     }
 
+    /**
+     * Mencari data satu kamar spesifik berdasarkan ID-nya.
+     * Relasi: Memanggil fungsi syncKontrakStatus() dari KontrakDao.php untuk memastikan status sewanya paling update (tidak basi) sebelum datanya ditampilkan.
+     */
     public function getKamarById($id) {
         $kontrakDao = new KontrakDao();
         $kontrakDao->syncKontrakStatus();
@@ -111,6 +119,10 @@ class KamarDao {
         );
     }
 
+    /**
+     * Menyimpan data kamar baru yang baru saja dibuat admin ke dalam database.
+     * Menggunakan Stored Procedure (sp_insert_kamar) di MySQL agar proses simpan lebih aman.
+     */
     public function insertKamar(Kamar $kamar) {
         $link = PDOUtil::createConnection();
 
@@ -131,6 +143,9 @@ class KamarDao {
         $stmt->execute();
     }
 
+    /**
+     * Menyimpan perubahan data kamar (misalnya admin habis mengedit harga sewa atau tipe kamar) kembali ke database.
+     */
     public function updateKamar(Kamar $kamar) {
         $link = PDOUtil::createConnection();
 
@@ -155,6 +170,9 @@ class KamarDao {
         $stmt->execute();
     }
 
+    /**
+     * Jalan pintas khusus untuk mengubah status kamar (contoh: dari 'Tersedia' menjadi 'Perbaikan' karena atap bocor) tanpa mengubah data lainnya.
+     */
     public function updateStatusKamar($id, $status) {
         $link = PDOUtil::createConnection();
 
@@ -171,6 +189,9 @@ class KamarDao {
         $stmt->execute();
     }
 
+    /**
+     * Menghapus data kamar dari database selamanya berdasarkan ID.
+     */
     public function deleteKamar($id) {
         $link = PDOUtil::createConnection();
 
@@ -184,6 +205,9 @@ class KamarDao {
         $stmt->execute();
     }
 
+    /**
+     * Sama seperti getAllKamar, tapi ini khusus untuk Pagination (membagi data kamar berhalaman-halaman) agar loading website tidak berat kalau jumlah kamarnya ratusan.
+     */
     public function getKamarPage($limit, $offset) {
         $link = PDOUtil::createConnection();
 
@@ -242,6 +266,9 @@ class KamarDao {
         return $result;
     }
 
+    /**
+     * Menghitung total fisik jumlah seluruh kamar yang ada di kost ini (baik yang kosong maupun isi).
+     */
     public function countKamar() {
         $link = PDOUtil::createConnection();
 
@@ -250,6 +277,9 @@ class KamarDao {
             ->fetchColumn();
     }
 
+    /**
+     * Menghitung berapa banyak kamar yang saat ini benar-benar sedang diisi oleh penyewa (aktif dikontrak).
+     */
     public function countOccupiedRooms()
     {
         $link = PDOUtil::createConnection();
@@ -257,6 +287,10 @@ class KamarDao {
         return $link->query($query)->fetchColumn();
     }
 
+    /**
+     * Merekap dan menghitung jumlah kamar berdasarkan statusnya masing-masing (Tersedia vs Terisi vs Perbaikan).
+     * Biasanya ini dipanggil oleh DashboardController.php untuk menampilkan grafik donat (pie chart) di halaman awal admin.
+     */
     public function countRoomsByStatus()
     {
         $link = PDOUtil::createConnection();

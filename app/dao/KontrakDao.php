@@ -1,9 +1,15 @@
 <?php
+/**
+ * Sangat krusial karena data tabel kontrak menentukan siapa yang harus ditagih bulan depan.
+ */
 require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/Kontrak.php';
 
 class KontrakDao
 {
+    /**
+     * Mengambil daftar semua kontrak sewa yang pernah dicatat oleh sistem.
+     */
     public function getAllKontrak()
     {
         $this->syncKontrakStatus();
@@ -29,6 +35,9 @@ class KontrakDao
         return $result;
     }
 
+    /**
+     * Mencari detail satu perjanjian kontrak spesifik berdasarkan ID-nya.
+     */
     public function getKontrakById($id)
     {
         $link = PDOUtil::createConnection();
@@ -51,6 +60,9 @@ class KontrakDao
         return $row ? $this->mapRowToKontrak($row) : null;
     }
 
+    /**
+     * Menarik daftar kontrak yang saat ini statusnya masih berjalan (aktif).
+     */
     public function getKontrakAktif()
     {
         $this->syncKontrakStatus();
@@ -77,6 +89,9 @@ class KontrakDao
         return $result;
     }
 
+    /**
+     * Mengambil seluruh riwayat kontrak sewa milik satu orang penyewa spesifik.
+     */
     public function getKontrakByPengguna($id_pengguna)
     {
         $link = PDOUtil::createConnection();
@@ -103,6 +118,9 @@ class KontrakDao
         return $result;
     }
 
+    /**
+     * Menyimpan data perjanjian sewa baru ke dalam tabel database.
+     */
     public function insertKontrak(Kontrak $kontrak)
     {
         $link = PDOUtil::createConnection();
@@ -194,6 +212,9 @@ class KontrakDao
         $_SESSION['success'] = 'Kontrak berhasil ditambahkan';
     }
 
+    /**
+     * Memperbarui rincian dari perjanjian kontrak yang sudah ada sebelumnya.
+     */
     public function updateKontrak(Kontrak $kontrak)
     {
         $link = PDOUtil::createConnection();
@@ -220,6 +241,9 @@ class KontrakDao
         $stmt->execute();
     }
 
+    /**
+     * Menghapus rekam jejak kontrak dari tabel database.
+     */
     public function deleteKontrak($id)
     {
         $link = PDOUtil::createConnection();
@@ -259,6 +283,9 @@ class KontrakDao
         }
     }
 
+    /**
+     * Memeriksa dan memperbarui status kontrak secara otomatis jika batas waktu sewanya sudah habis (kedaluwarsa).
+     */
     public function syncKontrakStatus()
     {
         $link = PDOUtil::createConnection();

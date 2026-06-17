@@ -3,6 +3,9 @@ require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/Inventaris.php';
 
 class InventarisDao {
+    /**
+     * Mengambil daftar inventaris sepotong-sepotong agar loading layar tidak berat.
+     */
     public function getInventarisPage($limit, $offset) {
         $link = PDOUtil::createConnection();
         $query = "SELECT * FROM inventaris_kamar ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
@@ -18,11 +21,17 @@ class InventarisDao {
         return $result;
     }
 
+    /**
+     * Menghitung total seluruh barang yang ada di kost.
+     */
     public function countInventaris() {
         $link = PDOUtil::createConnection();
         return $link->query("SELECT COUNT(*) FROM inventaris_kamar")->fetchColumn();
     }
 
+    /**
+     * Mencari detail satu barang spesifik berdasarkan ID-nya.
+     */
     public function getInventarisById($id) {
         $link = PDOUtil::createConnection();
         $query = "SELECT * FROM inventaris_kamar WHERE id_inventaris = :id";
@@ -42,6 +51,9 @@ class InventarisDao {
         );
     }
 
+    /**
+     * Menyimpan data barang baru menggunakan Stored Procedure MySQL (sp_insert_inventaris).
+     */
     public function insertInventaris(Inventaris $inventaris) {
         $link = PDOUtil::createConnection();
         $query = "CALL sp_insert_inventaris(:id_kamar, :nama, :kondisi)";
@@ -53,6 +65,9 @@ class InventarisDao {
     }
 
     // FUNGSI UPDATE UNTUK FORM EDIT
+    /**
+     * Menyimpan hasil editan data barang kembali ke database.
+     */
     public function updateInventaris(Inventaris $inventaris) {
         $link = PDOUtil::createConnection();
         $query = "UPDATE inventaris_kamar SET id_kamar = :id_kamar, nama_barang = :nama, kondisi_barang = :kondisi WHERE id_inventaris = :id";
@@ -66,6 +81,9 @@ class InventarisDao {
         $stmt->execute();
     }
 
+    /**
+     * Mengubah status kondisi barang (Rusak/Baik) secara langsung tanpa mengubah data lain.
+     */
     public function updateKondisiBarang($id, $kondisi) {
         $link = PDOUtil::createConnection();
         $query = "UPDATE inventaris_kamar SET kondisi_barang = :kondisi WHERE id_inventaris = :id";
@@ -75,6 +93,9 @@ class InventarisDao {
         $stmt->execute();
     }
 
+    /**
+     * Menghapus barang dari catatan database selamanya.
+     */
     public function deleteInventaris($id) {
         $link = PDOUtil::createConnection();
         $query = "DELETE FROM inventaris_kamar WHERE id_inventaris = :id";

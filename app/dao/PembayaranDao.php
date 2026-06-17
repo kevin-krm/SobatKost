@@ -1,4 +1,7 @@
 <?php
+/**
+ * Mengurusi query riwayat transaksi. Memastikan nggak ada dobel data saat bayar lunas.
+ */
 require_once __DIR__ . '/PDOUtil.php';
 require_once __DIR__ . '/../model/Pembayaran.php';
 
@@ -39,6 +42,9 @@ class PembayaranDao
 
     /**
      * Get pembayaran berdasarkan ID Tagihan
+     */
+/**
+     * Melacak riwayat bayar dari satu nomor tagihan (misal ada tagihan yang dibayar secara cicil).
      */
     public function getPembayaranByTagihanId($id_tagihan)
     {
@@ -127,6 +133,9 @@ class PembayaranDao
     /**
      * Count pembayaran
      */
+/**
+     * Menghitung total semua struk pembayaran yang pernah masuk.
+     */
     public function countPembayaran()
     {
         $link = PDOUtil::createConnection();
@@ -155,6 +164,9 @@ class PembayaranDao
 
     /**
      * Insert pembayaran
+     */
+/**
+     * Mencatat bukti pembayaran baru dari penyewa ke tabel pembayaran.
      */
     public function insertPembayaran(Pembayaran $pembayaran)
     {

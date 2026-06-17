@@ -1,4 +1,7 @@
 <?php
+/**
+ * Sistem toa kost! Admin nulis di sini, otomatis broadcast ke dashboard penyewa.
+ */
 require_once APP_PATH . '/dao/PengumumanDao.php';
 require_once APP_PATH . '/model/Pengumuman.php';
 
@@ -10,17 +13,26 @@ class PengumumanController {
     }
 
     // --- DASHBOARD ADMIN ---
+    /**
+     * Menampilkan daftar seluruh pengumuman di layar admin.
+     */
     public function index() {
         $pengumumanList = $this->pengumumanDao->showAllPengumuman();
         $contentView = APP_PATH . '/view/pengumuman/index.php';
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menampilkan form untuk admin membuat tulisan pengumuman baru.
+     */
     public function create() {
         $contentView = APP_PATH . '/view/pengumuman/create.php';
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menyimpan pengumuman baru yang diketik admin ke database via PengumumanDao.php.
+     */
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $judul = $_POST['judul'] ?? null;
@@ -38,6 +50,9 @@ class PengumumanController {
         exit;
     }
 
+    /**
+     * Menampilkan form untuk merevisi teks pengumuman
+     */
     public function edit($id) {
         $pengumuman = $this->pengumumanDao->getPengumumanById($id);
         if (!$pengumuman) {
@@ -48,6 +63,9 @@ class PengumumanController {
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menyimpan hasil revisi pengumuman kembali ke database.
+     */
     public function update($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $judul = $_POST['judul'] ?? null;
@@ -71,6 +89,9 @@ class PengumumanController {
         exit;
     }
 
+    /**
+     * Menghapus pengumuman agar tidak tayang lagi di dashboard.
+     */
     public function delete($id) {
         $this->pengumumanDao->deletePengumuman($id);
         header("Location: /SobatKost/index.php?url=pengumuman");
@@ -78,6 +99,9 @@ class PengumumanController {
     }
 
     // --- DASHBOARD PENYEWA (USER) ---
+    /**
+     * Khusus untuk layar Penyewa: Menampilkan daftar pengumuman yang di-broadcast oleh admin.
+     */
     public function userIndex() {
         $pengumumanList = $this->pengumumanDao->showAllPengumuman();
         $contentView = APP_PATH . '/view/user/pengumuman/index.php';

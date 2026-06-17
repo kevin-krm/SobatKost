@@ -10,6 +10,9 @@ class UserController
         $this->penggunaDao = new PenggunaDao();
     }
 
+    /**
+     * Menampilkan halaman khusus mengenai informasi profil layanan kost beserta kontak pemilik properti.
+     */
     public function about()
     {
         $id_pengguna = $_SESSION['user']['id'];
@@ -24,6 +27,9 @@ class UserController
         require_once APP_PATH . '/view/user/index.php';
     }
 
+    /**
+     * Memfasilitasi pengguna untuk melakukan pembaruan kata sandi mereka secara mandiri setelah tahap login.
+     */
     public function updatePassword()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -87,6 +93,9 @@ class UserController
         exit;
     }
 
+    /**
+     * Menampilkan halaman pengaturan akun untuk mengganti alamat email yang digunakan pengguna.
+     */
     public function changeEmail()
     {
         $id_pengguna = $_SESSION['user']['id'];
@@ -101,6 +110,9 @@ class UserController
         require_once APP_PATH . '/view/user/index.php';
     }
 
+    /**
+     * Memproses penyimpanan perubahan alamat email pengguna ke dalam sistem database.
+     */
     public function updateEmail()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

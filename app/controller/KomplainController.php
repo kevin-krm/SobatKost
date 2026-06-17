@@ -1,10 +1,16 @@
 <?php
+/**
+ * Mengatur lalu lintas komplain penghuni (contoh: AC bocor). Admin memantau tiket dari sini.
+ */
 require_once APP_PATH . '/dao/KomplainDao.php';
 require_once APP_PATH . '/model/Komplain.php';
 require_once APP_PATH . '/model/DashboardNotifier.php';
 
 class KomplainController
 {
+    /**
+     * Menampilkan daftar tiket komplain yang masuk untuk ditangani oleh pihak admin.
+     */
     public function index()
     {
         $dao = new KomplainDao();
@@ -18,6 +24,9 @@ class KomplainController
         require_once APP_PATH . '/view/index.php';
     }
 
+    /**
+     * Menampilkan riwayat laporan komplain khusus yang pernah dibuat oleh penyewa tersebut secara pribadi.
+     */
     public function userIndex()
     {
         session_status() === PHP_SESSION_ACTIVE ?: session_start();
@@ -36,6 +45,9 @@ class KomplainController
         require_once APP_PATH . '/view/user/index.php';
     }
 
+    /**
+     * Menampilkan form keluhan agar penyewa dapat melaporkan kerusakan fasilitas kost.
+     */
     public function create()
     {
         session_status() === PHP_SESSION_ACTIVE ?: session_start();
@@ -48,6 +60,9 @@ class KomplainController
         }
     }
 
+    /**
+     * Menyimpan laporan kerusakan fasilitas baru ke sistem melalui KomplainDao.php.
+     */
     public function store()
     {
         session_status() === PHP_SESSION_ACTIVE ?: session_start();
@@ -70,6 +85,9 @@ class KomplainController
     }
 
     // Untuk simpan dari Form Edit (Judul, Deskripsi, Status)
+    /**
+     * Memperbarui isi detail laporan komplain yang sudah ada.
+     */
     public function update($id)
     {
         $dao = new KomplainDao();
@@ -100,6 +118,10 @@ class KomplainController
     }
 
     // Tetap dipertahankan untuk dropdown cepat di Tabel Index
+    /**
+     * Mengubah status komplain (misalnya dari 'Menunggu' menjadi 'Diproses').
+     * Relasi: Perubahan status ini dapat memicu pola Observer Pattern.
+     */
     public function updateStatus($id)
     {
         session_status() === PHP_SESSION_ACTIVE ?: session_start();
@@ -124,6 +146,9 @@ class KomplainController
         exit;
     }
 
+    /**
+     * Menghapus tiket laporan komplain dari sistem secara permanen.
+     */
     public function delete($id)
     {
         $dao = new KomplainDao();
@@ -132,6 +157,9 @@ class KomplainController
         exit;
     }
 
+    /**
+     * Menampilkan form untuk memperbaiki teks laporan komplain.
+     */
     public function edit($id)
     {
         $dao = new KomplainDao();
