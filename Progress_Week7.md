@@ -11,25 +11,24 @@
 
 ## Design Patterns
 
-### 1. Adapter Pattern (Sistem Tagihan & Notifikasi)
-Pembaruan minggu ini berfokus pada implementasi *Adapter Pattern* dalam sistem notifikasi tagihan. Pola ini digunakan untuk menjembatani perbedaan antarmuka antara sistem pengecekan tagihan otomatis dengan layanan pengiriman notifikasi, sehingga sistem dapat langsung memberikan "lampu peringatan" (badge notifikasi) kepada pengguna secara *real-time* apabila terdapat tagihan yang akan atau sudah melewati batas waktu pembayaran.
-
-### 2. Decorator Pattern (Sistem Tagihan Dinamis)
+### Decorator Pattern
 Dilakukan perbaikan dan penyempurnaan pada *Decorator Pattern* di modul Tagihan. Pola ini difokuskan agar sistem mampu menambahkan ekstra biaya (seperti tambahan parkir, AC, dsb.) ke dalam struk tagihan pokok secara dinamis saat *runtime* tanpa perlu merombak kelas atau kode utama dari tagihan itu sendiri.
-
-### 3. Observer Pattern (Sistem Tiket Komplain)
-Penerapan *Observer Pattern* pada alur penanganan tiket komplain. Ketika admin mengubah status keluhan dari "Menunggu" menjadi "Diproses" atau "Selesai" (sebagai *Subject*), sistem secara otomatis memancarkan *update* ke *dashboard* penyewa (sebagai *Observer*) sehingga mereka bisa melacak progres perbaikan fasilitas secara transparan.
 
 ---
 
 ## Implemented Features — Week 7
 
-* **Penyempurnaan Autentikasi & Keamanan:** Implementasi fitur *reset password* melalui OTP ke email pada halaman login.
-* **Peningkatan Privasi Pengguna:** Mencabut akses admin untuk mengubah *password* & email *user* secara sepihak. Sebagai gantinya, diimplementasikan fitur pembaruan email mandiri oleh pengguna.
-* **Sistem Notifikasi Pintar:** Implementasi fitur peringatan jatuh tempo tagihan di *sidebar dashboard* penyewa *(Adapter Pattern)*.
-* **Tagihan Dinamis:** Perbaikan dan finalisasi penambahan biaya ekstra pada tagihan *(Decorator Pattern)*.
-* **Tracking Komplain:** Finalisasi integrasi perubahan status penanganan komplain langsung ke *dashboard* pelapor *(Observer Pattern)*.
-* **Code Refactoring & Dokumentasi:** Perombakan struktur dokumentasi secara masif dengan menyuntikkan komentar berstandar *"human-readable"* di level fungsi pada 100% *file* DAO dan Controller untuk menunjang presentasi.
+* Perbaikan implementasi fitur peringatan jatuh tempo tagihan di UI penyewa
+* Membatasi akses unggah bukti pembayaran agar hanya dapat diinisiasi oleh Penyewa.
+* Memperbaiki validasi peran sehingga aksi verifikasi (terima/tolak pembayaran) tampil dengan benar untuk Owner dan Penjaga.
+* Menambahkan validasi anti-double payment: cegah unggah bukti baru jika status pembayaran sebelumnya masih "Proses" atau "Berhasil".
+* Membuka kembali akses unggah pembayaran jika riwayat pembayaran sebelumnya "Ditolak" oleh admin.
+* Mengotomatisasi perubahan status tagihan menjadi "Lunas" ketika pembayaran diverifikasi sukses.
+* Memperbaiki bug bentrok variabel (scope collision) di sidebar yang menyebabkan detail tagihan menampilkan data yang salah.
+* Perbaikan pada error message di bagian tagihan (user)
+* Perbaikan pada kode dummy agar data yang ditampilkan lebih realistis
+* Perombakan struktur dokumentasi secara masif dengan menyuntikkan komentar berstandar *"human-readable"* di level fungsi pada 100% *file* DAO dan Controller untuk menunjang presentasi.
+
 
 ### Notes
 
@@ -68,7 +67,7 @@ Silahkan reset password terlebih dahulu dan buat password baru untuk login
 | NRP     | Nama                                | Task                                                                               | Status      |
 | ------- | ----------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
 | 2472018 | Kevin Kornelius Martadinata         | Arsitektur & Keamanan: Autentikasi, Profil Penghuni, Dashboard Visual, Log Riwayat | Done |
-| 2472028 | Ferdi Gunawan                       | Logika Bisnis & Keuangan: Billing System, Pembayaran, Reminder, Laporan Keuangan   | In Progress |
+| 2472028 | Ferdi Gunawan                       | Logika Bisnis & Keuangan: Billing System, Pembayaran, Reminder, Laporan Keuangan   | Done |
 | 2472007 | Richard Vincentius Christian Dinata | Komunikasi & Manajemen Aset: Inventaris, Komplain, Broadcast, Aturan Kost          | Done |
 
 **Status:** `Not Started` · `In Progress` · `Done`
